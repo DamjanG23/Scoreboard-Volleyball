@@ -1,0 +1,19 @@
+import {app, BrowserWindow} from 'electron';
+import path from 'path';
+import { isDev } from './util.js';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type test = string;
+
+app.on('ready', () => {
+    const mainWindow = new BrowserWindow({
+
+    });
+
+    if (isDev()) {
+        mainWindow.loadURL('http://localhost:5123');
+    } else {
+        mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'));
+    }
+    
+});
