@@ -3,9 +3,6 @@ import path from 'path';
 import { isDev } from './util.js';
 import { getPreloadPath } from './pathResolver.js';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type test = string;
-
 app.on('ready', () => {
     const mainWindow = new BrowserWindow({
 
