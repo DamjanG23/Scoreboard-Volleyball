@@ -5,5 +5,8 @@ type TestType = {
   interface Window {
     electron: {
         test: () => void;
+        //getMatchSeconds: () => void;
+        getScoreboardState: () => void;
+        getConfig: () => void;
     }
   }

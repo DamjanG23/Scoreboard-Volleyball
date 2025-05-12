@@ -6,7 +6,9 @@ function App() {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    window.electron.test();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.electron.getMatchSeconds((seconds) => console.log(seconds));
   }, [])
 
   return (
