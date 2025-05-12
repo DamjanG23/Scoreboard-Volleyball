@@ -1,22 +1,25 @@
 import { BrowserWindow } from "electron";
+import { ipcWebContentsSend } from "../utils/util.js";
 
 const POOLING_INTERVAL = 1000;
 
 export function getMatchSeconds(window: BrowserWindow) {
-    let matchSeconds = 0;
+    let seconds = 0;
 
     setInterval(async () => {
-        matchSeconds++;
-        window.webContents.send("matchSeconds", matchSeconds)
+        seconds++;
+        ipcWebContentsSend("getMatchSeconds", window.webContents, {seconds})
     }, POOLING_INTERVAL)
 };
 
 export function getScoreboardState() {
-    const scoreboardState = "scoreboardState 123";
-    return scoreboardState;
+    const scoreboardState: string = "scoreboardState 123";
+    const teamAName: string = "Rabotnicki";
+    const teamBName: string = "Strumica";
+    return {scoreboardState, teamAName, teamBName};
 };
 
 export function getConfig() {
     const config = "match config 123";
-    return config;
+    return {config};
 };

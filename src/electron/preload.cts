@@ -4,18 +4,29 @@ electron.contextBridge.exposeInMainWorld("electron", {
 
     test: () => console.log('Testing preload!'),
 
-    getMatchSeconds: (callback: (matchSeconds: any) => void) => {
-        electron.ipcRenderer.on("matchSeconds", (_: any, seconds: any) => {
+    getMatchSeconds: (callback) => {
+        ipcOn("getMatchSeconds", (seconds) => {
             callback(seconds);
         });
     },
 
     getScoreboardState: () => {
-        return electron.ipcRenderer.invoke("scoreboardState")
+        return ipcInvoke("getScoreboardState")
     },
 
     getConfig: () => {
-        return electron.ipcRenderer.invoke("config")
+        return ipcInvoke("getConfig")
     },
 
-} /* satisfies Window['electron'] */);
+} satisfies Window['electron']);
+
+function ipcInvoke<Key extends keyof EventPayloadMaping>(key: Key): Promise<EventPayloadMaping[Key]> {
+    return electron.ipcRenderer.invoke(key);
+}
+
+function ipcOn<Key extends keyof EventPayloadMaping>(
+    key: Key,
+    callback: (payload: EventPayloadMaping[Key]) => void
+) {
+    return electron.ipcRenderer.on(key, (_: any, payload: EventPayloadMaping[Key]) => callback(payload));
+}

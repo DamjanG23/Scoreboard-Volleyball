@@ -1,6 +1,6 @@
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow} from 'electron';
 import path from 'path';
-import { isDev } from './utils/util.js';
+import { ipcMainHandle, isDev } from './utils/util.js';
 import { getPreloadPath } from './utils/pathResolver.js';
 import { getConfig, getMatchSeconds, getScoreboardState } from './services/stateService.js';
 
@@ -21,11 +21,11 @@ app.on('ready', () => {
 
 
 
-    ipcMain.handle("scoreboardState", () => {
+    ipcMainHandle("getScoreboardState", () => {
         return getScoreboardState();
     })
 
-    ipcMain.handle("config", () => {
+    ipcMainHandle("getConfig", () => {
         return getConfig();
     })
 
