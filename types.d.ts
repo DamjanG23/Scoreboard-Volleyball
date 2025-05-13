@@ -13,9 +13,9 @@ type MatchTime = {
 };
 
 type EventPayloadMaping = {
-  getMatchSeconds: MatchTime,
-  getScoreboardState: ScoreboardState,
-  getConfig: MatchConfig
+  getMatchSeconds: MatchTime;
+  getScoreboardState: ScoreboardState;
+  getConfig: MatchConfig;
 };
 
 type UnsubscribeFunction = () => void;
@@ -24,7 +24,9 @@ interface Window {
   electron: {
     test: () => void;
 
-    getMatchSeconds: (callback: (matchtime: MatchTime) => void) => UnsubscribeFunction;
+    getMatchSeconds: (
+      callback: (matchtime: MatchTime) => void
+    ) => UnsubscribeFunction;
 
     getScoreboardState: () => Promise<ScoreboardState>;
 

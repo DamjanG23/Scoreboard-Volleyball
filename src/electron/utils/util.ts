@@ -11,10 +11,10 @@ export function ipcMainHandle<Key extends keyof EventPayloadMaping>(
   ipcMain.handle(key, () => handler());
 }
 
-export function ipcWebContentsSend<Key extends keyof EventPayloadMaping> (
-    key: Key,
-    webContents: WebContents,
-    payload: EventPayloadMaping[Key]
+export function ipcWebContentsSend<Key extends keyof EventPayloadMaping>(
+  key: Key,
+  webContents: WebContents,
+  payload: EventPayloadMaping[Key]
 ) {
-    webContents.send(key, payload);
+  webContents.send(key, payload);
 }
