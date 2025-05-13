@@ -4,11 +4,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
 
     test: () => console.log('Testing preload!'),
 
-    getMatchSeconds: (callback) => {
+    getMatchSeconds: (callback) => 
         ipcOn("getMatchSeconds", (seconds) => {
             callback(seconds);
-        });
-    },
+        }),
 
     getScoreboardState: () => {
         return ipcInvoke("getScoreboardState")
@@ -28,5 +27,7 @@ function ipcOn<Key extends keyof EventPayloadMaping>(
     key: Key,
     callback: (payload: EventPayloadMaping[Key]) => void
 ) {
-    return electron.ipcRenderer.on(key, (_: any, payload: EventPayloadMaping[Key]) => callback(payload));
+    const cb = (_: Electron.IpcRendererEvent, payload: any) => callback(payload)
+    electron.ipcRenderer.on(key, cb);
+    return () => electron.ipcRenderer.off(key, cb);
 }

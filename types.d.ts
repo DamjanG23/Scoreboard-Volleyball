@@ -18,11 +18,13 @@ type EventPayloadMaping = {
   getConfig: MatchConfig
 };
 
+type UnsubscribeFunction = () => void;
+
 interface Window {
   electron: {
     test: () => void;
 
-    getMatchSeconds: (callback: (matchtime: MatchTime) => void) => void;
+    getMatchSeconds: (callback: (matchtime: MatchTime) => void) => UnsubscribeFunction;
 
     getScoreboardState: () => Promise<ScoreboardState>;
 

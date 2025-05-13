@@ -6,7 +6,8 @@ function App() {
   const [count, setCount] = useState(0)
 
   useEffect(() => {
-    window.electron.getMatchSeconds((seconds) => console.log(seconds));
+    const unsub = window.electron.getMatchSeconds((seconds) => console.log(seconds));
+    return unsub;
   }, [])
 
   return (
