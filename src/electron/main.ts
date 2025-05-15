@@ -1,25 +1,17 @@
-import { app, BrowserWindow } from "electron";
-import path from "path";
-import { ipcMainHandle, isDev } from "./utils/util.js";
-import { getPreloadPath } from "./utils/pathResolver.js";
+import { app} from "electron";
+import { ipcMainHandle} from "./utils/util.js";
 import {
   getConfig,
   getMatchSeconds,
   getScoreboardState,
 } from "./services/stateService.js";
+import { initiateMainWindow } from "./windows/mainWindow.js";
+import { initiateScoreboardWindow } from "./windows/scoreboardWindow.js";
 
 app.on("ready", () => {
-  const mainWindow = new BrowserWindow({
-    webPreferences: {
-      preload: getPreloadPath(),
-    },
-  });
+  const mainWindow = initiateMainWindow();
+  const scoreboardWindow = initiateScoreboardWindow();
 
-  if (isDev()) {
-    mainWindow.loadURL("http://localhost:5123");
-  } else {
-    mainWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
-  }
 
   ipcMainHandle("getScoreboardState", () => {
     return getScoreboardState();
@@ -30,4 +22,5 @@ app.on("ready", () => {
   });
 
   getMatchSeconds(mainWindow);
+  getMatchSeconds(scoreboardWindow);
 });

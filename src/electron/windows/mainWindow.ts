@@ -1,0 +1,36 @@
+import { app, BrowserWindow, screen } from "electron";
+import path from "path";
+import { getPreloadPath } from "../utils/pathResolver.js";
+import { isDev } from "../utils/util.js";
+import { showCloseAppDialog } from "../services/windowService.js";
+
+export function initiateMainWindow(): BrowserWindow {
+  const displays = screen.getAllDisplays();
+  const primaryDisplay = displays[0];
+
+  const mainWindow = new BrowserWindow({
+    autoHideMenuBar: true,
+    icon: path.join(app.getAppPath(), "desktopIcon.png"),
+    x: primaryDisplay.bounds.x,
+    y: primaryDisplay.bounds.y,
+    webPreferences: {
+      preload: getPreloadPath(),
+    },
+  });
+
+  mainWindow.maximize();
+
+  if (isDev()) {
+    mainWindow.loadURL("http://localhost:5123");
+    // Open DevTools in development mode
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
+  }
+
+  mainWindow.on('close', (e) => {
+    showCloseAppDialog(mainWindow, e);
+  });
+
+  return mainWindow;
+}
