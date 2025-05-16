@@ -5,26 +5,30 @@ import { isDev } from "../utils/util.js";
 
 export function initiateScoreboardWindow(): BrowserWindow {
   const displays = screen.getAllDisplays();
-  const initialSecondaryDisplay = (displays.length > 1) ? displays[1] : displays[0];
+  const initialSecondaryDisplay =
+    displays.length > 1 ? displays[1] : displays[0];
 
   const scoreboardWindow = new BrowserWindow({
-    show: (displays.length > 1) ? true : false,
+    //show: displays.length > 1 ? true : false,
     autoHideMenuBar: true,
-    icon: path.join(app.getAppPath(), 'desktopIcon.png'),
+    icon: path.join(app.getAppPath(), "desktopIcon.png"),
     x: initialSecondaryDisplay.bounds.x,
     y: initialSecondaryDisplay.bounds.y,
-    fullscreen: (displays.length > 1) ? true : false,
+    fullscreen: displays.length > 1 ? true : false,
     webPreferences: {
       preload: getPreloadPath(),
     },
   });
 
   if (isDev()) {
-    scoreboardWindow.loadURL("http://localhost:5123");
+    scoreboardWindow.loadURL("http://localhost:5123/#/scoreboard");
     // Open DevTools in development mode
     scoreboardWindow.webContents.openDevTools();
   } else {
-    scoreboardWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
+    const indexPath = path.join(app.getAppPath(), "/dist-react/index.html");
+    scoreboardWindow.loadURL(
+      `file://${indexPath.replace(/\\/g, "/")}#/scoreboard`
+    );
   }
 
   return scoreboardWindow;
