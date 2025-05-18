@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import "./App.css";
+import "./styles/App.css";
 import MainView from "./MainView"
 import ScoreboardView from "./ScoreboardView";
 
