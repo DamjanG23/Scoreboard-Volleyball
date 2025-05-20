@@ -28,7 +28,7 @@ export function initiateMainWindow(): BrowserWindow {
     mainWindow.loadFile(path.join(app.getAppPath(), "/dist-react/index.html"));
   }
 
-  mainWindow.on('close', (e) => {
+  mainWindow.on("close", (e) => {
     showCloseAppDialog(mainWindow, e);
   });
 
