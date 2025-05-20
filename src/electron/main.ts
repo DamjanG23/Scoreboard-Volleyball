@@ -3,11 +3,13 @@ import { getMatchSeconds } from "./services/stateService.js";
 import { initiateMainWindow } from "./windows/mainWindow.js";
 import { initiateScoreboardWindow } from "./windows/scoreboardWindow.js";
 import { setupIPC } from "./ipc/ipcManager.js";
+import { createMenu } from "./windows/menu.js";
 
 app.on("ready", () => {
   const mainWindow = initiateMainWindow();
   const scoreboardWindow = initiateScoreboardWindow();
 
+  createMenu(mainWindow);
   setupIPC();
 
   getMatchSeconds(mainWindow);

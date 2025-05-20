@@ -9,7 +9,7 @@ export function initiateScoreboardWindow(): BrowserWindow {
     displays.length > 1 ? displays[1] : displays[0];
 
   const scoreboardWindow = new BrowserWindow({
-    //show: displays.length > 1 ? true : false,
+    show: displays.length > 1 || isDev(),
     autoHideMenuBar: true,
     icon: path.join(app.getAppPath(), "desktopIcon.png"),
     x: initialSecondaryDisplay.bounds.x,
@@ -22,8 +22,7 @@ export function initiateScoreboardWindow(): BrowserWindow {
 
   if (isDev()) {
     scoreboardWindow.loadURL("http://localhost:5123/#/scoreboard");
-    // Open DevTools in development mode
-    scoreboardWindow.webContents.openDevTools();
+    //scoreboardWindow.webContents.openDevTools();
   } else {
     const indexPath = path.join(app.getAppPath(), "/dist-react/index.html");
     scoreboardWindow.loadURL(
