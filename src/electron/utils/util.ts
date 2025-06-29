@@ -16,5 +16,7 @@ export function ipcWebContentsSend<Key extends keyof EventPayloadMaping>(
   webContents: WebContents,
   payload: EventPayloadMaping[Key]
 ) {
-  webContents.send(key, payload);
+  if (!webContents.isDestroyed()) {
+    webContents.send(key, payload);
+  }
 }

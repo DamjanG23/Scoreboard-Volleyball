@@ -15,6 +15,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
   getConfig: () => {
     return ipcInvoke("getConfig");
   },
+
+  getIsScoreboardOpen: () => {
+    return ipcInvoke("getIsScoreboardOpen");
+  },
 } satisfies Window["electron"]);
 
 function ipcInvoke<Key extends keyof EventPayloadMaping>(

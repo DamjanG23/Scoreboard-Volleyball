@@ -21,3 +21,7 @@ export function showCloseAppDialog(
     e.preventDefault();
   }
 }
+
+export function getIsScoreboardOpen(): boolean {
+  return true;
+}

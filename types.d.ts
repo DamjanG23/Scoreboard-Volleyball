@@ -16,6 +16,8 @@ type EventPayloadMaping = {
   getMatchSeconds: MatchTime;
   getScoreboardState: ScoreboardState;
   getConfig: MatchConfig;
+  getIsScoreboardOpen: boolean;
+  onScoreboardWindowChange: boolean;
 };
 
 type UnsubscribeFunction = () => void;
@@ -31,5 +33,7 @@ interface Window {
     getScoreboardState: () => Promise<ScoreboardState>;
 
     getConfig: () => Promise<MatchConfig>;
+
+    getIsScoreboardOpen: () => Promise<boolean>;
   };
 }
