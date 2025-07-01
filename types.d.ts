@@ -24,6 +24,8 @@ type EventPayloadMaping = {
   closeScoreboardWindow: boolean;
   toggleScoreboardFullscreen: boolean;
   onScoreboardFullscreenChange: boolaean;
+  toggleMainFullscreen: boolean;
+  onMainFullscreenChange: boolaean;
 };
 
 type UnsubscribeFunction = () => void;
@@ -48,6 +50,8 @@ interface Window {
 
     toggleScoreboardFullscreen: () => Promise<boolean>;
 
+    toggleMainFullscreen: () => Promise<boolean>;
+
     onScoreboardWindowClosed: (
       callback: (isClosed: boolean) => void
     ) => UnsubscribeFunction;
@@ -57,6 +61,10 @@ interface Window {
     ) => UnsubscribeFunction;
 
     onScoreboardFullscreenChange: (
+      callback: (isFullscreen: boolean) => void
+    ) => UnsubscribeFunction;
+
+    onMainFullscreenChange: (
       callback: (isFullscreen: boolean) => void
     ) => UnsubscribeFunction;
   };

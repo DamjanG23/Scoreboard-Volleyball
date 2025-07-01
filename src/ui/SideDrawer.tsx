@@ -7,9 +7,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility"; // 👁️ open
 import CloseIcon from "@mui/icons-material/Close";
 
 export function SideDrawer() {
-  const [isMainViewFullScreen, setIsMainViewFullScreen] = useState(false);
   const [scoreboardVisibility, setScoreboardVisibility] = useState(false);
   const [isScoreboardFullScreen, setIsScoreboardFullScreen] = useState(false);
+  const [isMainFullScreen, setIsMainFullScreen] = useState(false);
 
   useEffect(() => {
     window.electron.getIsScoreboardOpen().then(setScoreboardVisibility);
@@ -41,9 +41,15 @@ export function SideDrawer() {
     return unsubscribe;
   }, []);
 
-  function toggleIsMainViewFullScreen() {
-    setIsMainViewFullScreen((isFullScreen) => !isFullScreen);
-  }
+  useEffect(() => {
+    const unsubscribe = window.electron.onMainFullscreenChange(
+      (isFullScreen) => {
+        setIsMainFullScreen(isFullScreen);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
 
   return (
     <Drawer
@@ -77,17 +83,17 @@ export function SideDrawer() {
           isScoreboardFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />
         }
       >
-        FS Scoreboard{" "}
+        FS Scoreboard
       </Button>
 
+      {/* TOGGLE MAIN SCREEN FULLSCREEN*/}
       <Button
         //variant="outlined"
-        //color="primary"
+        color={isMainFullScreen ? "error" : "success"}
         startIcon={
-          isMainViewFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />
+          isMainFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />
         }
-        onClick={toggleIsMainViewFullScreen}
-        //disabled={!isMatchActive}
+        onClick={window.electron.toggleMainFullscreen}
       >
         FS Main Window
       </Button>

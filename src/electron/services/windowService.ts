@@ -60,3 +60,9 @@ export function toggleScoreboardFullscreen(
   scoreboardWindow.setFullScreen(!currentState);
   return !currentState;
 }
+
+export function toggleMainFullscreen(mainWindow: BrowserWindow): boolean {
+  const currentState = mainWindow.isFullScreen();
+  mainWindow.setFullScreen(!currentState);
+  return !currentState;
+}

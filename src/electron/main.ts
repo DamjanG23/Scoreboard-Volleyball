@@ -10,7 +10,7 @@ app.on("ready", () => {
   const scoreboardWindow = initiateScoreboardWindow(mainWindow);
 
   createMenu(mainWindow);
-  setupIPC(scoreboardWindow);
+  setupIPC(mainWindow, scoreboardWindow);
 
   getMatchSeconds(mainWindow);
   getMatchSeconds(scoreboardWindow);
