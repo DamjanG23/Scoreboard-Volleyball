@@ -1,9 +1,12 @@
 import { app, BrowserWindow, screen } from "electron";
 import path from "path";
 import { getPreloadPath } from "../utils/pathResolver.js";
-import { isDev } from "../utils/util.js";
+import { ipcWebContentsSend, isDev } from "../utils/util.js";
+import { showCloseWindowDialog } from "../services/windowService.js";
 
-export function initiateScoreboardWindow(): BrowserWindow {
+export function initiateScoreboardWindow(
+  mainWindow: BrowserWindow
+): BrowserWindow {
   const displays = screen.getAllDisplays();
   const initialSecondaryDisplay =
     displays.length > 1 ? displays[1] : displays[0];
@@ -29,6 +32,26 @@ export function initiateScoreboardWindow(): BrowserWindow {
       `file://${indexPath.replace(/\\/g, "/")}#/scoreboard`
     );
   }
+
+  scoreboardWindow.on("close", (event) => {
+    event.preventDefault();
+    if (showCloseWindowDialog(scoreboardWindow)) {
+      scoreboardWindow.hide();
+      ipcWebContentsSend(
+        "onScoreboardWindowClosed",
+        mainWindow.webContents,
+        true
+      );
+    }
+  });
+
+  scoreboardWindow.on("show", () => {
+    ipcWebContentsSend(
+      "onScoreboardWindowOpened",
+      mainWindow.webContents,
+      true
+    );
+  });
 
   return scoreboardWindow;
 }

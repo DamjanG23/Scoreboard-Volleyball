@@ -18,6 +18,10 @@ type EventPayloadMaping = {
   getConfig: MatchConfig;
   getIsScoreboardOpen: boolean;
   onScoreboardWindowChange: boolean;
+  onScoreboardWindowClosed: boolean;
+  onScoreboardWindowOpened: boolean;
+  showScoreboardWindow: boolean;
+  closeScoreboardWindow: boolean;
 };
 
 type UnsubscribeFunction = () => void;
@@ -35,5 +39,17 @@ interface Window {
     getConfig: () => Promise<MatchConfig>;
 
     getIsScoreboardOpen: () => Promise<boolean>;
+
+    showScoreboardWindow: () => Promise<boolean>;
+
+    closeScoreboardWindow: () => Promise<boolean>;
+
+    onScoreboardWindowClosed: (
+      callback: (isClosed: boolean) => void
+    ) => UnsubscribeFunction;
+
+    onScoreboardWindowOpened: (
+      callback: (isOpened: boolean) => void
+    ) => UnsubscribeFunction;
   };
 }

@@ -19,6 +19,24 @@ electron.contextBridge.exposeInMainWorld("electron", {
   getIsScoreboardOpen: () => {
     return ipcInvoke("getIsScoreboardOpen");
   },
+
+  onScoreboardWindowClosed: (callback) =>
+    ipcOn("onScoreboardWindowClosed", (isClosed) => {
+      callback(isClosed);
+    }),
+
+  showScoreboardWindow: () => {
+    return ipcInvoke("showScoreboardWindow");
+  },
+
+  closeScoreboardWindow: () => {
+    return ipcInvoke("closeScoreboardWindow");
+  },
+
+  onScoreboardWindowOpened: (callback) =>
+    ipcOn("onScoreboardWindowOpened", (isOpened) => {
+      callback(isOpened);
+    }),
 } satisfies Window["electron"]);
 
 function ipcInvoke<Key extends keyof EventPayloadMaping>(

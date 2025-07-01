@@ -6,10 +6,10 @@ import ScoreboardView from "./ScoreboardView";
 
 function App() {
   useEffect(() => {
-    const unsub = window.electron.getMatchSeconds((seconds) =>
+    const unsubscribe = window.electron.getMatchSeconds((seconds) =>
       console.log(seconds)
     );
-    return unsub;
+    return unsubscribe;
   }, []);
 
   return (

@@ -7,10 +7,10 @@ import { createMenu } from "./windows/menu.js";
 
 app.on("ready", () => {
   const mainWindow = initiateMainWindow();
-  const scoreboardWindow = initiateScoreboardWindow();
+  const scoreboardWindow = initiateScoreboardWindow(mainWindow);
 
   createMenu(mainWindow);
-  setupIPC();
+  setupIPC(scoreboardWindow);
 
   getMatchSeconds(mainWindow);
   getMatchSeconds(scoreboardWindow);
