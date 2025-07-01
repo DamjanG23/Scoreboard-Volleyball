@@ -53,5 +53,21 @@ export function initiateScoreboardWindow(
     );
   });
 
+  scoreboardWindow.on("enter-full-screen", () => {
+    ipcWebContentsSend(
+      "onScoreboardFullscreenChange",
+      mainWindow.webContents,
+      true
+    );
+  });
+
+  scoreboardWindow.on("leave-full-screen", () => {
+    ipcWebContentsSend(
+      "onScoreboardFullscreenChange",
+      mainWindow.webContents,
+      false
+    );
+  });
+
   return scoreboardWindow;
 }

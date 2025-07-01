@@ -37,6 +37,15 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcOn("onScoreboardWindowOpened", (isOpened) => {
       callback(isOpened);
     }),
+
+  toggleScoreboardFullscreen: () => {
+    return ipcInvoke("toggleScoreboardFullscreen");
+  },
+
+  onScoreboardFullscreenChange: (callback) =>
+    ipcOn("onScoreboardFullscreenChange", (isFullscreen) => {
+      callback(isFullscreen);
+    }),
 } satisfies Window["electron"]);
 
 function ipcInvoke<Key extends keyof EventPayloadMaping>(

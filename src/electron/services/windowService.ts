@@ -52,3 +52,11 @@ export function closeScoreboardWindow(
   scoreboardWindow.close();
   return true;
 }
+
+export function toggleScoreboardFullscreen(
+  scoreboardWindow: BrowserWindow
+): boolean {
+  const currentState = scoreboardWindow.isFullScreen();
+  scoreboardWindow.setFullScreen(!currentState);
+  return !currentState;
+}

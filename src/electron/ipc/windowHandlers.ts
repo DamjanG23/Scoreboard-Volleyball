@@ -3,6 +3,7 @@ import {
   closeScoreboardWindow,
   getIsScoreboardOpen,
   showScoreboardWindow,
+  toggleScoreboardFullscreen,
 } from "../services/windowService.js";
 import { ipcMainHandle } from "../utils/util.js";
 
@@ -17,5 +18,9 @@ export function setupWindowHandlers(scoreboardWindow: BrowserWindow) {
 
   ipcMainHandle("closeScoreboardWindow", () => {
     return closeScoreboardWindow(scoreboardWindow);
+  });
+
+  ipcMainHandle("toggleScoreboardFullscreen", () => {
+    return toggleScoreboardFullscreen(scoreboardWindow);
   });
 }
