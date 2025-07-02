@@ -1,10 +1,18 @@
 import { SideDrawer } from "./SideDrawer";
 
-export default function MainView() {
+interface MainViewProps {
+  isMatchLoaded: boolean;
+}
+
+export default function MainView({ isMatchLoaded }: MainViewProps) {
   return (
     <div>
-      <SideDrawer />
-      <div>Main Window Content</div>
+      <SideDrawer isMatchLoaded={isMatchLoaded} />
+      <div>
+        {isMatchLoaded
+          ? ""
+          : "///////////////////////////////// Please Load/Start a Match!"}
+      </div>
     </div>
   );
 }

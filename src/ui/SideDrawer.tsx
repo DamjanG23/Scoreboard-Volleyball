@@ -1,15 +1,30 @@
-import { Button, Divider, Drawer } from "@mui/material";
+import {
+  Button,
+  Divider,
+  Drawer,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import VisibilityIcon from "@mui/icons-material/Visibility"; // 👁️ open
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import CloseIcon from "@mui/icons-material/Close";
 
-export function SideDrawer() {
+interface SideDrawerProps {
+  isMatchLoaded: boolean;
+}
+
+export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
   const [scoreboardVisibility, setScoreboardVisibility] = useState(false);
   const [isScoreboardFullScreen, setIsScoreboardFullScreen] = useState(false);
   const [isMainFullScreen, setIsMainFullScreen] = useState(false);
+  const [isNewMatchNameDialogOpen, setIsNewMatchDialogOpen] = useState(false);
+  const [matchName, setMatchName] = useState("");
 
   useEffect(() => {
     window.electron.getIsScoreboardOpen().then(setScoreboardVisibility);
@@ -50,6 +65,12 @@ export function SideDrawer() {
 
     return unsubscribe;
   }, []);
+
+  const handleCreateNewMatch = () => {
+    console.log(`Match with name "${matchName}" was created`);
+    setIsNewMatchDialogOpen(false);
+    setMatchName("");
+  };
 
   return (
     <Drawer
@@ -100,17 +121,46 @@ export function SideDrawer() {
 
       <Divider />
 
-      <Button> Config </Button>
+      <Button disabled={isMatchLoaded ? false : true}> Config </Button>
 
-      <Button> Teams </Button>
+      <Button disabled={isMatchLoaded ? false : true}> Teams </Button>
 
-      <Button> Score </Button>
+      <Button disabled={isMatchLoaded ? false : true}> Score </Button>
 
       <Divider />
 
-      <Button> New Match </Button>
+      <Button onClick={() => setIsNewMatchDialogOpen(true)}> New Match </Button>
 
       <Button> Load Match </Button>
+
+      <Button disabled={isMatchLoaded ? false : true}> Close Match </Button>
+
+      <Dialog
+        open={isNewMatchNameDialogOpen}
+        onClose={() => setIsNewMatchDialogOpen(false)}
+      >
+        <DialogTitle>Name Your Match</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Match Name"
+            fullWidth
+            variant="outlined"
+            value={matchName}
+            onChange={(e) => setMatchName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsNewMatchDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={handleCreateNewMatch}
+            disabled={matchName.trim().length === 0}
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Drawer>
   );
 }
