@@ -9,10 +9,9 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-
-import FullscreenIcon from "@mui/icons-material/Fullscreen";
-import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { ТoggleScoreboardVisibilityButton } from "./sideDrawerComponents/ТoggleScoreboardVisibilityButton";
+import { ToggleScoreboardFullscreenButton } from "./sideDrawerComponents/ToggleScoreboardFullscreenButton";
+import { ToggleMainFullscreenButton } from "./sideDrawerComponents/ToggleMainFullscreenButton";
 
 interface SideDrawerProps {
   isMatchLoaded: boolean;
@@ -20,8 +19,7 @@ interface SideDrawerProps {
 
 export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
   const [scoreboardVisibility, setScoreboardVisibility] = useState(false);
-  const [isScoreboardFullScreen, setIsScoreboardFullScreen] = useState(false);
-  const [isMainFullScreen, setIsMainFullScreen] = useState(false);
+
   const [isNewMatchNameDialogOpen, setIsNewMatchDialogOpen] = useState(false);
   const [matchName, setMatchName] = useState("");
 
@@ -45,26 +43,6 @@ export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
     return unsubscribe;
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = window.electron.onScoreboardFullscreenChange(
-      (isFullScreen) => {
-        setIsScoreboardFullScreen(isFullScreen);
-      }
-    );
-
-    return unsubscribe;
-  }, []);
-
-  useEffect(() => {
-    const unsubscribe = window.electron.onMainFullscreenChange(
-      (isFullScreen) => {
-        setIsMainFullScreen(isFullScreen);
-      }
-    );
-
-    return unsubscribe;
-  }, []);
-
   const handleCreateNewMatch = () => {
     console.log(`Match with name "${matchName}" was created`);
     setIsNewMatchDialogOpen(false);
@@ -83,30 +61,11 @@ export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
         scoreboardVisibility={scoreboardVisibility}
       />
 
-      {/* TOGGLE SCOREBOARD FULLSCREEN*/}
-      <Button
-        //variant="outlined"
-        disabled={scoreboardVisibility ? false : true}
-        color={isScoreboardFullScreen ? "error" : "success"}
-        onClick={window.electron.toggleScoreboardFullscreen}
-        startIcon={
-          isScoreboardFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />
-        }
-      >
-        FS Scoreboard
-      </Button>
+      <ToggleScoreboardFullscreenButton
+        scoreboardVisibility={scoreboardVisibility}
+      />
 
-      {/* TOGGLE MAIN SCREEN FULLSCREEN*/}
-      <Button
-        //variant="outlined"
-        color={isMainFullScreen ? "error" : "success"}
-        startIcon={
-          isMainFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />
-        }
-        onClick={window.electron.toggleMainFullscreen}
-      >
-        FS Main Window
-      </Button>
+      <ToggleMainFullscreenButton />
 
       <Divider />
 
