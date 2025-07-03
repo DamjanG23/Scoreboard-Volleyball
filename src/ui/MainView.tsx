@@ -1,4 +1,4 @@
-import { SideDrawer } from "./SideDrawer";
+import { SideDrawer } from "./components/mainViewComponents/SideDrawer";
 
 interface MainViewProps {
   isMatchLoaded: boolean;

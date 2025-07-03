@@ -12,8 +12,7 @@ import { useEffect, useState } from "react";
 
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import CloseIcon from "@mui/icons-material/Close";
+import { ТoggleScoreboardVisibilityButton } from "./sideDrawerComponents/ТoggleScoreboardVisibilityButton";
 
 interface SideDrawerProps {
   isMatchLoaded: boolean;
@@ -80,19 +79,9 @@ export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
         width: 240,
       }}
     >
-      {/* SHOW/CLOSE SCOREBOARD */}
-      <Button
-        //variant="outlined"
-        color={scoreboardVisibility ? "error" : "success"}
-        onClick={
-          scoreboardVisibility
-            ? window.electron.closeScoreboardWindow
-            : window.electron.showScoreboardWindow
-        }
-        startIcon={scoreboardVisibility ? <CloseIcon /> : <VisibilityIcon />}
-      >
-        {scoreboardVisibility ? "Close Scoreboard" : "Open Scoreboard"}
-      </Button>
+      <ТoggleScoreboardVisibilityButton
+        scoreboardVisibility={scoreboardVisibility}
+      />
 
       {/* TOGGLE SCOREBOARD FULLSCREEN*/}
       <Button

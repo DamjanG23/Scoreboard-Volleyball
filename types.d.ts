@@ -23,17 +23,15 @@ type EventPayloadMaping = {
   showScoreboardWindow: boolean;
   closeScoreboardWindow: boolean;
   toggleScoreboardFullscreen: boolean;
-  onScoreboardFullscreenChange: boolaean;
+  onScoreboardFullscreenChange: boolean;
   toggleMainFullscreen: boolean;
-  onMainFullscreenChange: boolaean;
+  onMainFullscreenChange: boolean;
 };
 
 type UnsubscribeFunction = () => void;
 
 interface Window {
   electron: {
-    test: () => void;
-
     getMatchSeconds: (
       callback: (matchtime: MatchTime) => void
     ) => UnsubscribeFunction;

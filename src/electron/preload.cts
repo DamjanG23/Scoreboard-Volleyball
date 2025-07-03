@@ -1,7 +1,9 @@
 const electron = require("electron");
 
 electron.contextBridge.exposeInMainWorld("electron", {
-  test: () => console.log("Testing preload!"),
+  // ---------------------------------------------------------------------------
+  // SCORE & MATCH DATA
+  // ---------------------------------------------------------------------------
 
   getMatchSeconds: (callback) =>
     ipcOn("getMatchSeconds", (seconds) => {
@@ -15,6 +17,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
   getConfig: () => {
     return ipcInvoke("getConfig");
   },
+
+  // ---------------------------------------------------------------------------
+  // SCOREBOARD WINDOW MANAGEMENT
+  // ---------------------------------------------------------------------------
 
   getIsScoreboardOpen: () => {
     return ipcInvoke("getIsScoreboardOpen");
@@ -46,6 +52,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcOn("onScoreboardFullscreenChange", (isFullscreen) => {
       callback(isFullscreen);
     }),
+
+  // ---------------------------------------------------------------------------
+  // MAIN WINDOW MANAGEMENT
+  // ---------------------------------------------------------------------------
 
   toggleMainFullscreen: () => {
     return ipcInvoke("toggleMainFullscreen");
