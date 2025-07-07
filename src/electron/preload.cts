@@ -18,6 +18,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
     return ipcInvoke("getConfig");
   },
 
+  createNewMatch: (matchName) => {
+    ipcSend("createNewMatch", matchName);
+  },
+
   // ---------------------------------------------------------------------------
   // SCOREBOARD WINDOW MANAGEMENT
   // ---------------------------------------------------------------------------
@@ -80,4 +84,11 @@ function ipcOn<Key extends keyof EventPayloadMaping>(
   const cb = (_: Electron.IpcRendererEvent, payload: any) => callback(payload);
   electron.ipcRenderer.on(key, cb);
   return () => electron.ipcRenderer.off(key, cb);
+}
+
+function ipcSend<Key extends keyof EventPayloadMaping>(
+  key: Key,
+  payload: EventPayloadMaping[Key]
+) {
+  electron.ipcRenderer.send(key, payload);
 }

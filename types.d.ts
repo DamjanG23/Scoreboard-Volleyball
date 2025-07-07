@@ -1,3 +1,7 @@
+type Match = {
+  matchName: string;
+};
+
 type ScoreboardState = {
   scoreboardState: string;
   teamAName: string;
@@ -26,6 +30,7 @@ type EventPayloadMaping = {
   onScoreboardFullscreenChange: boolean;
   toggleMainFullscreen: boolean;
   onMainFullscreenChange: boolean;
+  createNewMatch: string;
 };
 
 type UnsubscribeFunction = () => void;
@@ -49,6 +54,8 @@ interface Window {
     toggleScoreboardFullscreen: () => Promise<boolean>;
 
     toggleMainFullscreen: () => Promise<boolean>;
+
+    createNewMatch: (matchName: string) => void;
 
     onScoreboardWindowClosed: (
       callback: (isClosed: boolean) => void

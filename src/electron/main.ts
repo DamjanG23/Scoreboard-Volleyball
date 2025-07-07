@@ -1,5 +1,5 @@
 import { app } from "electron";
-import { getMatchSeconds } from "./services/stateService.js";
+import { getMatchSeconds } from "./services/dataService.js";
 import { initiateMainWindow } from "./windows/mainWindow.js";
 import { initiateScoreboardWindow } from "./windows/scoreboardWindow.js";
 import { setupIPC } from "./ipc/ipcManager.js";

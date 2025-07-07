@@ -14,6 +14,7 @@ export function NewMatchButton() {
 
   const handleCreateNewMatch = () => {
     console.log(`Match with name "${matchName}" was created`);
+    window.electron.createNewMatch(matchName);
     setIsNewMatchDialogOpen(false);
     setMatchName("");
   };
