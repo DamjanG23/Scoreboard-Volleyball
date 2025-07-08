@@ -7,5 +7,5 @@ export function setupIPC(
   scoreboardWindow: BrowserWindow
 ) {
   setupWindowHandlers(mainWindow, scoreboardWindow);
-  setupDataHandelers();
+  setupDataHandelers(mainWindow);
 }

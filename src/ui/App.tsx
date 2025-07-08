@@ -3,11 +3,22 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import "./styles/App.css";
 import MainView from "./MainView";
 import ScoreboardView from "./ScoreboardView";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  //const [isMatchLoaded, setIsMatchLoaded] = useState(false);
-  const [isMatchLoaded] = useState(false);
+  const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
+  const isMatchLoaded = currentMatch === null ? false : true;
+
+  useEffect(() => {
+    const unsubscribe = window.electron.onMatchCreated((currentMatch) => {
+      console.log(
+        `Match with name "${currentMatch.matchName}" was saved to backend...`
+      );
+      setCurrentMatch(currentMatch);
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <Router>

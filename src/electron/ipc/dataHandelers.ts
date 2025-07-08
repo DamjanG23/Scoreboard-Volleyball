@@ -1,3 +1,4 @@
+import { BrowserWindow } from "electron";
 import {
   createNewMatch,
   getConfig,
@@ -5,7 +6,7 @@ import {
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
-export function setupDataHandelers() {
+export function setupDataHandelers(mainWindow: BrowserWindow) {
   ipcMainHandle("getScoreboardState", () => {
     return getScoreboardState();
   });
@@ -15,6 +16,6 @@ export function setupDataHandelers() {
   });
 
   ipcMainOn("createNewMatch", (matchName) => {
-    return createNewMatch(matchName);
+    createNewMatch(matchName, mainWindow);
   });
 }

@@ -13,7 +13,7 @@ export function NewMatchButton() {
   const [matchName, setMatchName] = useState("");
 
   const handleCreateNewMatch = () => {
-    console.log(`Match with name "${matchName}" was created`);
+    console.log(`Match with name "${matchName}" was requested...`);
     window.electron.createNewMatch(matchName);
     setIsNewMatchDialogOpen(false);
     setMatchName("");

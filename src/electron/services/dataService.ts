@@ -26,10 +26,10 @@ export function getConfig() {
   return { config };
 }
 
-export function createNewMatch(matchName: string): Match {
+export function createNewMatch(matchName: string, window: BrowserWindow) {
   const newMatch: Match = { matchName: matchName };
 
-  // Get the app's data directory (safe place to store files)
+  // Get the app's data directory
   const dataPath = join(app.getPath("userData"), "matches.json");
 
   // Read existing matches
@@ -45,6 +45,7 @@ export function createNewMatch(matchName: string): Match {
   // Save back to file
   writeFileSync(dataPath, JSON.stringify(existingMatches, null, 2));
 
-  console.log("Match saved:", newMatch);
-  return newMatch;
+  console.log("Match saved on back end:", newMatch);
+
+  ipcWebContentsSend("onMatchCreated", window.webContents, newMatch);
 }

@@ -31,6 +31,7 @@ type EventPayloadMaping = {
   toggleMainFullscreen: boolean;
   onMainFullscreenChange: boolean;
   createNewMatch: string;
+  onMatchCreated: Match;
 };
 
 type UnsubscribeFunction = () => void;
@@ -71,6 +72,10 @@ interface Window {
 
     onMainFullscreenChange: (
       callback: (isFullscreen: boolean) => void
+    ) => UnsubscribeFunction;
+
+    onMatchCreated: (
+      callback: (currentMatch: Match) => void
     ) => UnsubscribeFunction;
   };
 }
