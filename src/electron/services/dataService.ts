@@ -3,16 +3,16 @@ import { ipcWebContentsSend } from "../utils/util.js";
 import { join } from "path";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
-const POOLING_INTERVAL = 1000;
+//const POOLING_INTERVAL = 1000;
 
-export function getMatchSeconds(window: BrowserWindow) {
-  let seconds = 0;
+// export function getMatchSeconds(window: BrowserWindow) {
+//   let seconds = 0;
 
-  setInterval(async () => {
-    seconds++;
-    ipcWebContentsSend("getMatchSeconds", window.webContents, { seconds });
-  }, POOLING_INTERVAL);
-}
+//   setInterval(async () => {
+//     seconds++;
+//     ipcWebContentsSend("getMatchSeconds", window.webContents, { seconds });
+//   }, POOLING_INTERVAL);
+// }
 
 export function getScoreboardState() {
   const scoreboardState: string = "scoreboardState 123";

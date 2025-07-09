@@ -1,5 +1,5 @@
 import { app } from "electron";
-import { getMatchSeconds } from "./services/dataService.js";
+//import { getMatchSeconds } from "./services/dataService.js";
 import { initiateMainWindow } from "./windows/mainWindow.js";
 import { initiateScoreboardWindow } from "./windows/scoreboardWindow.js";
 import { setupIPC } from "./ipc/ipcManager.js";
@@ -12,8 +12,8 @@ app.on("ready", () => {
   createMenu(mainWindow);
   setupIPC(mainWindow, scoreboardWindow);
 
-  getMatchSeconds(mainWindow);
-  getMatchSeconds(scoreboardWindow);
+  // getMatchSeconds(mainWindow);
+  // getMatchSeconds(scoreboardWindow);
 });
 
 app.on("window-all-closed", () => {
