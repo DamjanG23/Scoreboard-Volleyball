@@ -4,6 +4,7 @@ import { ТoggleScoreboardVisibilityButton } from "./sideDrawerComponents/Тoggl
 import { ToggleScoreboardFullscreenButton } from "./sideDrawerComponents/ToggleScoreboardFullscreenButton";
 import { ToggleMainFullscreenButton } from "./sideDrawerComponents/ToggleMainFullscreenButton";
 import { NewMatchButton } from "./sideDrawerComponents/NewMatchButton";
+import { ExitMatchButton } from "./sideDrawerComponents/ExitMatchButton";
 
 interface SideDrawerProps {
   isMatchLoaded: boolean;
@@ -68,7 +69,7 @@ export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
 
       <Button> Load Match </Button>
 
-      <Button disabled={isMatchLoaded ? false : true}> Close Match </Button>
+      <ExitMatchButton isMatchLoaded={isMatchLoaded} />
     </Drawer>
   );
 }

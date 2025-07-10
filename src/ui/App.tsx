@@ -10,11 +10,20 @@ function App() {
   const isMatchLoaded = currentMatch === null ? false : true;
 
   useEffect(() => {
-    const unsubscribe = window.electron.onMatchCreated((currentMatch) => {
+    const unsubscribe = window.electron.onCurrentMatchSaved((currentMatch) => {
       console.log(
         `Match with name "${currentMatch.matchName}" was saved to backend...`
       );
       setCurrentMatch(currentMatch);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = window.electron.onCurrentMatchRemoved(() => {
+      console.log(`Current Match was removed...`);
+      setCurrentMatch(null);
     });
 
     return unsubscribe;

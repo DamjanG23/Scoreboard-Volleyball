@@ -1,4 +1,5 @@
 type Match = {
+  id: number;
   matchName: string;
 };
 
@@ -31,7 +32,9 @@ type EventPayloadMaping = {
   toggleMainFullscreen: boolean;
   onMainFullscreenChange: boolean;
   createNewMatch: string;
-  onMatchCreated: Match;
+  onCurrentMatchSaved: Match;
+  removeCurrentMatch: void;
+  onCurrentMatchRemoved: boolean;
 };
 
 type UnsubscribeFunction = () => void;
@@ -58,6 +61,8 @@ interface Window {
 
     createNewMatch: (matchName: string) => void;
 
+    removeCurrentMatch: () => void;
+
     onScoreboardWindowClosed: (
       callback: (isClosed: boolean) => void
     ) => UnsubscribeFunction;
@@ -74,8 +79,12 @@ interface Window {
       callback: (isFullscreen: boolean) => void
     ) => UnsubscribeFunction;
 
-    onMatchCreated: (
+    onCurrentMatchSaved: (
       callback: (currentMatch: Match) => void
+    ) => UnsubscribeFunction;
+
+    onCurrentMatchRemoved: (
+      callback: (isCurrentMatchRemoved: boolean) => void
     ) => UnsubscribeFunction;
   };
 }

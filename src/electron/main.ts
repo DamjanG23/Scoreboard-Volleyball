@@ -11,9 +11,6 @@ app.on("ready", () => {
 
   createMenu(mainWindow);
   setupIPC(mainWindow, scoreboardWindow);
-
-  // getMatchSeconds(mainWindow);
-  // getMatchSeconds(scoreboardWindow);
 });
 
 app.on("window-all-closed", () => {

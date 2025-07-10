@@ -1,18 +1,7 @@
 import { app, BrowserWindow } from "electron";
 import { ipcWebContentsSend } from "../utils/util.js";
 import { join } from "path";
-import { existsSync, readFileSync, writeFileSync } from "fs";
-
-//const POOLING_INTERVAL = 1000;
-
-// export function getMatchSeconds(window: BrowserWindow) {
-//   let seconds = 0;
-
-//   setInterval(async () => {
-//     seconds++;
-//     ipcWebContentsSend("getMatchSeconds", window.webContents, { seconds });
-//   }, POOLING_INTERVAL);
-// }
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 
 export function getScoreboardState() {
   const scoreboardState: string = "scoreboardState 123";
@@ -26,8 +15,11 @@ export function getConfig() {
   return { config };
 }
 
-export function createNewMatch(matchName: string, window: BrowserWindow) {
-  const newMatch: Match = { matchName: matchName };
+export function createNewMatch(matchName: string): Match {
+  const newMatch: Match = {
+    id: Date.now(),
+    matchName: matchName,
+  };
 
   // Get the app's data directory
   const dataPath = join(app.getPath("userData"), "matches.json");
@@ -46,6 +38,28 @@ export function createNewMatch(matchName: string, window: BrowserWindow) {
   writeFileSync(dataPath, JSON.stringify(existingMatches, null, 2));
 
   console.log("Match saved on back end:", newMatch);
+  return newMatch;
+}
 
-  ipcWebContentsSend("onMatchCreated", window.webContents, newMatch);
+export function saveCurrentMatch(match: Match, window: BrowserWindow) {
+  const dataPath = join(app.getPath("userData"), "currentMatch.json");
+  writeFileSync(dataPath, JSON.stringify(match, null, 2));
+  console.log("Current match:", match);
+  ipcWebContentsSend("onCurrentMatchSaved", window.webContents, match);
+}
+
+export function removeCurrentMatch(window: BrowserWindow) {
+  try {
+    const dataPath = join(app.getPath("userData"), "currentMatch.json");
+
+    if (existsSync(dataPath)) {
+      unlinkSync(dataPath);
+      console.log("Current match file removed successfully");
+      ipcWebContentsSend("onCurrentMatchRemoved", window.webContents, true);
+    } else {
+      console.log("Current match file does not exist");
+    }
+  } catch (error) {
+    console.error("Error removing current match file:", error);
+  }
 }

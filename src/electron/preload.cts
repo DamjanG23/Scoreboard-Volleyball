@@ -22,9 +22,18 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("createNewMatch", matchName);
   },
 
-  onMatchCreated: (callback) =>
-    ipcOn("onMatchCreated", (currentMatch) => {
+  onCurrentMatchSaved: (callback) =>
+    ipcOn("onCurrentMatchSaved", (currentMatch) => {
       callback(currentMatch);
+    }),
+
+  removeCurrentMatch: () => {
+    return ipcInvoke("removeCurrentMatch");
+  },
+
+  onCurrentMatchRemoved: (callback) =>
+    ipcOn("onCurrentMatchRemoved", (isCurrentMatchRemoved) => {
+      callback(isCurrentMatchRemoved);
     }),
 
   // ---------------------------------------------------------------------------
