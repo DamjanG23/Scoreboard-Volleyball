@@ -5,12 +5,15 @@ import { ToggleScoreboardFullscreenButton } from "./sideDrawerComponents/ToggleS
 import { ToggleMainFullscreenButton } from "./sideDrawerComponents/ToggleMainFullscreenButton";
 import { NewMatchButton } from "./sideDrawerComponents/NewMatchButton";
 import { ExitMatchButton } from "./sideDrawerComponents/ExitMatchButton";
+import { LoadMatchButton } from "./sideDrawerComponents/LoadMatchButton";
 
 interface SideDrawerProps {
   isMatchLoaded: boolean;
+  open: boolean;
+  onClose: () => void;
 }
 
-export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
+export function SideDrawer({ isMatchLoaded, open, onClose }: SideDrawerProps) {
   const [scoreboardVisibility, setScoreboardVisibility] = useState(false);
 
   useEffect(() => {
@@ -35,10 +38,14 @@ export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
 
   return (
     <Drawer
-      variant="permanent"
+      open={open}
+      onClose={onClose}
       anchor="left"
       sx={{
         width: 240,
+        "& .MuiDrawer-paper": {
+          width: 240,
+        },
       }}
     >
       <ТoggleScoreboardVisibilityButton
@@ -67,7 +74,7 @@ export function SideDrawer({ isMatchLoaded }: SideDrawerProps) {
 
       <NewMatchButton />
 
-      <Button> Load Match </Button>
+      <LoadMatchButton />
 
       <ExitMatchButton isMatchLoaded={isMatchLoaded} />
     </Drawer>

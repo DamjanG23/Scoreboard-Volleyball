@@ -63,3 +63,39 @@ export function removeCurrentMatch(window: BrowserWindow) {
     console.error("Error removing current match file:", error);
   }
 }
+
+//TODO: implement this!!!
+export function getMatches(): Match[] {
+  const matchList: Match[] = [
+    { id: 1, matchName: "1" },
+    { id: 2, matchName: "2" },
+    { id: 3, matchName: "3" },
+    { id: 4, matchName: "4" },
+    { id: 5, matchName: "5" },
+    { id: 6, matchName: "6" },
+    { id: 7, matchName: "7" },
+    { id: 8, matchName: "8" },
+    { id: 9, matchName: "9" },
+    { id: 10, matchName: "10" },
+    { id: 11, matchName: "11" },
+    { id: 12, matchName: "12" },
+    { id: 13, matchName: "13" },
+    { id: 14, matchName: "14" },
+    { id: 15, matchName: "15" },
+    { id: 16, matchName: "16" },
+    { id: 17, matchName: "17" },
+    { id: 18, matchName: "18" },
+    { id: 19, matchName: "19" },
+  ];
+  return matchList;
+}
+
+//TODO: implement this!!!
+export function getMatchById(thisId: number): Match {
+  const matchList: Match = { id: thisId, matchName: "Dame" };
+  return matchList;
+}
+
+//TODO: implement this!!!
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function deleteMatchById(thisId: number): void {}

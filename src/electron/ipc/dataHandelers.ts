@@ -1,7 +1,10 @@
 import { BrowserWindow } from "electron";
 import {
   createNewMatch,
+  deleteMatchById,
   getConfig,
+  getMatchById,
+  getMatches,
   getScoreboardState,
   removeCurrentMatch,
   saveCurrentMatch,
@@ -17,6 +20,10 @@ export function setupDataHandelers(mainWindow: BrowserWindow) {
     return getConfig();
   });
 
+  ipcMainHandle("getMatches", () => {
+    return getMatches();
+  });
+
   ipcMainOn("createNewMatch", (matchName) => {
     const newMatch = createNewMatch(matchName);
     saveCurrentMatch(newMatch, mainWindow);
@@ -24,5 +31,14 @@ export function setupDataHandelers(mainWindow: BrowserWindow) {
 
   ipcMainHandle("removeCurrentMatch", () => {
     return removeCurrentMatch(mainWindow);
+  });
+
+  ipcMainOn("loadMatch", (id) => {
+    const loadedMatch = getMatchById(id);
+    saveCurrentMatch(loadedMatch, mainWindow);
+  });
+
+  ipcMainOn("deleteMatch", (id) => {
+    deleteMatchById(id);
   });
 }

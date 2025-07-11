@@ -36,6 +36,18 @@ electron.contextBridge.exposeInMainWorld("electron", {
       callback(isCurrentMatchRemoved);
     }),
 
+  getMatches: () => {
+    return ipcInvoke("getMatches");
+  },
+
+  loadMatch: (id) => {
+    ipcSend("loadMatch", id);
+  },
+
+  deleteMatch: (id) => {
+    ipcSend("deleteMatch", id);
+  },
+
   // ---------------------------------------------------------------------------
   // SCOREBOARD WINDOW MANAGEMENT
   // ---------------------------------------------------------------------------

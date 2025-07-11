@@ -35,6 +35,9 @@ type EventPayloadMaping = {
   onCurrentMatchSaved: Match;
   removeCurrentMatch: void;
   onCurrentMatchRemoved: boolean;
+  getMatches: Match[];
+  loadMatch: number;
+  deleteMatch: number;
 };
 
 type UnsubscribeFunction = () => void;
@@ -62,6 +65,12 @@ interface Window {
     createNewMatch: (matchName: string) => void;
 
     removeCurrentMatch: () => void;
+
+    getMatches: () => Promise<Match[]>;
+
+    loadMatch: (id: number) => void;
+
+    deleteMatch: (id: number) => void;
 
     onScoreboardWindowClosed: (
       callback: (isClosed: boolean) => void
