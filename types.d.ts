@@ -39,11 +39,11 @@ type Player = {
   name: string;
 };
 
-// ----- ----- ----- ----- ----- ENUMS ----- ----- ----- ----- ----- //
+// ---------- ---------- ENUMS ---------- ---------- //
 
 type SelectedDataView = "CONFIG" | "TEAMS" | "SCORE";
 
-// ----- ----- ----- ----- ----- FUNCTIONS ----- ----- ----- ----- ----- //
+// ---------- ---------- FUNCTIONS ---------- ---------- //
 
 type EventPayloadMaping = {
   getMatchSeconds: MatchTime;
@@ -66,12 +66,17 @@ type EventPayloadMaping = {
   getMatches: Match[];
   loadMatch: number;
   deleteMatch: number;
+  getTeams: Team[];
+  saveTeam: Team;
+  deleteTeam: string;
 };
 
 type UnsubscribeFunction = () => void;
 
 interface Window {
   electron: {
+    // ---------- ---------- DONT NEED I THINK ---------- ---------- //
+
     getMatchSeconds: (
       callback: (matchtime: MatchTime) => void
     ) => UnsubscribeFunction;
@@ -80,6 +85,7 @@ interface Window {
 
     getConfig: () => Promise<MatchConfig>;
 
+    // ---------- ---------- WINDOW ---------- ---------- //
     getIsScoreboardOpen: () => Promise<boolean>;
 
     showScoreboardWindow: () => Promise<boolean>;
@@ -89,16 +95,6 @@ interface Window {
     toggleScoreboardFullscreen: () => Promise<boolean>;
 
     toggleMainFullscreen: () => Promise<boolean>;
-
-    createNewMatch: (matchName: string) => void;
-
-    removeCurrentMatch: () => void;
-
-    getMatches: () => Promise<Match[]>;
-
-    loadMatch: (id: number) => void;
-
-    deleteMatch: (id: number) => void;
 
     onScoreboardWindowClosed: (
       callback: (isClosed: boolean) => void
@@ -116,6 +112,18 @@ interface Window {
       callback: (isFullscreen: boolean) => void
     ) => UnsubscribeFunction;
 
+    // ---------- ---------- MATCH ---------- ---------- //
+
+    createNewMatch: (matchName: string) => void;
+
+    removeCurrentMatch: () => void;
+
+    getMatches: () => Promise<Match[]>;
+
+    loadMatch: (id: number) => void;
+
+    deleteMatch: (id: number) => void;
+
     onCurrentMatchSaved: (
       callback: (currentMatch: Match) => void
     ) => UnsubscribeFunction;
@@ -123,5 +131,13 @@ interface Window {
     onCurrentMatchRemoved: (
       callback: (isCurrentMatchRemoved: boolean) => void
     ) => UnsubscribeFunction;
+
+    // ---------- ---------- TEAMS ---------- ---------- //
+
+    getTeams: () => Promise<Team[]>;
+
+    saveTeam: (team: Team) => void;
+
+    deleteTeam: (teamName: string) => void;
   };
 }

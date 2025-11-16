@@ -16,25 +16,22 @@ export function Teams({ matchTeams }: TeamsProps) {
         p: 2,
       }}
     >
-      {/* LEFT SIDE — HOME TEAM */}
       <Box sx={{ flex: 1 }}>
         <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
           <Typography variant="h5" gutterBottom sx={{ textAlign: "center" }}>
             HOME TEAM
           </Typography>
           <Divider sx={{ mb: 2 }} />
-          <TeamsInput team={matchTeams?.teamA} />
+          <TeamsInput team={matchTeams?.teamA} isTeamHome={true} />
         </Paper>
       </Box>
-
-      {/* RIGHT SIDE — AWAY TEAM */}
       <Box sx={{ flex: 1 }}>
         <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
           <Typography variant="h5" gutterBottom sx={{ textAlign: "center" }}>
             AWAY TEAM
           </Typography>
           <Divider sx={{ mb: 2 }} />
-          <TeamsInput team={matchTeams?.teamB} />
+          <TeamsInput team={matchTeams?.teamB} isTeamHome={false} />
         </Paper>
       </Box>
     </Box>

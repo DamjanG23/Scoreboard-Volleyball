@@ -136,3 +136,74 @@ export function deleteMatchById(thisId: number): void {
     console.error("Error deleting match:", error);
   }
 }
+
+// ---------- ---------- TEAMS ---------- ---------- //
+
+export function saveTeam(team: Team): void {
+  const dataPath = join(app.getPath("userData"), "teams.json");
+
+  let existingTeams: Team[] = [];
+  if (existsSync(dataPath)) {
+    const data = readFileSync(dataPath, "utf8");
+    existingTeams = JSON.parse(data);
+  }
+
+  // Check if a team with the same name already exists
+  const existingIndex = existingTeams.findIndex((t) => t.name === team.name);
+
+  if (existingIndex !== -1) {
+    // Overwrite existing team
+    existingTeams[existingIndex] = team;
+    console.log(`Team "${team.name}" updated.`);
+  } else {
+    // Add new team
+    existingTeams.push(team);
+    console.log(`Team "${team.name}" saved.`);
+  }
+
+  writeFileSync(dataPath, JSON.stringify(existingTeams, null, 2));
+}
+
+export function getTeams(): Team[] {
+  const dataPath = join(app.getPath("userData"), "teams.json");
+
+  if (!existsSync(dataPath)) {
+    return [];
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8").trim();
+
+    if (!data) {
+      return [];
+    }
+
+    const teams: Team[] = JSON.parse(data);
+    return teams;
+  } catch (error) {
+    console.error("Error loading teams:", error);
+    return [];
+  }
+}
+
+export function deleteTeamByName(teamName: string): void {
+  const dataPath = join(app.getPath("userData"), "teams.json");
+
+  if (!existsSync(dataPath)) {
+    console.log("No teams file found — nothing to delete.");
+    return;
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8");
+    const teams: Team[] = JSON.parse(data);
+
+    const updatedTeams = teams.filter((team) => team.name !== teamName);
+
+    writeFileSync(dataPath, JSON.stringify(updatedTeams, null, 2));
+
+    console.log(`Team "${teamName}" deleted.`);
+  } catch (error) {
+    console.error("Error deleting team:", error);
+  }
+}

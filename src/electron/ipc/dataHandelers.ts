@@ -8,6 +8,9 @@ import {
   getScoreboardState,
   removeCurrentMatch,
   saveCurrentMatch,
+  saveTeam,
+  getTeams,
+  deleteTeamByName,
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -19,6 +22,8 @@ export function setupDataHandelers(mainWindow: BrowserWindow) {
   ipcMainHandle("getConfig", () => {
     return getConfig();
   });
+
+  // ---------- ---------- MATCHES ---------- ---------- //
 
   ipcMainHandle("getMatches", () => {
     return getMatches();
@@ -40,5 +45,18 @@ export function setupDataHandelers(mainWindow: BrowserWindow) {
 
   ipcMainOn("deleteMatch", (id) => {
     deleteMatchById(id);
+  });
+
+  // ---------- ---------- TEAMS ---------- ---------- //
+  ipcMainHandle("getTeams", () => {
+    return getTeams();
+  });
+
+  ipcMainOn("saveTeam", (team) => {
+    saveTeam(team);
+  });
+
+  ipcMainOn("deleteTeam", (teamName) => {
+    deleteTeamByName(teamName);
   });
 }

@@ -1,9 +1,7 @@
 const electron = require("electron");
 
 electron.contextBridge.exposeInMainWorld("electron", {
-  // ---------------------------------------------------------------------------
-  // SCORE & MATCH DATA
-  // ---------------------------------------------------------------------------
+  // ---------- ---------- SCORE & MATCH DATA ---------- ---------- //
 
   getMatchSeconds: (callback) =>
     ipcOn("getMatchSeconds", (seconds) => {
@@ -48,9 +46,21 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("deleteMatch", id);
   },
 
-  // ---------------------------------------------------------------------------
-  // SCOREBOARD WINDOW MANAGEMENT
-  // ---------------------------------------------------------------------------
+  // ---------- ---------- TEAM ---------- ---------- //
+
+  getTeams: () => {
+    return ipcInvoke("getTeams");
+  },
+
+  saveTeam: (team) => {
+    ipcSend("saveTeam", team);
+  },
+
+  deleteTeam: (teamName) => {
+    ipcSend("deleteTeam", teamName);
+  },
+
+  // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {
     return ipcInvoke("getIsScoreboardOpen");
@@ -83,9 +93,7 @@ electron.contextBridge.exposeInMainWorld("electron", {
       callback(isFullscreen);
     }),
 
-  // ---------------------------------------------------------------------------
-  // MAIN WINDOW MANAGEMENT
-  // ---------------------------------------------------------------------------
+  // ---------- ---------- MAIN WINDOW MANAGEMENT ---------- ---------- //
 
   toggleMainFullscreen: () => {
     return ipcInvoke("toggleMainFullscreen");

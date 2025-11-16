@@ -8,13 +8,15 @@ import { TeamLogoPicker } from "./TeamLogoPicker";
 import { NewTeamDialog } from "./NewTeamDialog";
 import { LoadTeamDialog } from "./LoadTeamDialog";
 import { DeleteTeamDialog } from "./DeleteTeamDialog";
-import { ensure14Players, mockSavedTeams } from "./utils";
+import { ensure14Players } from "./utils";
 
 interface TeamsInputProps {
   team: Team | undefined;
+  isTeamHome: boolean;
 }
 
-export function TeamsInput({ team }: TeamsInputProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
   const [formTeam, setFormTeam] = useState<Team>(() => ({
     name: team?.name ?? "",
     coach: team?.coach ?? "",
@@ -66,9 +68,13 @@ export function TeamsInput({ team }: TeamsInputProps) {
   }, [isLoadTeamDialogOpen]);
 
   const loadSavedTeams = async () => {
-    // TODO: Replace with actual backend call
-    // Example: const teams = await window.electron.getSavedTeams();
-    setSavedTeams(mockSavedTeams);
+    try {
+      const teams = await window.electron.getTeams();
+      setSavedTeams(teams);
+    } catch (error) {
+      console.error("Failed to load teams:", error);
+      setSavedTeams([]);
+    }
   };
 
   const handleEditSaveClick = () => {
@@ -78,7 +84,7 @@ export function TeamsInput({ team }: TeamsInputProps) {
     } else {
       setIsEditing(false);
       setBackupTeam(null);
-      //TODO: implement a save to back end
+      window.electron.saveTeam(formTeam);
       console.log("Saving team:", formTeam);
     }
   };
@@ -136,10 +142,9 @@ export function TeamsInput({ team }: TeamsInputProps) {
   const handleConfirmDelete = async () => {
     if (teamToDelete) {
       console.log(`Deleting team: "${teamToDelete.name}"`);
-      // TODO: Replace with actual backend call
-      // Example: await window.electron.deleteTeam(teamToDelete.id);
+      window.electron.deleteTeam(teamToDelete.name);
       // Refresh the teams list after deletion
-      loadSavedTeams();
+      await loadSavedTeams();
     }
     setIsDeleteConfirmDialogOpen(false);
     setTeamToDelete(null);
