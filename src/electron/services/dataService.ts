@@ -64,38 +64,75 @@ export function removeCurrentMatch(window: BrowserWindow) {
   }
 }
 
-//TODO: implement this!!!
 export function getMatches(): Match[] {
-  const matchList: Match[] = [
-    { id: 1, matchName: "1" },
-    { id: 2, matchName: "2" },
-    { id: 3, matchName: "3" },
-    { id: 4, matchName: "4" },
-    { id: 5, matchName: "5" },
-    { id: 6, matchName: "6" },
-    { id: 7, matchName: "7" },
-    { id: 8, matchName: "8" },
-    { id: 9, matchName: "9" },
-    { id: 10, matchName: "10" },
-    { id: 11, matchName: "11" },
-    { id: 12, matchName: "12" },
-    { id: 13, matchName: "13" },
-    { id: 14, matchName: "14" },
-    { id: 15, matchName: "15" },
-    { id: 16, matchName: "16" },
-    { id: 17, matchName: "17" },
-    { id: 18, matchName: "18" },
-    { id: 19, matchName: "19" },
-  ];
-  return matchList;
+  const dataPath = join(app.getPath("userData"), "matches.json");
+
+  if (!existsSync(dataPath)) {
+    return [];
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8").trim();
+
+    if (!data) {
+      return [];
+    }
+
+    const matches: Match[] = JSON.parse(data);
+    return matches;
+  } catch (error) {
+    console.error("Error loading matches:", error);
+    return [];
+  }
 }
 
-//TODO: implement this!!!
 export function getMatchById(thisId: number): Match {
-  const matchList: Match = { id: thisId, matchName: "Dame" };
-  return matchList;
+  const dataPath = join(app.getPath("userData"), "matches.json");
+
+  if (!existsSync(dataPath)) {
+    throw new Error("matches.json does not exist");
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8").trim();
+
+    if (!data) {
+      throw new Error("matches.json is empty");
+    }
+
+    const matches: Match[] = JSON.parse(data);
+
+    const match = matches.find((m) => m.id === thisId);
+
+    if (!match) {
+      throw new Error(`Match with id ${thisId} not found`);
+    }
+
+    return match;
+  } catch (error) {
+    console.error("Error in getMatchById:", error);
+    throw error; // rethrow so caller can handle it
+  }
 }
 
-//TODO: implement this!!!
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function deleteMatchById(thisId: number): void {}
+export function deleteMatchById(thisId: number): void {
+  const dataPath = join(app.getPath("userData"), "matches.json");
+
+  if (!existsSync(dataPath)) {
+    console.log("No matches file found — nothing to delete.");
+    return;
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8");
+    const matches: Match[] = JSON.parse(data);
+
+    const updatedMatches = matches.filter((match) => match.id !== thisId);
+
+    writeFileSync(dataPath, JSON.stringify(updatedMatches, null, 2));
+
+    console.log(`Match with id ${thisId} deleted.`);
+  } catch (error) {
+    console.error("Error deleting match:", error);
+  }
+}
