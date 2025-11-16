@@ -21,20 +21,16 @@ export function createNewMatch(matchName: string): Match {
     matchName: matchName,
   };
 
-  // Get the app's data directory
   const dataPath = join(app.getPath("userData"), "matches.json");
 
-  // Read existing matches
   let existingMatches: Match[] = [];
   if (existsSync(dataPath)) {
     const data = readFileSync(dataPath, "utf8");
     existingMatches = JSON.parse(data);
   }
 
-  // Add new match
   existingMatches.push(newMatch);
 
-  // Save back to file
   writeFileSync(dataPath, JSON.stringify(existingMatches, null, 2));
 
   console.log("Match saved on back end:", newMatch);

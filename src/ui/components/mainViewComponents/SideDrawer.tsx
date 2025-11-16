@@ -11,9 +11,15 @@ interface SideDrawerProps {
   isMatchLoaded: boolean;
   open: boolean;
   onClose: () => void;
+  setSelectedDataView: React.Dispatch<React.SetStateAction<SelectedDataView>>;
 }
 
-export function SideDrawer({ isMatchLoaded, open, onClose }: SideDrawerProps) {
+export function SideDrawer({
+  isMatchLoaded,
+  open,
+  onClose,
+  setSelectedDataView,
+}: SideDrawerProps) {
   const [scoreboardVisibility, setScoreboardVisibility] = useState(false);
 
   useEffect(() => {
@@ -60,13 +66,40 @@ export function SideDrawer({ isMatchLoaded, open, onClose }: SideDrawerProps) {
 
       <Divider />
 
-      {/*--------------- Implement these buttons -----------------*/}
+      {/*--------------- DataViewButons -----------------*/}
 
-      <Button disabled={isMatchLoaded ? false : true}> Config </Button>
+      <Button
+        disabled={isMatchLoaded ? false : true}
+        onClick={() => {
+          setSelectedDataView("CONFIG");
+          onClose();
+        }}
+      >
+        {" "}
+        Config{" "}
+      </Button>
 
-      <Button disabled={isMatchLoaded ? false : true}> Teams </Button>
+      <Button
+        disabled={isMatchLoaded ? false : true}
+        onClick={() => {
+          setSelectedDataView("TEAMS");
+          onClose();
+        }}
+      >
+        {" "}
+        Teams{" "}
+      </Button>
 
-      <Button disabled={isMatchLoaded ? false : true}> Score </Button>
+      <Button
+        disabled={isMatchLoaded ? false : true}
+        onClick={() => {
+          setSelectedDataView("SCORE");
+          onClose();
+        }}
+      >
+        {" "}
+        Score{" "}
+      </Button>
 
       {/*----------------------------------------------------------*/}
 

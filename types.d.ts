@@ -17,6 +17,12 @@ type MatchTime = {
   seconds: number;
 };
 
+// ----- ----- ----- ----- ----- ENUMS ----- ----- ----- ----- ----- //
+
+type SelectedDataView = "CONFIG" | "TEAMS" | "SCORE";
+
+// ----- ----- ----- ----- ----- FUNCTIONS ----- ----- ----- ----- ----- //
+
 type EventPayloadMaping = {
   getMatchSeconds: MatchTime;
   getScoreboardState: ScoreboardState;
