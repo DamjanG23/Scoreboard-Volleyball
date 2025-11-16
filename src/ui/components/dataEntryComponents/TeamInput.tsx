@@ -1,4 +1,30 @@
 import { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  Paper,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  ListItemSecondaryAction,
+} from "@mui/material";
+import {
+  Edit,
+  Save,
+  Download,
+  Close,
+  CloudUpload,
+  Delete,
+} from "@mui/icons-material";
 
 interface TeamsInputProps {
   team: Team | undefined;
@@ -12,6 +38,40 @@ const ensure14Players = (players?: Player[]): Player[] => {
   return base.slice(0, 14);
 };
 
+// TODO: Replace with actual saved teams from backend
+const mockSavedTeams: Team[] = [
+  {
+    name: "Team Alpha",
+    coach: "Coach Smith",
+    logoPath: "",
+    color: "#ff5722",
+    players: ensure14Players([
+      { number: 1, name: "John Doe" },
+      { number: 2, name: "Jane Smith" },
+    ]),
+  },
+  {
+    name: "Team Beta",
+    coach: "Coach Johnson",
+    logoPath: "",
+    color: "#2196f3",
+    players: ensure14Players([
+      { number: 1, name: "Alice Brown" },
+      { number: 2, name: "Bob Wilson" },
+    ]),
+  },
+  {
+    name: "Team Gamma",
+    coach: "Coach Williams",
+    logoPath: "",
+    color: "#4caf50",
+    players: ensure14Players([
+      { number: 1, name: "Charlie Davis" },
+      { number: 2, name: "Diana Martinez" },
+    ]),
+  },
+];
+
 export function TeamsInput({ team }: TeamsInputProps) {
   const [formTeam, setFormTeam] = useState<Team>(() => ({
     name: team?.name ?? "",
@@ -23,6 +83,11 @@ export function TeamsInput({ team }: TeamsInputProps) {
 
   const [isEditing, setIsEditing] = useState(false);
   const [backupTeam, setBackupTeam] = useState<Team | null>(null);
+  const [isLoadTeamDialogOpen, setIsLoadTeamDialogOpen] = useState(false);
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] =
+    useState(false);
+  const [savedTeams, setSavedTeams] = useState<Team[]>([]);
+  const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
 
   useEffect(() => {
     if (!isEditing) {
@@ -46,6 +111,19 @@ export function TeamsInput({ team }: TeamsInputProps) {
     }
   }, [team, isEditing]);
 
+  // Load saved teams when dialog opens
+  useEffect(() => {
+    if (isLoadTeamDialogOpen) {
+      loadSavedTeams();
+    }
+  }, [isLoadTeamDialogOpen]);
+
+  const loadSavedTeams = async () => {
+    // TODO: Replace with actual backend call
+    // Example: const teams = await window.electron.getSavedTeams();
+    setSavedTeams(mockSavedTeams);
+  };
+
   const handleEditSaveClick = () => {
     if (!isEditing) {
       setBackupTeam(formTeam);
@@ -53,6 +131,7 @@ export function TeamsInput({ team }: TeamsInputProps) {
     } else {
       setIsEditing(false);
       setBackupTeam(null);
+      //TODO: implement a save to back end
       console.log("Saving team:", formTeam);
     }
   };
@@ -65,195 +144,317 @@ export function TeamsInput({ team }: TeamsInputProps) {
     setBackupTeam(null);
   };
 
+  const handleLoadTeam = (selectedTeam: Team) => {
+    console.log(`Loading team: "${selectedTeam.name}"`);
+    // TODO: Integrate with backend if needed
+    setFormTeam(selectedTeam);
+    setIsLoadTeamDialogOpen(false);
+  };
+
+  const handleDeleteClick = (selectedTeam: Team) => {
+    setTeamToDelete(selectedTeam);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (teamToDelete) {
+      console.log(`Deleting team: "${teamToDelete.name}"`);
+      // TODO: Replace with actual backend call
+      // Example: await window.electron.deleteTeam(teamToDelete.id);
+      // Refresh the teams list after deletion
+      loadSavedTeams();
+    }
+    setIsDeleteConfirmDialogOpen(false);
+    setTeamToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteConfirmDialogOpen(false);
+    setTeamToDelete(null);
+  };
+
   return (
-    <div style={{ textAlign: "center", marginTop: "10px" }}>
+    <Box sx={{ textAlign: "center", mt: 2 }}>
       {/* BUTTONS */}
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          marginBottom: "20px",
-          justifyContent: "center",
-        }}
-      >
-        <button onClick={handleEditSaveClick}>
+      <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 3 }}>
+        <Button
+          variant={isEditing ? "contained" : "outlined"}
+          startIcon={isEditing ? <Save /> : <Edit />}
+          onClick={handleEditSaveClick}
+        >
           {isEditing ? "Save" : "Edit"}
-        </button>
-        <button onClick={() => console.log("Load clicked")}>Load</button>
-        <button onClick={handleCancelClick}>X</button>
-      </div>
-
-      {/* TEAM NAME */}
-      <div style={{ marginBottom: "10px" }}>
-        <label>
-          Team Name:{" "}
-          <input
-            type="text"
-            value={formTeam.name}
-            disabled={!isEditing}
-            style={{ width: "200px" }}
-            onChange={(e) =>
-              setFormTeam((prev) => ({ ...prev, name: e.target.value }))
-            }
-          />
-        </label>
-      </div>
-
-      {/* COACH */}
-      <div style={{ marginBottom: "10px" }}>
-        <label>
-          Coach:{" "}
-          <input
-            type="text"
-            value={formTeam.coach}
-            disabled={!isEditing}
-            style={{ width: "200px" }}
-            onChange={(e) =>
-              setFormTeam((prev) => ({ ...prev, coach: e.target.value }))
-            }
-          />
-        </label>
-      </div>
-
-      {/* 14 PLAYERS */}
-      <div style={{ marginTop: "20px" }}>
-        <strong>Players:</strong>
-
-        {formTeam.players.map((player, index) => (
-          <div
-            key={index}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "10px",
-              marginTop: "5px",
-            }}
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<Download />}
+          onClick={() => setIsLoadTeamDialogOpen(true)}
+        >
+          Load
+        </Button>
+        {isEditing && (
+          <IconButton
+            color="error"
+            onClick={handleCancelClick}
+            sx={{ border: 1, borderColor: "error.main" }}
           >
-            {/* NUMBER */}
-            <input
-              type="number"
-              min={1}
-              value={player.number}
-              disabled={!isEditing}
-              style={{ width: "60px" }}
-              onChange={(e) => {
-                const num = parseInt(e.target.value || "0", 10);
-                setFormTeam((prev) => {
-                  const players = [...prev.players];
-                  players[index] = { ...players[index], number: num };
-                  return { ...prev, players };
-                });
-              }}
-            />
+            <Close />
+          </IconButton>
+        )}
+      </Stack>
 
-            {/* NAME */}
-            <input
-              type="text"
-              value={player.name}
-              placeholder={`Player ${index + 1} name`}
-              disabled={!isEditing}
-              style={{ width: "200px" }}
-              onChange={(e) =>
-                setFormTeam((prev) => {
-                  const players = [...prev.players];
-                  players[index] = { ...players[index], name: e.target.value };
-                  return { ...prev, players };
-                })
-              }
-            />
-          </div>
-        ))}
-      </div>
+      {/* TEAM NAME & COACH */}
+      <Stack spacing={2} sx={{ mb: 3, maxWidth: 400, mx: "auto" }}>
+        <TextField
+          label="Team Name"
+          variant="outlined"
+          fullWidth
+          value={formTeam.name}
+          disabled={!isEditing}
+          onChange={(e) =>
+            setFormTeam((prev) => ({ ...prev, name: e.target.value }))
+          }
+        />
+
+        <TextField
+          label="Coach"
+          variant="outlined"
+          fullWidth
+          value={formTeam.coach}
+          disabled={!isEditing}
+          onChange={(e) =>
+            setFormTeam((prev) => ({ ...prev, coach: e.target.value }))
+          }
+        />
+      </Stack>
+
+      {/* PLAYERS */}
+      <Box sx={{ mt: 3 }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          Players
+        </Typography>
+        <Paper
+          elevation={1}
+          sx={{
+            p: 2,
+            maxWidth: 500,
+            mx: "auto",
+            maxHeight: 400,
+            overflow: "auto",
+          }}
+        >
+          <Stack spacing={1}>
+            {formTeam.players.map((player, index) => (
+              <Stack
+                key={index}
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <TextField
+                  type="number"
+                  inputProps={{ min: 1 }}
+                  value={player.number}
+                  disabled={!isEditing}
+                  sx={{ width: 80 }}
+                  onChange={(e) => {
+                    const num = parseInt(e.target.value || "0", 10);
+                    setFormTeam((prev) => {
+                      const players = [...prev.players];
+                      players[index] = { ...players[index], number: num };
+                      return { ...prev, players };
+                    });
+                  }}
+                  size="small"
+                />
+
+                <TextField
+                  fullWidth
+                  placeholder={`Player ${index + 1} name`}
+                  value={player.name}
+                  disabled={!isEditing}
+                  onChange={(e) =>
+                    setFormTeam((prev) => {
+                      const players = [...prev.players];
+                      players[index] = {
+                        ...players[index],
+                        name: e.target.value,
+                      };
+                      return { ...prev, players };
+                    })
+                  }
+                  size="small"
+                />
+              </Stack>
+            ))}
+          </Stack>
+        </Paper>
+      </Box>
 
       {/* COLOR + LOGO SECTION */}
-      <div
-        style={{
-          marginTop: "30px",
-          display: "flex",
-          justifyContent: "center",
-          gap: "40px",
-        }}
+      <Stack
+        direction="row"
+        spacing={4}
+        justifyContent="center"
+        sx={{ mt: 4, flexWrap: "wrap" }}
       >
         {/* COLOR PICKER + PREVIEW */}
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              marginBottom: "10px",
-              marginInline: "auto",
+        <Box sx={{ textAlign: "center" }}>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            Team Color
+          </Typography>
+          <Paper
+            elevation={2}
+            onClick={() => {
+              if (isEditing) {
+                document.getElementById("color-picker-input")?.click();
+              }
+            }}
+            sx={{
+              width: 150,
+              height: 150,
+              mx: "auto",
               backgroundColor: formTeam.color || "#ffffff",
+              cursor: isEditing ? "pointer" : "default",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              "&:hover": isEditing
+                ? {
+                    transform: "scale(1.05)",
+                    boxShadow: 6,
+                  }
+                : {},
             }}
           />
-          <div>
-            <label>
-              Color:{" "}
-              <input
-                type="color"
-                disabled={!isEditing}
-                value={formTeam.color}
-                onChange={(e) =>
-                  setFormTeam((prev) => ({ ...prev, color: e.target.value }))
-                }
-              />
-            </label>
-          </div>
-        </div>
+          <input
+            id="color-picker-input"
+            type="color"
+            disabled={!isEditing}
+            value={formTeam.color}
+            onChange={(e) =>
+              setFormTeam((prev) => ({ ...prev, color: e.target.value }))
+            }
+            style={{ display: "none" }}
+          />
+        </Box>
 
-        {/* LOGO PREVIEW + PATH INPUT */}
-        <div style={{ textAlign: "center" }}>
-          <div
-            style={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              marginBottom: "10px",
-              marginInline: "auto",
+        {/* LOGO PICKER */}
+        <Box sx={{ textAlign: "center" }}>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            Team Logo
+          </Typography>
+          <Paper
+            elevation={2}
+            onClick={() => {
+              if (isEditing) {
+                // TODO: Implement logo selection logic
+                console.log("Logo clicked - implement file picker logic here");
+              }
+            }}
+            sx={{
+              width: 150,
+              height: 150,
+              mx: "auto",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               overflow: "hidden",
-              backgroundColor: "#f5f5f5",
+              backgroundColor: "grey.100",
+              cursor: isEditing ? "pointer" : "default",
+              transition: "transform 0.2s, box-shadow 0.2s",
+              "&:hover": isEditing
+                ? {
+                    transform: "scale(1.05)",
+                    boxShadow: 6,
+                  }
+                : {},
             }}
           >
             {formTeam.logoPath ? (
-              <img
+              <Box
+                component="img"
                 src={formTeam.logoPath}
                 alt="Team logo"
-                style={{
+                sx={{
                   maxWidth: "100%",
                   maxHeight: "100%",
                   objectFit: "contain",
                 }}
               />
             ) : (
-              <span style={{ fontSize: "12px", color: "#888" }}>
-                No logo selected
-              </span>
+              <>
+                <CloudUpload
+                  sx={{ fontSize: 48, color: "text.secondary", mb: 1 }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  Click to upload
+                </Typography>
+              </>
             )}
-          </div>
-          <div>
-            <label>
-              Logo path:{" "}
-              <input
-                type="text"
-                disabled={!isEditing}
-                value={formTeam.logoPath}
-                style={{ width: "200px" }}
-                onChange={(e) =>
-                  setFormTeam((prev) => ({
-                    ...prev,
-                    logoPath: e.target.value,
-                  }))
-                }
-              />
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Paper>
+        </Box>
+      </Stack>
+
+      {/* Load Team Dialog */}
+      <Dialog
+        open={isLoadTeamDialogOpen}
+        onClose={() => setIsLoadTeamDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Load Team</DialogTitle>
+        <DialogContent>
+          {savedTeams.length === 0 ? (
+            <Typography>No saved teams found.</Typography>
+          ) : (
+            <List>
+              {savedTeams.map((savedTeam, index) => (
+                <ListItem key={index} disablePadding>
+                  <ListItemButton onClick={() => handleLoadTeam(savedTeam)}>
+                    <ListItemText primary={savedTeam.name} />
+                  </ListItemButton>
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteClick(savedTeam);
+                      }}
+                      color="error"
+                    >
+                      <Delete />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsLoadTeamDialogOpen(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteConfirmDialogOpen} onClose={handleCancelDelete}>
+        <DialogTitle>Delete Team</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete the team "{teamToDelete?.name}"?
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete}>Cancel</Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }

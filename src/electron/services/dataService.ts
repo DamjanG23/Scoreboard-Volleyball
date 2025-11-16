@@ -11,8 +11,12 @@ export function getScoreboardState() {
 }
 
 export function getConfig() {
-  const config = "match config 123";
-  return { config };
+  const matchConfig: MatchConfig = {
+    config: "string",
+    timeoutDurationSec: 11,
+    intervalBetweenSetsSec: 12,
+  };
+  return matchConfig;
 }
 
 export function createNewMatch(matchName: string): Match {

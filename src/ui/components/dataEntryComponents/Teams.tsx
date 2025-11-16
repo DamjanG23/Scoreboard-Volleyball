@@ -1,4 +1,5 @@
 import { TeamsInput } from "./TeamInput";
+import { Box, Typography, Paper, Divider } from "@mui/material";
 
 interface TeamsProps {
   matchTeams: MatchTeams | undefined;
@@ -6,23 +7,36 @@ interface TeamsProps {
 
 export function Teams({ matchTeams }: TeamsProps) {
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         justifyContent: "space-between",
         width: "100%",
+        gap: 2,
+        p: 2,
       }}
     >
       {/* LEFT SIDE — HOME TEAM */}
-      <div style={{ flex: 1, textAlign: "center" }}>
-        <h2>HOME TEAM</h2>
-        <TeamsInput team={matchTeams?.teamA}></TeamsInput>
-      </div>
+      <Box sx={{ flex: 1 }}>
+        <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
+          <Typography variant="h5" gutterBottom sx={{ textAlign: "center" }}>
+            HOME TEAM
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <TeamsInput team={matchTeams?.teamA} />
+        </Paper>
+      </Box>
+
       {/* RIGHT SIDE — AWAY TEAM */}
-      <div style={{ flex: 1, textAlign: "center" }}>
-        <h2>AWAY TEAM</h2>
-        <TeamsInput team={matchTeams?.teamB}></TeamsInput>
-      </div>
-    </div>
+      <Box sx={{ flex: 1 }}>
+        <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
+          <Typography variant="h5" gutterBottom sx={{ textAlign: "center" }}>
+            AWAY TEAM
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <TeamsInput team={matchTeams?.teamB} />
+        </Paper>
+      </Box>
+    </Box>
   );
 }

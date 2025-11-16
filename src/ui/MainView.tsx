@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Box, Typography } from "@mui/material";
 import { SideDrawer } from "./components/mainViewComponents/SideDrawer";
 import { MainAppBar } from "./components/mainViewComponents/MainAppBar";
 import { Config } from "./components/dataEntryComponents/Config";
@@ -34,11 +35,24 @@ export default function MainView({ currentMatch }: MainViewProps) {
         setSelectedDataView={setSelectedDataView}
       />
 
-      <>
-        {isMatchLoaded
-          ? renderSelectedView()
-          : "///////////////////////////////// Please Load/Start a Match!"}
-      </>
+      <Box>
+        {isMatchLoaded ? (
+          renderSelectedView()
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "calc(100vh - 64px)",
+            }}
+          >
+            <Typography variant="h4" color="text.secondary">
+              Please Load/Start a Match!
+            </Typography>
+          </Box>
+        )}
+      </Box>
     </>
   );
 }
