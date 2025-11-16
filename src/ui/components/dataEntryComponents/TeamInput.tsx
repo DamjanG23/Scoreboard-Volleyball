@@ -24,6 +24,7 @@ import {
   Close,
   CloudUpload,
   Delete,
+  Add,
 } from "@mui/icons-material";
 
 interface TeamsInputProps {
@@ -86,8 +87,11 @@ export function TeamsInput({ team }: TeamsInputProps) {
   const [isLoadTeamDialogOpen, setIsLoadTeamDialogOpen] = useState(false);
   const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] =
     useState(false);
+  const [isNewTeamDialogOpen, setIsNewTeamDialogOpen] = useState(false);
   const [savedTeams, setSavedTeams] = useState<Team[]>([]);
   const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
+  const [newTeamName, setNewTeamName] = useState("");
+  const [isTeamActive, setIsTeamActive] = useState(!!team);
 
   useEffect(() => {
     if (!isEditing) {
@@ -99,6 +103,7 @@ export function TeamsInput({ team }: TeamsInputProps) {
           color: team.color,
           players: ensure14Players(team.players),
         });
+        setIsTeamActive(true);
       } else {
         setFormTeam({
           name: "",
@@ -107,6 +112,7 @@ export function TeamsInput({ team }: TeamsInputProps) {
           color: "#ffffff",
           players: ensure14Players(undefined),
         });
+        setIsTeamActive(false);
       }
     }
   }, [team, isEditing]);
@@ -148,7 +154,37 @@ export function TeamsInput({ team }: TeamsInputProps) {
     console.log(`Loading team: "${selectedTeam.name}"`);
     // TODO: Integrate with backend if needed
     setFormTeam(selectedTeam);
+    setIsTeamActive(true);
     setIsLoadTeamDialogOpen(false);
+  };
+
+  const handleCreateNewTeam = () => {
+    console.log(`Creating new team: "${newTeamName}"`);
+    setFormTeam({
+      name: newTeamName,
+      coach: "",
+      logoPath: "",
+      color: "#ffffff",
+      players: ensure14Players(undefined),
+    });
+    setIsTeamActive(true);
+    setIsEditing(true);
+    setIsNewTeamDialogOpen(false);
+    setNewTeamName("");
+  };
+
+  const handleUnloadTeam = () => {
+    console.log("Unloading team");
+    setFormTeam({
+      name: "",
+      coach: "",
+      logoPath: "",
+      color: "#ffffff",
+      players: ensure14Players(undefined),
+    });
+    setIsTeamActive(false);
+    setIsEditing(false);
+    setBackupTeam(null);
   };
 
   const handleDeleteClick = (selectedTeam: Team) => {
@@ -178,222 +214,245 @@ export function TeamsInput({ team }: TeamsInputProps) {
       {/* BUTTONS */}
       <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 3 }}>
         <Button
-          variant={isEditing ? "contained" : "outlined"}
-          startIcon={isEditing ? <Save /> : <Edit />}
-          onClick={handleEditSaveClick}
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={() => setIsNewTeamDialogOpen(true)}
+          disabled={isTeamActive}
         >
-          {isEditing ? "Save" : "Edit"}
+          New
         </Button>
         <Button
           variant="outlined"
           startIcon={<Download />}
           onClick={() => setIsLoadTeamDialogOpen(true)}
+          disabled={isTeamActive}
         >
           Load
         </Button>
-        {isEditing && (
-          <IconButton
-            color="error"
-            onClick={handleCancelClick}
-            sx={{ border: 1, borderColor: "error.main" }}
-          >
-            <Close />
-          </IconButton>
+        {isTeamActive && (
+          <>
+            <Button
+              variant={isEditing ? "contained" : "outlined"}
+              startIcon={isEditing ? <Save /> : <Edit />}
+              onClick={handleEditSaveClick}
+            >
+              {isEditing ? "Save" : "Edit"}
+            </Button>
+            {isEditing && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={handleCancelClick}
+              >
+                Cancel
+              </Button>
+            )}
+            <IconButton
+              color="error"
+              onClick={handleUnloadTeam}
+              sx={{ border: 1, borderColor: "error.main" }}
+            >
+              <Close />
+            </IconButton>
+          </>
         )}
       </Stack>
 
-      {/* TEAM NAME & COACH */}
-      <Stack spacing={2} sx={{ mb: 3, maxWidth: 400, mx: "auto" }}>
-        <TextField
-          label="Team Name"
-          variant="outlined"
-          fullWidth
-          value={formTeam.name}
-          disabled={!isEditing}
-          onChange={(e) =>
-            setFormTeam((prev) => ({ ...prev, name: e.target.value }))
-          }
-        />
+      {isTeamActive && (
+        <>
+          {/* TEAM NAME & COACH */}
+          <Stack spacing={2} sx={{ mb: 3, maxWidth: 400, mx: "auto" }}>
+            <TextField
+              label="Team Name"
+              variant="outlined"
+              fullWidth
+              value={formTeam.name}
+              disabled={true}
+            />
 
-        <TextField
-          label="Coach"
-          variant="outlined"
-          fullWidth
-          value={formTeam.coach}
-          disabled={!isEditing}
-          onChange={(e) =>
-            setFormTeam((prev) => ({ ...prev, coach: e.target.value }))
-          }
-        />
-      </Stack>
-
-      {/* PLAYERS */}
-      <Box sx={{ mt: 3 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Players
-        </Typography>
-        <Paper
-          elevation={1}
-          sx={{
-            p: 2,
-            maxWidth: 500,
-            mx: "auto",
-            maxHeight: 400,
-            overflow: "auto",
-          }}
-        >
-          <Stack spacing={1}>
-            {formTeam.players.map((player, index) => (
-              <Stack
-                key={index}
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <TextField
-                  type="number"
-                  inputProps={{ min: 1 }}
-                  value={player.number}
-                  disabled={!isEditing}
-                  sx={{ width: 80 }}
-                  onChange={(e) => {
-                    const num = parseInt(e.target.value || "0", 10);
-                    setFormTeam((prev) => {
-                      const players = [...prev.players];
-                      players[index] = { ...players[index], number: num };
-                      return { ...prev, players };
-                    });
-                  }}
-                  size="small"
-                />
-
-                <TextField
-                  fullWidth
-                  placeholder={`Player ${index + 1} name`}
-                  value={player.name}
-                  disabled={!isEditing}
-                  onChange={(e) =>
-                    setFormTeam((prev) => {
-                      const players = [...prev.players];
-                      players[index] = {
-                        ...players[index],
-                        name: e.target.value,
-                      };
-                      return { ...prev, players };
-                    })
-                  }
-                  size="small"
-                />
-              </Stack>
-            ))}
+            <TextField
+              label="Coach"
+              variant="outlined"
+              fullWidth
+              value={formTeam.coach}
+              disabled={!isEditing}
+              onChange={(e) =>
+                setFormTeam((prev) => ({ ...prev, coach: e.target.value }))
+              }
+            />
           </Stack>
-        </Paper>
-      </Box>
 
-      {/* COLOR + LOGO SECTION */}
-      <Stack
-        direction="row"
-        spacing={4}
-        justifyContent="center"
-        sx={{ mt: 4, flexWrap: "wrap" }}
-      >
-        {/* COLOR PICKER + PREVIEW */}
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            Team Color
-          </Typography>
-          <Paper
-            elevation={2}
-            onClick={() => {
-              if (isEditing) {
-                document.getElementById("color-picker-input")?.click();
-              }
-            }}
-            sx={{
-              width: 150,
-              height: 150,
-              mx: "auto",
-              backgroundColor: formTeam.color || "#ffffff",
-              cursor: isEditing ? "pointer" : "default",
-              transition: "transform 0.2s, box-shadow 0.2s",
-              "&:hover": isEditing
-                ? {
-                    transform: "scale(1.05)",
-                    boxShadow: 6,
-                  }
-                : {},
-            }}
-          />
-          <input
-            id="color-picker-input"
-            type="color"
-            disabled={!isEditing}
-            value={formTeam.color}
-            onChange={(e) =>
-              setFormTeam((prev) => ({ ...prev, color: e.target.value }))
-            }
-            style={{ display: "none" }}
-          />
-        </Box>
+          {/* PLAYERS */}
+          <Box sx={{ mt: 3 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Players
+            </Typography>
+            <Paper
+              elevation={1}
+              sx={{
+                p: 2,
+                maxWidth: 500,
+                mx: "auto",
+                maxHeight: 400,
+                overflow: "auto",
+              }}
+            >
+              <Stack spacing={1}>
+                {formTeam.players.map((player, index) => (
+                  <Stack
+                    key={index}
+                    direction="row"
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <TextField
+                      type="number"
+                      inputProps={{ min: 1 }}
+                      value={player.number}
+                      disabled={!isEditing}
+                      sx={{ width: 80 }}
+                      onChange={(e) => {
+                        const num = parseInt(e.target.value || "0", 10);
+                        setFormTeam((prev) => {
+                          const players = [...prev.players];
+                          players[index] = { ...players[index], number: num };
+                          return { ...prev, players };
+                        });
+                      }}
+                      size="small"
+                    />
 
-        {/* LOGO PICKER */}
-        <Box sx={{ textAlign: "center" }}>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            Team Logo
-          </Typography>
-          <Paper
-            elevation={2}
-            onClick={() => {
-              if (isEditing) {
-                // TODO: Implement logo selection logic
-                console.log("Logo clicked - implement file picker logic here");
-              }
-            }}
-            sx={{
-              width: 150,
-              height: 150,
-              mx: "auto",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-              backgroundColor: "grey.100",
-              cursor: isEditing ? "pointer" : "default",
-              transition: "transform 0.2s, box-shadow 0.2s",
-              "&:hover": isEditing
-                ? {
-                    transform: "scale(1.05)",
-                    boxShadow: 6,
-                  }
-                : {},
-            }}
+                    <TextField
+                      fullWidth
+                      placeholder={`Player ${index + 1} name`}
+                      value={player.name}
+                      disabled={!isEditing}
+                      onChange={(e) =>
+                        setFormTeam((prev) => {
+                          const players = [...prev.players];
+                          players[index] = {
+                            ...players[index],
+                            name: e.target.value,
+                          };
+                          return { ...prev, players };
+                        })
+                      }
+                      size="small"
+                    />
+                  </Stack>
+                ))}
+              </Stack>
+            </Paper>
+          </Box>
+
+          {/* COLOR + LOGO SECTION */}
+          <Stack
+            direction="row"
+            spacing={4}
+            justifyContent="center"
+            sx={{ mt: 4, flexWrap: "wrap" }}
           >
-            {formTeam.logoPath ? (
-              <Box
-                component="img"
-                src={formTeam.logoPath}
-                alt="Team logo"
+            {/* COLOR PICKER + PREVIEW */}
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Team Color
+              </Typography>
+              <Paper
+                elevation={2}
+                onClick={() => {
+                  if (isEditing) {
+                    document.getElementById("color-picker-input")?.click();
+                  }
+                }}
                 sx={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
+                  width: 150,
+                  height: 150,
+                  mx: "auto",
+                  backgroundColor: formTeam.color || "#ffffff",
+                  cursor: isEditing ? "pointer" : "default",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  "&:hover": isEditing
+                    ? {
+                        transform: "scale(1.05)",
+                        boxShadow: 6,
+                      }
+                    : {},
                 }}
               />
-            ) : (
-              <>
-                <CloudUpload
-                  sx={{ fontSize: 48, color: "text.secondary", mb: 1 }}
-                />
-                <Typography variant="caption" color="text.secondary">
-                  Click to upload
-                </Typography>
-              </>
-            )}
-          </Paper>
-        </Box>
-      </Stack>
+              <input
+                id="color-picker-input"
+                type="color"
+                disabled={!isEditing}
+                value={formTeam.color}
+                onChange={(e) =>
+                  setFormTeam((prev) => ({ ...prev, color: e.target.value }))
+                }
+                style={{ display: "none" }}
+              />
+            </Box>
+
+            {/* LOGO PICKER */}
+            <Box sx={{ textAlign: "center" }}>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Team Logo
+              </Typography>
+              <Paper
+                elevation={2}
+                onClick={() => {
+                  if (isEditing) {
+                    // TODO: Implement logo selection logic
+                    console.log(
+                      "Logo clicked - implement file picker logic here"
+                    );
+                  }
+                }}
+                sx={{
+                  width: 150,
+                  height: 150,
+                  mx: "auto",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  backgroundColor: "grey.100",
+                  cursor: isEditing ? "pointer" : "default",
+                  transition: "transform 0.2s, box-shadow 0.2s",
+                  "&:hover": isEditing
+                    ? {
+                        transform: "scale(1.05)",
+                        boxShadow: 6,
+                      }
+                    : {},
+                }}
+              >
+                {formTeam.logoPath ? (
+                  <Box
+                    component="img"
+                    src={formTeam.logoPath}
+                    alt="Team logo"
+                    sx={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <>
+                    <CloudUpload
+                      sx={{ fontSize: 48, color: "text.secondary", mb: 1 }}
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      Click to upload
+                    </Typography>
+                  </>
+                )}
+              </Paper>
+            </Box>
+          </Stack>
+        </>
+      )}
 
       {/* Load Team Dialog */}
       <Dialog
@@ -452,6 +511,35 @@ export function TeamsInput({ team }: TeamsInputProps) {
             variant="contained"
           >
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* New Team Dialog */}
+      <Dialog
+        open={isNewTeamDialogOpen}
+        onClose={() => setIsNewTeamDialogOpen(false)}
+      >
+        <DialogTitle>Create New Team</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Team Name"
+            fullWidth
+            variant="outlined"
+            value={newTeamName}
+            onChange={(e) => setNewTeamName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsNewTeamDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={handleCreateNewTeam}
+            disabled={newTeamName.trim().length === 0}
+            variant="contained"
+          >
+            Create
           </Button>
         </DialogActions>
       </Dialog>
