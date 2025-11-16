@@ -4,7 +4,7 @@ import { SideDrawer } from "./components/mainViewComponents/SideDrawer";
 import { MainAppBar } from "./components/mainViewComponents/MainAppBar";
 import { Config } from "./components/dataEntryComponents/Config";
 import { Score } from "./components/dataEntryComponents/Score";
-import { Teams } from "./components/dataEntryComponents/Teams";
+import { Teams } from "./components/dataEntryComponents/team/Teams";
 
 interface MainViewProps {
   currentMatch: Match | null;

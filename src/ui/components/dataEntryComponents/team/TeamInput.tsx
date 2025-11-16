@@ -1,0 +1,242 @@
+import { useState, useEffect } from "react";
+import { Box, Stack } from "@mui/material";
+import { TeamControls } from "./TeamControls";
+import { TeamBasicInfo } from "./TeamBasicInfo";
+import { PlayersList } from "./PlayersList";
+import { TeamColorPicker } from "./TeamColorPicker";
+import { TeamLogoPicker } from "./TeamLogoPicker";
+import { NewTeamDialog } from "./NewTeamDialog";
+import { LoadTeamDialog } from "./LoadTeamDialog";
+import { DeleteTeamDialog } from "./DeleteTeamDialog";
+import { ensure14Players, mockSavedTeams } from "./utils";
+
+interface TeamsInputProps {
+  team: Team | undefined;
+}
+
+export function TeamsInput({ team }: TeamsInputProps) {
+  const [formTeam, setFormTeam] = useState<Team>(() => ({
+    name: team?.name ?? "",
+    coach: team?.coach ?? "",
+    logoPath: team?.logoPath ?? "",
+    color: team?.color ?? "#ffffff",
+    players: ensure14Players(team?.players),
+  }));
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [backupTeam, setBackupTeam] = useState<Team | null>(null);
+  const [isLoadTeamDialogOpen, setIsLoadTeamDialogOpen] = useState(false);
+  const [isDeleteConfirmDialogOpen, setIsDeleteConfirmDialogOpen] =
+    useState(false);
+  const [isNewTeamDialogOpen, setIsNewTeamDialogOpen] = useState(false);
+  const [savedTeams, setSavedTeams] = useState<Team[]>([]);
+  const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
+  const [newTeamName, setNewTeamName] = useState("");
+  const [isTeamActive, setIsTeamActive] = useState(!!team);
+
+  useEffect(() => {
+    if (!isEditing) {
+      if (team) {
+        setFormTeam({
+          name: team.name,
+          coach: team.coach,
+          logoPath: team.logoPath,
+          color: team.color,
+          players: ensure14Players(team.players),
+        });
+        setIsTeamActive(true);
+      } else {
+        setFormTeam({
+          name: "",
+          coach: "",
+          logoPath: "",
+          color: "#ffffff",
+          players: ensure14Players(undefined),
+        });
+        setIsTeamActive(false);
+      }
+    }
+  }, [team, isEditing]);
+
+  // Load saved teams when dialog opens
+  useEffect(() => {
+    if (isLoadTeamDialogOpen) {
+      loadSavedTeams();
+    }
+  }, [isLoadTeamDialogOpen]);
+
+  const loadSavedTeams = async () => {
+    // TODO: Replace with actual backend call
+    // Example: const teams = await window.electron.getSavedTeams();
+    setSavedTeams(mockSavedTeams);
+  };
+
+  const handleEditSaveClick = () => {
+    if (!isEditing) {
+      setBackupTeam(formTeam);
+      setIsEditing(true);
+    } else {
+      setIsEditing(false);
+      setBackupTeam(null);
+      //TODO: implement a save to back end
+      console.log("Saving team:", formTeam);
+    }
+  };
+
+  const handleCancelClick = () => {
+    if (backupTeam) {
+      setFormTeam(backupTeam);
+    }
+    setIsEditing(false);
+    setBackupTeam(null);
+  };
+
+  const handleLoadTeam = (selectedTeam: Team) => {
+    console.log(`Loading team: "${selectedTeam.name}"`);
+    // TODO: Integrate with backend if needed
+    setFormTeam(selectedTeam);
+    setIsTeamActive(true);
+    setIsLoadTeamDialogOpen(false);
+  };
+
+  const handleCreateNewTeam = () => {
+    console.log(`Creating new team: "${newTeamName}"`);
+    setFormTeam({
+      name: newTeamName,
+      coach: "",
+      logoPath: "",
+      color: "#ffffff",
+      players: ensure14Players(undefined),
+    });
+    setIsTeamActive(true);
+    setIsEditing(true);
+    setIsNewTeamDialogOpen(false);
+    setNewTeamName("");
+  };
+
+  const handleUnloadTeam = () => {
+    console.log("Unloading team");
+    setFormTeam({
+      name: "",
+      coach: "",
+      logoPath: "",
+      color: "#ffffff",
+      players: ensure14Players(undefined),
+    });
+    setIsTeamActive(false);
+    setIsEditing(false);
+    setBackupTeam(null);
+  };
+
+  const handleDeleteClick = (selectedTeam: Team) => {
+    setTeamToDelete(selectedTeam);
+    setIsDeleteConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (teamToDelete) {
+      console.log(`Deleting team: "${teamToDelete.name}"`);
+      // TODO: Replace with actual backend call
+      // Example: await window.electron.deleteTeam(teamToDelete.id);
+      // Refresh the teams list after deletion
+      loadSavedTeams();
+    }
+    setIsDeleteConfirmDialogOpen(false);
+    setTeamToDelete(null);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteConfirmDialogOpen(false);
+    setTeamToDelete(null);
+  };
+
+  const handleLogoClick = () => {
+    // TODO: Implement logo selection logic
+    console.log("Logo clicked - implement file picker logic here");
+  };
+
+  const handlePlayerChange = (index: number, player: Player) => {
+    setFormTeam((prev) => {
+      const players = [...prev.players];
+      players[index] = player;
+      return { ...prev, players };
+    });
+  };
+
+  return (
+    <Box sx={{ textAlign: "center", mt: 2 }}>
+      <TeamControls
+        isTeamActive={isTeamActive}
+        isEditing={isEditing}
+        onNewClick={() => setIsNewTeamDialogOpen(true)}
+        onLoadClick={() => setIsLoadTeamDialogOpen(true)}
+        onEditSaveClick={handleEditSaveClick}
+        onCancelClick={handleCancelClick}
+        onUnloadClick={handleUnloadTeam}
+      />
+
+      {isTeamActive && (
+        <>
+          <TeamBasicInfo
+            teamName={formTeam.name}
+            coach={formTeam.coach}
+            isEditing={isEditing}
+            onCoachChange={(value) =>
+              setFormTeam((prev) => ({ ...prev, coach: value }))
+            }
+          />
+
+          <PlayersList
+            players={formTeam.players}
+            isEditing={isEditing}
+            onPlayerChange={handlePlayerChange}
+          />
+
+          <Stack
+            direction="row"
+            spacing={4}
+            justifyContent="center"
+            sx={{ mt: 4, flexWrap: "wrap" }}
+          >
+            <TeamColorPicker
+              color={formTeam.color}
+              isEditing={isEditing}
+              onColorChange={(color) =>
+                setFormTeam((prev) => ({ ...prev, color }))
+              }
+            />
+
+            <TeamLogoPicker
+              logoPath={formTeam.logoPath}
+              isEditing={isEditing}
+              onLogoClick={handleLogoClick}
+            />
+          </Stack>
+        </>
+      )}
+
+      <NewTeamDialog
+        open={isNewTeamDialogOpen}
+        teamName={newTeamName}
+        onTeamNameChange={setNewTeamName}
+        onClose={() => setIsNewTeamDialogOpen(false)}
+        onCreate={handleCreateNewTeam}
+      />
+
+      <LoadTeamDialog
+        open={isLoadTeamDialogOpen}
+        teams={savedTeams}
+        onClose={() => setIsLoadTeamDialogOpen(false)}
+        onLoadTeam={handleLoadTeam}
+        onDeleteTeam={handleDeleteClick}
+      />
+
+      <DeleteTeamDialog
+        open={isDeleteConfirmDialogOpen}
+        teamName={teamToDelete?.name}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+      />
+    </Box>
+  );
+}
