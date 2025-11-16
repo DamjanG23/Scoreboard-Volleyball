@@ -6,17 +6,19 @@ import { Score } from "./components/dataEntryComponents/Score";
 import { Teams } from "./components/dataEntryComponents/Teams";
 
 interface MainViewProps {
-  isMatchLoaded: boolean;
+  currentMatch: Match | null;
 }
 
-export default function MainView({ isMatchLoaded }: MainViewProps) {
+export default function MainView({ currentMatch }: MainViewProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedDataView, setSelectedDataView] =
     useState<SelectedDataView>("CONFIG");
+  const isMatchLoaded = currentMatch === null ? false : true;
 
   function renderSelectedView() {
     if (selectedDataView === "CONFIG") return <Config text="Config" />;
-    if (selectedDataView === "TEAMS") return <Teams text="Teams" />;
+    if (selectedDataView === "TEAMS")
+      return <Teams matchTeams={currentMatch?.teams} />;
     if (selectedDataView === "SCORE") return <Score text="Score" />;
     return null;
   }

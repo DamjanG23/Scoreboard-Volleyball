@@ -1,6 +1,8 @@
 type Match = {
   id: number;
   matchName: string;
+  config?: MatchConfig;
+  teams?: MatchTeams;
 };
 
 type ScoreboardState = {
@@ -11,10 +13,30 @@ type ScoreboardState = {
 
 type MatchConfig = {
   config: string;
+  timeoutDurationSec: number;
+  intervalBetweenSetsSec: number;
 };
 
 type MatchTime = {
   seconds: number;
+};
+
+type MatchTeams = {
+  teamA?: Team;
+  teamB?: Team;
+};
+
+type Team = {
+  name: string;
+  coach: string;
+  players: Player[];
+  logoPath: string;
+  color: string;
+};
+
+type Player = {
+  number: number;
+  name: string;
 };
 
 // ----- ----- ----- ----- ----- ENUMS ----- ----- ----- ----- ----- //

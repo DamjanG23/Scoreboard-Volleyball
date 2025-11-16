@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
-  const isMatchLoaded = currentMatch === null ? false : true;
 
   useEffect(() => {
     const unsubscribe = window.electron.onCurrentMatchSaved((currentMatch) => {
@@ -31,7 +30,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainView isMatchLoaded={isMatchLoaded} />} />
+        <Route path="/" element={<MainView currentMatch={currentMatch} />} />
         <Route path="/scoreboard" element={<ScoreboardView />} />
       </Routes>
     </Router>
