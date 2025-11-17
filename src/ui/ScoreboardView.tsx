@@ -161,7 +161,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#000",
+          backgroundColor: "#0f0f0f",
         }}
       >
         <img
@@ -183,7 +183,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         width: "100vw",
         height: "100vh",
         display: "flex",
-        backgroundColor: "#000",
+        backgroundColor: "#0f0f0f",
         color: "#fff",
         fontFamily: "'Jersey 10', sans-serif",
         fontWeight: "normal",
@@ -251,7 +251,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
               lineHeight: 0.6,
               textAlign: "center",
               letterSpacing: "0.1em",
-              backgroundColor: "#000",
+              backgroundColor: "#0f0f0f",
               border: "0.75vh solid #fff",
               borderRadius: 0,
               width: "85%",
@@ -279,7 +279,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             style={{
               fontSize: "4vw",
               fontWeight: "normal",
-              backgroundColor: "#000",
+              backgroundColor: "#0f0f0f",
               padding: "1.5vh 1.5vw",
               borderRadius: 0,
               letterSpacing: "0.08em",
@@ -299,7 +299,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             style={{
               fontSize: "4vw",
               fontWeight: "normal",
-              backgroundColor: "#000",
+              backgroundColor: "#0f0f0f",
               padding: "1.5vh 1.5vw",
               borderRadius: 0,
               letterSpacing: "0.08em",
@@ -323,7 +323,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           flex: 1.5,
           display: "flex",
           flexDirection: "column",
-          backgroundColor: "#1a1a1a",
+          backgroundColor: "#0f0f0f",
         }}
       >
         {/* Team Names - Top Third */}
@@ -491,6 +491,24 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
               })}
             </div>
 
+            {/* Spacer Row */}
+            <div
+              style={{
+                display: "table-row",
+                height: "2vh",
+              }}
+            >
+              {[1, 2, 3, 4, 5].map((setNum) => (
+                <div
+                  key={`spacer-${setNum}`}
+                  style={{
+                    display: "table-cell",
+                    height: "2vh",
+                  }}
+                />
+              ))}
+            </div>
+
             {/* Row 3: Team B Points */}
             <div
               style={{
@@ -583,7 +601,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
               lineHeight: 0.6,
               textAlign: "center",
               letterSpacing: "0.1em",
-              backgroundColor: "#000",
+              backgroundColor: "#0f0f0f",
               border: "0.75vh solid #fff",
               borderRadius: 0,
               width: "85%",
@@ -611,7 +629,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             style={{
               fontSize: "4vw",
               fontWeight: "normal",
-              backgroundColor: "#000",
+              backgroundColor: "#0f0f0f",
               padding: "1.5vh 1.5vw",
               borderRadius: 0,
               letterSpacing: "0.08em",
@@ -631,7 +649,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             style={{
               fontSize: "4vw",
               fontWeight: "normal",
-              backgroundColor: "#000",
+              backgroundColor: "#0f0f0f",
               padding: "1.5vh 1.5vw",
               borderRadius: 0,
               letterSpacing: "0.08em",
