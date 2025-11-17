@@ -67,6 +67,7 @@ type EventPayloadMaping = {
   getMatches: Match[];
   loadMatch: number;
   deleteMatch: number;
+  updateMatch: void;
   getTeams: Team[];
   saveTeam: Team;
   saveTeamA: Team;
@@ -131,6 +132,8 @@ interface Window {
     loadMatch: (id: number) => void;
 
     deleteMatch: (id: number) => void;
+
+    updateMatch: () => void;
 
     onCurrentMatchSaved: (
       callback: (currentMatch: Match) => void

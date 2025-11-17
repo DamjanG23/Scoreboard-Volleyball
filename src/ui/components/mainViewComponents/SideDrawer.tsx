@@ -6,6 +6,7 @@ import { ToggleMainFullscreenButton } from "./sideDrawerComponents/ToggleMainFul
 import { NewMatchButton } from "./sideDrawerComponents/NewMatchButton";
 import { ExitMatchButton } from "./sideDrawerComponents/ExitMatchButton";
 import { LoadMatchButton } from "./sideDrawerComponents/LoadMatchButton";
+import { SaveMatchButton } from "./sideDrawerComponents/SaveMatchButton";
 
 interface SideDrawerProps {
   isMatchLoaded: boolean;
@@ -108,6 +109,8 @@ export function SideDrawer({
       <NewMatchButton />
 
       <LoadMatchButton />
+
+      <SaveMatchButton isMatchLoaded={isMatchLoaded} />
 
       <ExitMatchButton isMatchLoaded={isMatchLoaded} />
     </Drawer>

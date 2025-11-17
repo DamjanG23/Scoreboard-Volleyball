@@ -166,6 +166,38 @@ export function getMatchById(thisId: number): Match {
   }
 }
 
+export function updateMatch(updatedMatch: Match): void {
+  const dataPath = join(app.getPath("userData"), "matches.json");
+
+  if (!existsSync(dataPath)) {
+    console.log("No matches file found — nothing to update.");
+    return;
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8");
+    const matches: Match[] = JSON.parse(data);
+
+    const matchIndex = matches.findIndex(
+      (match) => match.id === updatedMatch.id
+    );
+
+    if (matchIndex === -1) {
+      console.error(`Match with id ${updatedMatch.id} not found.`);
+      return;
+    }
+
+    // Update the match at the found index
+    matches[matchIndex] = updatedMatch;
+
+    writeFileSync(dataPath, JSON.stringify(matches, null, 2));
+
+    console.log(`Match with id ${updatedMatch.id} updated successfully.`);
+  } catch (error) {
+    console.error("Error updating match:", error);
+  }
+}
+
 export function deleteMatchById(thisId: number): void {
   const dataPath = join(app.getPath("userData"), "matches.json");
 

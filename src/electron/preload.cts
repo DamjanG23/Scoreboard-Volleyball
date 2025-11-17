@@ -46,6 +46,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("deleteMatch", id);
   },
 
+  updateMatch: () => {
+    ipcSend("updateMatch", undefined);
+  },
+
   // ---------- ---------- TEAM ---------- ---------- //
 
   getTeams: () => {

@@ -14,6 +14,8 @@ import {
   loadCurrentTeam,
   removeTeamFromCurrentMatch,
   getImageAsBase64,
+  updateMatch,
+  getCurrentMatch,
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -52,6 +54,15 @@ export function setupDataHandelers(
 
   ipcMainOn("deleteMatch", (id) => {
     deleteMatchById(id);
+  });
+
+  ipcMainOn("updateMatch", () => {
+    const currentMatch = getCurrentMatch();
+    if (currentMatch) {
+      updateMatch(currentMatch);
+    } else {
+      console.error("No current match to update");
+    }
   });
 
   // ---------- ---------- TEAMS ---------- ---------- //
