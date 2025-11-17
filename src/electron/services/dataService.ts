@@ -289,3 +289,34 @@ export function loadCurrentTeam(
   // Save the updated match
   saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
 }
+
+export function removeTeamFromCurrentMatch(
+  isTeamHome: boolean,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to remove team from");
+    return;
+  }
+
+  // Initialize teams object if it doesn't exist
+  if (!currentMatch.teams) {
+    console.log("No teams to remove");
+    return;
+  }
+
+  // Remove the appropriate team
+  if (isTeamHome) {
+    currentMatch.teams.teamA = undefined;
+    console.log("Home Team (Team A) removed from current match");
+  } else {
+    currentMatch.teams.teamB = undefined;
+    console.log("Away Team (Team B) removed from current match");
+  }
+
+  // Save the updated match
+  saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+}

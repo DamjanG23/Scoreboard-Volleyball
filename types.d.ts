@@ -70,6 +70,8 @@ type EventPayloadMaping = {
   saveTeam: Team;
   saveTeamA: Team;
   saveTeamB: Team;
+  removeTeamA: void;
+  removeTeamB: void;
   deleteTeam: string;
 };
 
@@ -143,6 +145,10 @@ interface Window {
     saveTeamA: (team: Team) => void;
 
     saveTeamB: (team: Team) => void;
+
+    removeTeamA: () => void;
+
+    removeTeamB: () => void;
 
     deleteTeam: (teamName: string) => void;
   };

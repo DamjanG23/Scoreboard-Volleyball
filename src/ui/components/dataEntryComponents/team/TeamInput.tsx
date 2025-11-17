@@ -127,6 +127,14 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
 
   const handleUnloadTeam = () => {
     console.log("Unloading team");
+
+    // Remove team from current match in backend
+    if (isTeamHome) {
+      window.electron.removeTeamA();
+    } else {
+      window.electron.removeTeamB();
+    }
+
     setFormTeam({
       name: "",
       coach: "",

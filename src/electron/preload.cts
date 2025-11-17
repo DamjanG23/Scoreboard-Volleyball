@@ -64,6 +64,14 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("saveTeamB", team);
   },
 
+  removeTeamA: () => {
+    ipcSend("removeTeamA", undefined);
+  },
+
+  removeTeamB: () => {
+    ipcSend("removeTeamB", undefined);
+  },
+
   deleteTeam: (teamName) => {
     ipcSend("deleteTeam", teamName);
   },

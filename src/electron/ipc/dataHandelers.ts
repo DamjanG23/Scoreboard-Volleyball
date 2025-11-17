@@ -12,6 +12,7 @@ import {
   getTeams,
   deleteTeamByName,
   loadCurrentTeam,
+  removeTeamFromCurrentMatch,
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -69,6 +70,14 @@ export function setupDataHandelers(
   ipcMainOn("saveTeamB", (team) => {
     saveTeam(team);
     loadCurrentTeam(team, false, mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("removeTeamA", () => {
+    removeTeamFromCurrentMatch(true, mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("removeTeamB", () => {
+    removeTeamFromCurrentMatch(false, mainWindow, scoreboardWindow);
   });
 
   ipcMainOn("deleteTeam", (teamName) => {
