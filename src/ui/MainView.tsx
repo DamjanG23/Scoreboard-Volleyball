@@ -17,7 +17,8 @@ export default function MainView({ currentMatch }: MainViewProps) {
   const isMatchLoaded = currentMatch === null ? false : true;
 
   function renderSelectedView() {
-    if (selectedDataView === "CONFIG") return <Config text="Config" />;
+    if (selectedDataView === "CONFIG")
+      return <Config matchConfig={currentMatch?.config} />;
     if (selectedDataView === "TEAMS")
       return <Teams matchTeams={currentMatch?.teams} />;
     if (selectedDataView === "SCORE") return <Score text="Score" />;

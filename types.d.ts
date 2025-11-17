@@ -49,6 +49,7 @@ type EventPayloadMaping = {
   getMatchSeconds: MatchTime;
   getScoreboardState: ScoreboardState;
   getConfig: MatchConfig;
+  saveConfig: MatchConfig;
   getIsScoreboardOpen: boolean;
   onScoreboardWindowChange: boolean;
   onScoreboardWindowClosed: boolean;
@@ -91,6 +92,8 @@ interface Window {
     getScoreboardState: () => Promise<ScoreboardState>;
 
     getConfig: () => Promise<MatchConfig>;
+
+    saveConfig: (config: MatchConfig) => void;
 
     // ---------- ---------- WINDOW ---------- ---------- //
     getIsScoreboardOpen: () => Promise<boolean>;

@@ -353,6 +353,26 @@ export function removeTeamFromCurrentMatch(
   saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
 }
 
+export function saveConfigToCurrentMatch(
+  config: MatchConfig,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to save config to");
+    return;
+  }
+
+  // Update the config
+  currentMatch.config = config;
+  console.log(`Config saved to current match`);
+
+  // Save the updated match
+  saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+}
+
 export function getImageAsBase64(imagePath: string): string | null {
   try {
     if (!existsSync(imagePath)) {

@@ -16,6 +16,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
     return ipcInvoke("getConfig");
   },
 
+  saveConfig: (config) => {
+    ipcSend("saveConfig", config);
+  },
+
   createNewMatch: (matchName) => {
     ipcSend("createNewMatch", matchName);
   },

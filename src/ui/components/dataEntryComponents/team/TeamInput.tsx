@@ -15,7 +15,6 @@ interface TeamsInputProps {
   isTeamHome: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
   const [formTeam, setFormTeam] = useState<Team>(() => ({
     name: team?.name ?? "",

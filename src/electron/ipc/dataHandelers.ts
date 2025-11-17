@@ -16,6 +16,7 @@ import {
   getImageAsBase64,
   updateMatch,
   getCurrentMatch,
+  saveConfigToCurrentMatch,
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -29,6 +30,10 @@ export function setupDataHandelers(
 
   ipcMainHandle("getConfig", () => {
     return getConfig();
+  });
+
+  ipcMainOn("saveConfig", (config) => {
+    saveConfigToCurrentMatch(config, mainWindow, scoreboardWindow);
   });
 
   // ---------- ---------- MATCHES ---------- ---------- //
