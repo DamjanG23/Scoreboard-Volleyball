@@ -8,6 +8,8 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
   const [isFilled, setIsFilled] = useState(false);
   const [teamALogoBase64, setTeamALogoBase64] = useState<string>("");
   const [teamBLogoBase64, setTeamBLogoBase64] = useState<string>("");
+  const [colonVisible, setColonVisible] = useState(true);
+  const [isTimeRunning, setIsTimeRunning] = useState(false);
 
   useEffect(() => {
     window.electron.getScoreboardFillState().then(setIsFilled);
@@ -86,6 +88,47 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
 
   // Calculate current set number (total sets played + 1)
   const currentSetNum = (teamAScore.sets || 0) + (teamBScore.sets || 0) + 1;
+
+  // Check if time is running
+  useEffect(() => {
+    const checkTimeRunning = async () => {
+      const running = await window.electron.isMatchTimeRunning();
+      setIsTimeRunning(running);
+    };
+
+    checkTimeRunning();
+    const interval = setInterval(checkTimeRunning, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Pulse colon every 2 seconds when time is running (blink for 50ms)
+  useEffect(() => {
+    if (!isTimeRunning) {
+      setColonVisible(true);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setColonVisible(false);
+      setTimeout(() => {
+        setColonVisible(true);
+      }, 100);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [isTimeRunning]);
+
+  // Format time as HH:MM
+  const formatTimeHHMM = (
+    seconds: number
+  ): { hours: string; minutes: string } => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    return {
+      hours: String(hours).padStart(2, "0"),
+      minutes: String(minutes).padStart(2, "0"),
+    };
+  };
 
   // Format time as HH:MM:SS
   const formatTime = (seconds: number): string => {
@@ -280,28 +323,29 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           flex: 1.5,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          padding: "3vh",
-          gap: "2vh",
           backgroundColor: "#1a1a1a",
         }}
       >
-        {/* Team Names */}
+        {/* Team Names - Top Third */}
         <div
           style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
             textAlign: "center",
-            width: "100%",
           }}
         >
           <div
             style={{
-              fontSize: "4vw",
+              fontSize: "5vw",
               fontWeight: "normal",
-              marginBottom: "1vh",
+              lineHeight: 0.8,
               color: teamA?.color || "#1976d2",
               letterSpacing: "0.05em",
               textTransform: "uppercase",
+              marginBottom: "1vh",
             }}
           >
             {teamA?.name || "Team A"}
@@ -310,131 +354,171 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             style={{
               fontSize: "3vw",
               fontWeight: "normal",
-              margin: "1vh 0",
+              lineHeight: 0.8,
               color: "#888",
               letterSpacing: "0.1em",
+              margin: "1vh 0",
             }}
           >
             VS
           </div>
           <div
             style={{
-              fontSize: "4vw",
+              fontSize: "5vw",
               fontWeight: "normal",
-              marginTop: "1vh",
+              lineHeight: 0.8,
               color: teamB?.color || "#d32f2f",
               letterSpacing: "0.05em",
               textTransform: "uppercase",
+              marginTop: "1vh",
             }}
           >
             {teamB?.name || "Team B"}
           </div>
         </div>
 
-        {/* Time and Set Number */}
+        {/* Time and Set Number - Middle Third */}
         <div
           style={{
-            textAlign: "center",
-            backgroundColor: "rgba(255,255,255,0.1)",
-            padding: "2vh 4vw",
-            borderRadius: "1vh",
-            width: "80%",
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <div
             style={{
-              fontSize: "6vw",
-              fontWeight: "normal",
-              marginBottom: "1vh",
-              letterSpacing: "0.15em",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            {formatTime(timeSec)}
-          </div>
-          <div
-            style={{ fontSize: "2.5vw", fontWeight: "normal", color: "#aaa" }}
-          >
-            SET {currentSetNum}
+            <div
+              style={{
+                fontSize: "15vw",
+                fontWeight: "normal",
+                lineHeight: 0.6,
+                textAlign: "center",
+                letterSpacing: "0.1em",
+              }}
+            >
+              {formatTimeHHMM(timeSec).hours}
+              <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
+              {formatTimeHHMM(timeSec).minutes}
+            </div>
+            <div
+              style={{
+                fontSize: "3vw",
+                fontWeight: "normal",
+                lineHeight: 0.8,
+                color: "#aaa",
+                letterSpacing: "0.08em",
+                marginTop: "1vh",
+              }}
+            >
+              SET {currentSetNum}
+            </div>
           </div>
         </div>
 
-        {/* Set History */}
+        {/* Set History Table - Bottom Third */}
         <div
           style={{
-            width: "90%",
             flex: 1,
-            overflowY: "auto",
-            backgroundColor: "rgba(255,255,255,0.05)",
-            borderRadius: "1vh",
-            padding: "2vh",
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            paddingBottom: "3vh",
           }}
         >
           <div
             style={{
-              fontSize: "2vw",
-              fontWeight: "normal",
-              marginBottom: "2vh",
-              textAlign: "center",
-              color: "#aaa",
+              display: "table",
+              width: "85%",
+              borderCollapse: "collapse",
             }}
           >
-            SET HISTORY
-          </div>
-          {setHistory.length === 0 ? (
+            {/* Row 1: Set Numbers */}
             <div
-              style={{ textAlign: "center", color: "#666", fontSize: "1.5vw" }}
+              style={{
+                display: "table-row",
+              }}
             >
-              No sets played yet
-            </div>
-          ) : (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "1vh" }}
-            >
-              {setHistory.map((set) => (
+              {[1, 2, 3, 4, 5].map((setNum) => (
                 <div
-                  key={set.setNum}
+                  key={`header-${setNum}`}
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 2fr 1fr",
-                    gap: "1vw",
-                    alignItems: "center",
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    padding: "1vh 2vw",
-                    borderRadius: "0.5vh",
-                    fontSize: "1.8vw",
+                    display: "table-cell",
+                    fontSize: "3vw",
+                    fontWeight: "normal",
+                    lineHeight: 0.8,
+                    padding: "1.5vh 1.5vw",
+                    textAlign: "center",
+                    verticalAlign: "bottom",
+                    color: "#aaa",
                   }}
                 >
-                  <div style={{ fontWeight: "bold", color: "#aaa" }}>
-                    Set {set.setNum}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    <span style={{ color: teamA?.color || "#1976d2" }}>
-                      {set.teamAPoints}
-                    </span>
-                    <span style={{ color: "#666" }}>-</span>
-                    <span style={{ color: teamB?.color || "#d32f2f" }}>
-                      {set.teamBPoints}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      textAlign: "right",
-                      color: "#888",
-                      fontSize: "1.5vw",
-                    }}
-                  >
-                    {formatSetTime(set.timeSec)}
-                  </div>
+                  {setNum}
                 </div>
               ))}
             </div>
-          )}
+
+            {/* Row 2: Team A Points */}
+            <div
+              style={{
+                display: "table-row",
+              }}
+            >
+              {[1, 2, 3, 4, 5].map((setNum) => {
+                const set = setHistory.find((s) => s.setNum === setNum);
+                return (
+                  <div
+                    key={`teamA-${setNum}`}
+                    style={{
+                      display: "table-cell",
+                      fontSize: "4vw",
+                      fontWeight: "normal",
+                      lineHeight: 0.8,
+                      padding: "1.5vh 1.5vw",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      backgroundColor: teamA?.color || "#1976d2",
+                    }}
+                  >
+                    {set?.teamAPoints ?? 0}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Row 3: Team B Points */}
+            <div
+              style={{
+                display: "table-row",
+              }}
+            >
+              {[1, 2, 3, 4, 5].map((setNum) => {
+                const set = setHistory.find((s) => s.setNum === setNum);
+                return (
+                  <div
+                    key={`teamB-${setNum}`}
+                    style={{
+                      display: "table-cell",
+                      fontSize: "4vw",
+                      fontWeight: "normal",
+                      lineHeight: 0.8,
+                      padding: "1.5vh 1.5vw",
+                      textAlign: "center",
+                      verticalAlign: "middle",
+                      backgroundColor: teamB?.color || "#d32f2f",
+                    }}
+                  >
+                    {set?.teamBPoints ?? 0}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
