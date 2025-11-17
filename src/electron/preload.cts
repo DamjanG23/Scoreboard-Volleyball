@@ -128,6 +128,22 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("updateTeamBScore", score);
   },
 
+  incrementTeamASets: () => {
+    ipcSend("incrementTeamASets", undefined);
+  },
+
+  decrementTeamASets: () => {
+    ipcSend("decrementTeamASets", undefined);
+  },
+
+  incrementTeamBSets: () => {
+    ipcSend("incrementTeamBSets", undefined);
+  },
+
+  decrementTeamBSets: () => {
+    ipcSend("decrementTeamBSets", undefined);
+  },
+
   // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {

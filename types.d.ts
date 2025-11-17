@@ -95,6 +95,10 @@ type EventPayloadMaping = {
   updateMatchTime: number;
   updateTeamAScore: Score;
   updateTeamBScore: Score;
+  incrementTeamASets: void;
+  decrementTeamASets: void;
+  incrementTeamBSets: void;
+  decrementTeamBSets: void;
 };
 
 type UnsubscribeFunction = () => void;
@@ -203,5 +207,13 @@ interface Window {
     updateTeamAScore: (score: Score) => void;
 
     updateTeamBScore: (score: Score) => void;
+
+    incrementTeamASets: () => void;
+
+    decrementTeamASets: () => void;
+
+    incrementTeamBSets: () => void;
+
+    decrementTeamBSets: () => void;
   };
 }

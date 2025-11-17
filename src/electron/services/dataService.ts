@@ -435,3 +435,149 @@ export function updateTeamBScore(
   saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
   console.log("Team B score updated:", score);
 }
+
+export function incrementTeamASets(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to increment Team A sets");
+    return;
+  }
+
+  // Initialize scores if not present
+  if (!currentMatch.teamAScore) {
+    currentMatch.teamAScore = { points: 0, sets: 0, timeouts: 0 };
+  }
+  if (!currentMatch.teamBScore) {
+    currentMatch.teamBScore = { points: 0, sets: 0, timeouts: 0 };
+  }
+
+  const currentSets = currentMatch.teamAScore?.sets || 0;
+
+  // Can't go above 3
+  if (currentSets >= 3) {
+    console.log("Team A sets already at maximum (3)");
+    return;
+  }
+
+  // Increment sets
+  if (currentMatch.teamAScore) {
+    currentMatch.teamAScore.sets = currentSets + 1;
+
+    // Reset points for both teams if going to 1 or 2 (not to 3)
+    if (currentMatch.teamAScore.sets < 3) {
+      if (currentMatch.teamAScore) currentMatch.teamAScore.points = 0;
+      if (currentMatch.teamBScore) currentMatch.teamBScore.points = 0;
+      console.log("Both teams' points reset to 0");
+    }
+
+    saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+    console.log("Team A sets incremented to:", currentMatch.teamAScore.sets);
+  }
+}
+
+export function decrementTeamASets(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to decrement Team A sets");
+    return;
+  }
+
+  if (!currentMatch.teamAScore) {
+    currentMatch.teamAScore = { points: 0, sets: 0, timeouts: 0 };
+  }
+
+  const currentSets = currentMatch.teamAScore?.sets || 0;
+
+  // Can't go below 0
+  if (currentSets <= 0) {
+    console.log("Team A sets already at minimum (0)");
+    return;
+  }
+
+  if (currentMatch.teamAScore) {
+    currentMatch.teamAScore.sets = currentSets - 1;
+    saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+    console.log("Team A sets decremented to:", currentMatch.teamAScore.sets);
+  }
+}
+
+export function incrementTeamBSets(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to increment Team B sets");
+    return;
+  }
+
+  // Initialize scores if not present
+  if (!currentMatch.teamAScore) {
+    currentMatch.teamAScore = { points: 0, sets: 0, timeouts: 0 };
+  }
+  if (!currentMatch.teamBScore) {
+    currentMatch.teamBScore = { points: 0, sets: 0, timeouts: 0 };
+  }
+
+  const currentSets = currentMatch.teamBScore?.sets || 0;
+
+  // Can't go above 3
+  if (currentSets >= 3) {
+    console.log("Team B sets already at maximum (3)");
+    return;
+  }
+
+  // Increment sets
+  if (currentMatch.teamBScore) {
+    currentMatch.teamBScore.sets = currentSets + 1;
+
+    // Reset points for both teams if going to 1 or 2 (not to 3)
+    if (currentMatch.teamBScore.sets < 3) {
+      if (currentMatch.teamAScore) currentMatch.teamAScore.points = 0;
+      if (currentMatch.teamBScore) currentMatch.teamBScore.points = 0;
+      console.log("Both teams' points reset to 0");
+    }
+
+    saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+    console.log("Team B sets incremented to:", currentMatch.teamBScore.sets);
+  }
+}
+
+export function decrementTeamBSets(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to decrement Team B sets");
+    return;
+  }
+
+  if (!currentMatch.teamBScore) {
+    currentMatch.teamBScore = { points: 0, sets: 0, timeouts: 0 };
+  }
+
+  const currentSets = currentMatch.teamBScore?.sets || 0;
+
+  // Can't go below 0
+  if (currentSets <= 0) {
+    console.log("Team B sets already at minimum (0)");
+    return;
+  }
+
+  if (currentMatch.teamBScore) {
+    currentMatch.teamBScore.sets = currentSets - 1;
+    saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+    console.log("Team B sets decremented to:", currentMatch.teamBScore.sets);
+  }
+}

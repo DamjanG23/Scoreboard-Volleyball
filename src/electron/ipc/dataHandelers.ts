@@ -19,6 +19,10 @@ import {
   saveConfigToCurrentMatch,
   updateTeamAScore,
   updateTeamBScore,
+  incrementTeamASets,
+  decrementTeamASets,
+  incrementTeamBSets,
+  decrementTeamBSets,
 } from "../services/dataService.js";
 import {
   startMatchTime,
@@ -152,5 +156,21 @@ export function setupDataHandelers(
 
   ipcMainOn("updateTeamBScore", (score) => {
     updateTeamBScore(score, mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("incrementTeamASets", () => {
+    incrementTeamASets(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("decrementTeamASets", () => {
+    decrementTeamASets(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("incrementTeamBSets", () => {
+    incrementTeamBSets(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("decrementTeamBSets", () => {
+    decrementTeamBSets(mainWindow, scoreboardWindow);
   });
 }

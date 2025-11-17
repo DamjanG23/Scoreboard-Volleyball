@@ -21,6 +21,8 @@ export function Score({ currentMatch }: ScoreProps) {
   const [manualTime, setManualTime] = useState("");
   const [teamAPoints, setTeamAPoints] = useState("");
   const [teamBPoints, setTeamBPoints] = useState("");
+  const [teamASets, setTeamASets] = useState(0);
+  const [teamBSets, setTeamBSets] = useState(0);
 
   useEffect(() => {
     // Check if time is running when component mounts
@@ -32,13 +34,17 @@ export function Score({ currentMatch }: ScoreProps) {
   useEffect(() => {
     if (currentMatch?.teamAScore) {
       setTeamAPoints(String(currentMatch.teamAScore.points));
+      setTeamASets(currentMatch.teamAScore.sets || 0);
     } else {
       setTeamAPoints("0");
+      setTeamASets(0);
     }
     if (currentMatch?.teamBScore) {
       setTeamBPoints(String(currentMatch.teamBScore.points));
+      setTeamBSets(currentMatch.teamBScore.sets || 0);
     } else {
       setTeamBPoints("0");
+      setTeamBSets(0);
     }
   }, [currentMatch]);
 
@@ -153,6 +159,23 @@ export function Score({ currentMatch }: ScoreProps) {
   const handleTeamBDecrement = () => {
     const currentPoints = parseInt(teamBPoints || "0", 10);
     updateTeamBPoints(Math.max(0, currentPoints - 1));
+  };
+
+  // Sets handlers
+  const handleTeamAIncrementSets = () => {
+    window.electron.incrementTeamASets();
+  };
+
+  const handleTeamADecrementSets = () => {
+    window.electron.decrementTeamASets();
+  };
+
+  const handleTeamBIncrementSets = () => {
+    window.electron.incrementTeamBSets();
+  };
+
+  const handleTeamBDecrementSets = () => {
+    window.electron.decrementTeamBSets();
   };
 
   const currentTimeSec = currentMatch?.timeSec || 0;
@@ -349,6 +372,89 @@ export function Score({ currentMatch }: ScoreProps) {
               </Stack>
               <Typography variant="caption" color="text.secondary">
                 Points
+              </Typography>
+            </Box>
+          </Stack>
+        </Paper>
+
+        {/* Sets Controls */}
+        <Paper elevation={3} sx={{ p: 3, maxWidth: 1100, mx: "auto", width: "100%" }}>
+          <Stack direction="row" spacing={4} justifyContent="space-around">
+            {/* Team A Sets */}
+            <Box sx={{ flex: 1, textAlign: "center" }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <IconButton
+                  color="error"
+                  onClick={handleTeamADecrementSets}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Remove />
+                </IconButton>
+                <TextField
+                  type="number"
+                  value={teamASets}
+                  disabled
+                  inputProps={{ min: 0, max: 3, style: { textAlign: "center" } }}
+                  sx={{ width: 100 }}
+                  size="medium"
+                />
+                <IconButton
+                  color="success"
+                  onClick={handleTeamAIncrementSets}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Add />
+                </IconButton>
+              </Stack>
+              <Typography variant="caption" color="text.secondary">
+                Sets
+              </Typography>
+            </Box>
+
+            <Divider orientation="vertical" flexItem />
+
+            {/* Team B Sets */}
+            <Box sx={{ flex: 1, textAlign: "center" }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <IconButton
+                  color="error"
+                  onClick={handleTeamBDecrementSets}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Remove />
+                </IconButton>
+                <TextField
+                  type="number"
+                  value={teamBSets}
+                  disabled
+                  inputProps={{ min: 0, max: 3, style: { textAlign: "center" } }}
+                  sx={{ width: 100 }}
+                  size="medium"
+                />
+                <IconButton
+                  color="success"
+                  onClick={handleTeamBIncrementSets}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Add />
+                </IconButton>
+              </Stack>
+              <Typography variant="caption" color="text.secondary">
+                Sets
               </Typography>
             </Box>
           </Stack>
