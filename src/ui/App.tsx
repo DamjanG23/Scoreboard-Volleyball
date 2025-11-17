@@ -9,9 +9,7 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = window.electron.onCurrentMatchSaved((currentMatch) => {
-      console.log(
-        `Match with name "${currentMatch.matchName}" was saved to backend...`
-      );
+      console.log("Current Match recieved from back end: ", currentMatch);
       setCurrentMatch(currentMatch);
     });
 
@@ -20,7 +18,6 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = window.electron.onCurrentMatchRemoved(() => {
-      console.log(`Current Match was removed...`);
       setCurrentMatch(null);
     });
 
@@ -31,7 +28,10 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainView currentMatch={currentMatch} />} />
-        <Route path="/scoreboard" element={<ScoreboardView />} />
+        <Route
+          path="/scoreboard"
+          element={<ScoreboardView currentMatch={currentMatch} />}
+        />
       </Routes>
     </Router>
   );

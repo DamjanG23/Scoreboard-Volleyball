@@ -14,7 +14,10 @@ import {
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
-export function setupDataHandelers(mainWindow: BrowserWindow) {
+export function setupDataHandelers(
+  mainWindow: BrowserWindow,
+  scoreboardWindow: BrowserWindow
+) {
   ipcMainHandle("getScoreboardState", () => {
     return getScoreboardState();
   });
@@ -31,16 +34,17 @@ export function setupDataHandelers(mainWindow: BrowserWindow) {
 
   ipcMainOn("createNewMatch", (matchName) => {
     const newMatch = createNewMatch(matchName);
-    saveCurrentMatch(newMatch, mainWindow);
+    saveCurrentMatch(newMatch, mainWindow, scoreboardWindow);
   });
 
   ipcMainHandle("removeCurrentMatch", () => {
-    return removeCurrentMatch(mainWindow);
+    return removeCurrentMatch(mainWindow, scoreboardWindow);
   });
 
   ipcMainOn("loadMatch", (id) => {
     const loadedMatch = getMatchById(id);
-    saveCurrentMatch(loadedMatch, mainWindow);
+    console.log("Match loaded from local storage: ", loadedMatch);
+    saveCurrentMatch(loadedMatch, mainWindow, scoreboardWindow);
   });
 
   ipcMainOn("deleteMatch", (id) => {

@@ -41,21 +41,50 @@ export function createNewMatch(matchName: string): Match {
   return newMatch;
 }
 
-export function saveCurrentMatch(match: Match, window: BrowserWindow) {
+export function saveCurrentMatch(
+  match: Match,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+) {
   const dataPath = join(app.getPath("userData"), "currentMatch.json");
   writeFileSync(dataPath, JSON.stringify(match, null, 2));
   console.log("Current match:", match);
-  ipcWebContentsSend("onCurrentMatchSaved", window.webContents, match);
+
+  // Send to main window
+  ipcWebContentsSend("onCurrentMatchSaved", mainWindow.webContents, match);
+
+  // Send to scoreboard window if it exists
+  if (scoreboardWindow && !scoreboardWindow.isDestroyed()) {
+    ipcWebContentsSend(
+      "onCurrentMatchSaved",
+      scoreboardWindow.webContents,
+      match
+    );
+  }
 }
 
-export function removeCurrentMatch(window: BrowserWindow) {
+export function removeCurrentMatch(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+) {
   try {
     const dataPath = join(app.getPath("userData"), "currentMatch.json");
 
     if (existsSync(dataPath)) {
       unlinkSync(dataPath);
       console.log("Current match file removed successfully");
-      ipcWebContentsSend("onCurrentMatchRemoved", window.webContents, true);
+
+      // Send to main window
+      ipcWebContentsSend("onCurrentMatchRemoved", mainWindow.webContents, true);
+
+      // Send to scoreboard window if it exists
+      if (scoreboardWindow && !scoreboardWindow.isDestroyed()) {
+        ipcWebContentsSend(
+          "onCurrentMatchRemoved",
+          scoreboardWindow.webContents,
+          true
+        );
+      }
     } else {
       console.log("Current match file does not exist");
     }

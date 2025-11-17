@@ -39,7 +39,9 @@ export function LoadMatchButton() {
   };
 
   const handleLoadMatch = (match: Match) => {
-    console.log(`Loading match: "${match.matchName}"`);
+    console.log(
+      `Match selected on dialog -> Loading match: "${match.matchName}"`
+    );
     window.electron.loadMatch(match.id);
     setIsLoadMatchDialogOpen(false);
   };
