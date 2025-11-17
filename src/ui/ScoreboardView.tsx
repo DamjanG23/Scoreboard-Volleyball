@@ -259,12 +259,14 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "2vh",
+                minHeight: 0,
+                overflow: "hidden",
               }}
             >
               <div
                 style={{
-                  maxWidth: "90%",
-                  maxHeight: "90%",
+                  width: "100%",
+                  height: "100%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -819,12 +821,14 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "2vh",
+                minHeight: 0,
+                overflow: "hidden",
               }}
             >
               <div
                 style={{
-                  maxWidth: "90%",
-                  maxHeight: "90%",
+                  width: "100%",
+                  height: "100%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
