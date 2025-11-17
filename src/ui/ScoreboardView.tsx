@@ -221,7 +221,8 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
               justifyContent: "center",
               alignItems: "center",
               gap: "1vh",
-              padding: "3vh 2vh",
+              padding: "0 2vh",
+              height: "100%",
             }}
           >
             {(teamA?.players || []).slice(0, 14).map((player, index) => (
@@ -250,122 +251,124 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         ) : (
           /* Match View - Logo, Points, Sets, Timeouts */
           <>
-        {/* Team A Logo - Top Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "2vh",
-          }}
-        >
-          <div
-            style={{
-              maxWidth: "90%",
-              maxHeight: "90%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
-            }}
-          >
-            {teamALogoBase64 ? (
-              <img
-                src={teamALogoBase64}
-                alt={teamA?.name || "Team A"}
+            {/* Team A Logo - Top Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "2vh",
+              }}
+            >
+              <div
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
+                  maxWidth: "90%",
+                  maxHeight: "90%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
                 }}
-              />
-            ) : (
-              <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
-            )}
-          </div>
-        </div>
+              >
+                {teamALogoBase64 ? (
+                  <img
+                    src={teamALogoBase64}
+                    alt={teamA?.name || "Team A"}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
+                )}
+              </div>
+            </div>
 
-        {/* Team A Points - Middle Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "15vw",
-              fontWeight: "normal",
-              lineHeight: 0.6,
-              textAlign: "center",
-              letterSpacing: "0.1em",
-              backgroundColor: "#0f0f0f",
-              border: "0.75vh solid #fff",
-              borderRadius: 0,
-              width: "85%",
-              padding: "1vh 0",
-              boxSizing: "border-box",
-            }}
-          >
-            {teamAScore.points}
-          </div>
-        </div>
+            {/* Team A Points - Middle Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "15vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.6,
+                  textAlign: "center",
+                  letterSpacing: "0.1em",
+                  backgroundColor: "#0f0f0f",
+                  border: "0.75vh solid #fff",
+                  borderRadius: 0,
+                  width: "85%",
+                  padding: "1vh 0",
+                  boxSizing: "border-box",
+                }}
+              >
+                {teamAScore.points}
+              </div>
+            </div>
 
-        {/* Team A Sets and Timeouts - Bottom Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            paddingBottom: "3vh",
-            gap: "2vh",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "4vw",
-              fontWeight: "normal",
-              backgroundColor: "#0f0f0f",
-              padding: "1.5vh 1.5vw",
-              borderRadius: 0,
-              letterSpacing: "0.08em",
-              width: "85%",
-              boxSizing: "border-box",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              lineHeight: 0.8,
-            }}
-          >
-            <span>SETS</span>
-            <span>{teamAScore.sets || 0}</span>
-          </div>
+            {/* Team A Sets and Timeouts - Bottom Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                paddingBottom: "3vh",
+                gap: "2vh",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "4vw",
+                  fontWeight: "normal",
+                  backgroundColor: "#0f0f0f",
+                  padding: "1.5vh 1.5vw",
+                  borderRadius: 0,
+                  letterSpacing: "0.08em",
+                  width: "85%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  lineHeight: 0.8,
+                }}
+              >
+                <span>SETS</span>
+                <span>{teamAScore.sets || 0}</span>
+              </div>
 
-          <div
-            style={{
-              fontSize: "4vw",
-              fontWeight: "normal",
-              backgroundColor: "#0f0f0f",
-              padding: "1.5vh 1.5vw",
-              borderRadius: 0,
-              letterSpacing: "0.08em",
-              width: "85%",
-              boxSizing: "border-box",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              lineHeight: 0.8,
-            }}
-          >
-            <span>TIMEOUTS</span>
-            <span>{teamAScore.timeouts || 0}</span>
-          </div>
-        </div>
+              <div
+                style={{
+                  fontSize: "4vw",
+                  fontWeight: "normal",
+                  backgroundColor: "#0f0f0f",
+                  padding: "1.5vh 1.5vw",
+                  borderRadius: 0,
+                  letterSpacing: "0.08em",
+                  width: "85%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  lineHeight: 0.8,
+                }}
+              >
+                <span>TIMEOUTS</span>
+                <span>{teamAScore.timeouts || 0}</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Middle Section */}
@@ -377,218 +380,387 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           backgroundColor: "#0f0f0f",
         }}
       >
-        {/* Team Names - Top Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "5vw",
-              fontWeight: "normal",
-              lineHeight: 0.8,
-              color: teamA?.color || "#1976d2",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              marginBottom: "1vh",
-            }}
-          >
-            {teamA?.name || "Team A"}
-          </div>
-          <div
-            style={{
-              fontSize: "3vw",
-              fontWeight: "normal",
-              lineHeight: 0.8,
-              color: "#888",
-              letterSpacing: "0.1em",
-              margin: "1vh 0",
-            }}
-          >
-            VS
-          </div>
-          <div
-            style={{
-              fontSize: "5vw",
-              fontWeight: "normal",
-              lineHeight: 0.8,
-              color: teamB?.color || "#d32f2f",
-              letterSpacing: "0.05em",
-              textTransform: "uppercase",
-              marginTop: "1vh",
-            }}
-          >
-            {teamB?.name || "Team B"}
-          </div>
-        </div>
-
-        {/* Time and Set Number - Middle Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
+        {isWarmupRunning ? (
+          /* Warmup View - Logos, Team Names, Countdown */
+          <>
+            {/* Logos - Top Third */}
             <div
               style={{
-                fontSize: "15vw",
-                fontWeight: "normal",
-                lineHeight: 0.6,
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4vw",
+                padding: "2vh",
+              }}
+            >
+              {/* Team A Logo */}
+              <div
+                style={{
+                  maxWidth: "30%",
+                  maxHeight: "90%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+                }}
+              >
+                {teamALogoBase64 ? (
+                  <img
+                    src={teamALogoBase64}
+                    alt={teamA?.name || "Team A"}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "4vw", color: "#999" }}>Logo A</span>
+                )}
+              </div>
+
+              {/* Team B Logo */}
+              <div
+                style={{
+                  maxWidth: "30%",
+                  maxHeight: "90%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+                }}
+              >
+                {teamBLogoBase64 ? (
+                  <img
+                    src={teamBLogoBase64}
+                    alt={teamB?.name || "Team B"}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "4vw", color: "#999" }}>Logo B</span>
+                )}
+              </div>
+            </div>
+
+            {/* Team Names - Middle Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
                 textAlign: "center",
-                letterSpacing: "0.1em",
               }}
             >
-              {formatTimeHHMM(timeSec).hours}
-              <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
-              {formatTimeHHMM(timeSec).minutes}
+              <div
+                style={{
+                  fontSize: "5vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.8,
+                  color: teamA?.color || "#1976d2",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  marginBottom: "1vh",
+                }}
+              >
+                {teamA?.name || "Team A"}
+              </div>
+              <div
+                style={{
+                  fontSize: "3vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.8,
+                  color: "#888",
+                  letterSpacing: "0.1em",
+                  margin: "1vh 0",
+                }}
+              >
+                VS
+              </div>
+              <div
+                style={{
+                  fontSize: "5vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.8,
+                  color: teamB?.color || "#d32f2f",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  marginTop: "1vh",
+                }}
+              >
+                {teamB?.name || "Team B"}
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: "3vw",
-                fontWeight: "normal",
-                lineHeight: 0.8,
-                color: "#aaa",
-                letterSpacing: "0.08em",
-                marginTop: "1vh",
-              }}
-            >
-              {isWarmupRunning ? `MINUTES UNTIL START` : `SET ${currentSetNum}`}
-            </div>
-          </div>
-        </div>
 
-        {/* Set History Table - Bottom Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingBottom: "3vh",
-          }}
-        >
-          <div
-            style={{
-              display: "table",
-              width: "85%",
-              borderCollapse: "collapse",
-            }}
-          >
-            {/* Row 1: Set Numbers */}
+            {/* Countdown - Bottom Third */}
             <div
               style={{
-                display: "table-row",
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {[1, 2, 3, 4, 5].map((setNum) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
                 <div
-                  key={`header-${setNum}`}
                   style={{
-                    display: "table-cell",
+                    fontSize: "15vw",
+                    fontWeight: "normal",
+                    lineHeight: 0.6,
+                    textAlign: "center",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {formatTimeHHMM(timeSec).hours}
+                  <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
+                  {formatTimeHHMM(timeSec).minutes}
+                </div>
+                <div
+                  style={{
                     fontSize: "3vw",
                     fontWeight: "normal",
                     lineHeight: 0.8,
-                    padding: "1.5vh 1.5vw",
-                    textAlign: "center",
-                    verticalAlign: "bottom",
                     color: "#aaa",
+                    letterSpacing: "0.08em",
+                    marginTop: "1vh",
                   }}
                 >
-                  {setNum}
+                  MINUTES UNTIL START
                 </div>
-              ))}
+              </div>
             </div>
-
-            {/* Row 2: Team A Points */}
+          </>
+        ) : (
+          /* Match View - Team Names, Time, Set History */
+          <>
+            {/* Team Names - Top Third */}
             <div
               style={{
-                display: "table-row",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
               }}
             >
-              {[1, 2, 3, 4, 5].map((setNum) => {
-                const set = setHistory.find((s) => s.setNum === setNum);
-                return (
-                  <div
-                    key={`teamA-${setNum}`}
-                    style={{
-                      display: "table-cell",
-                      fontSize: "4vw",
-                      fontWeight: "normal",
-                      lineHeight: 0.8,
-                      padding: "1.5vh 1.5vw",
-                      textAlign: "center",
-                      verticalAlign: "middle",
-                      backgroundColor: teamA?.color || "#1976d2",
-                    }}
-                  >
-                    {set?.teamAPoints ?? 0}
-                  </div>
-                );
-              })}
+              <div
+                style={{
+                  fontSize: "5vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.8,
+                  color: teamA?.color || "#1976d2",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  marginBottom: "1vh",
+                }}
+              >
+                {teamA?.name || "Team A"}
+              </div>
+              <div
+                style={{
+                  fontSize: "3vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.8,
+                  color: "#888",
+                  letterSpacing: "0.1em",
+                  margin: "1vh 0",
+                }}
+              >
+                VS
+              </div>
+              <div
+                style={{
+                  fontSize: "5vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.8,
+                  color: teamB?.color || "#d32f2f",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  marginTop: "1vh",
+                }}
+              >
+                {teamB?.name || "Team B"}
+              </div>
             </div>
 
-            {/* Spacer Row */}
+            {/* Time and Set Number - Middle Third */}
             <div
               style={{
-                display: "table-row",
-                height: "2vh",
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {[1, 2, 3, 4, 5].map((setNum) => (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
                 <div
-                  key={`spacer-${setNum}`}
                   style={{
-                    display: "table-cell",
+                    fontSize: "15vw",
+                    fontWeight: "normal",
+                    lineHeight: 0.6,
+                    textAlign: "center",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {formatTimeHHMM(timeSec).hours}
+                  <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
+                  {formatTimeHHMM(timeSec).minutes}
+                </div>
+                <div
+                  style={{
+                    fontSize: "3vw",
+                    fontWeight: "normal",
+                    lineHeight: 0.8,
+                    color: "#aaa",
+                    letterSpacing: "0.08em",
+                    marginTop: "1vh",
+                  }}
+                >
+                  {isWarmupRunning
+                    ? `MINUTES UNTIL START`
+                    : `SET ${currentSetNum}`}
+                </div>
+              </div>
+            </div>
+
+            {/* Set History Table - Bottom Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "flex-end",
+                justifyContent: "center",
+                paddingBottom: "3vh",
+              }}
+            >
+              <div
+                style={{
+                  display: "table",
+                  width: "85%",
+                  borderCollapse: "collapse",
+                }}
+              >
+                {/* Row 1: Set Numbers */}
+                <div
+                  style={{
+                    display: "table-row",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5].map((setNum) => (
+                    <div
+                      key={`header-${setNum}`}
+                      style={{
+                        display: "table-cell",
+                        fontSize: "3vw",
+                        fontWeight: "normal",
+                        lineHeight: 0.8,
+                        padding: "1.5vh 1.5vw",
+                        textAlign: "center",
+                        verticalAlign: "bottom",
+                        color: "#aaa",
+                      }}
+                    >
+                      {setNum}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Row 2: Team A Points */}
+                <div
+                  style={{
+                    display: "table-row",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5].map((setNum) => {
+                    const set = setHistory.find((s) => s.setNum === setNum);
+                    return (
+                      <div
+                        key={`teamA-${setNum}`}
+                        style={{
+                          display: "table-cell",
+                          fontSize: "4vw",
+                          fontWeight: "normal",
+                          lineHeight: 0.8,
+                          padding: "1.5vh 1.5vw",
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                          backgroundColor: teamA?.color || "#1976d2",
+                        }}
+                      >
+                        {set?.teamAPoints ?? 0}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Spacer Row */}
+                <div
+                  style={{
+                    display: "table-row",
                     height: "2vh",
                   }}
-                />
-              ))}
-            </div>
+                >
+                  {[1, 2, 3, 4, 5].map((setNum) => (
+                    <div
+                      key={`spacer-${setNum}`}
+                      style={{
+                        display: "table-cell",
+                        height: "2vh",
+                      }}
+                    />
+                  ))}
+                </div>
 
-            {/* Row 3: Team B Points */}
-            <div
-              style={{
-                display: "table-row",
-              }}
-            >
-              {[1, 2, 3, 4, 5].map((setNum) => {
-                const set = setHistory.find((s) => s.setNum === setNum);
-                return (
-                  <div
-                    key={`teamB-${setNum}`}
-                    style={{
-                      display: "table-cell",
-                      fontSize: "4vw",
-                      fontWeight: "normal",
-                      lineHeight: 0.8,
-                      padding: "1.5vh 1.5vw",
-                      textAlign: "center",
-                      verticalAlign: "middle",
-                      backgroundColor: teamB?.color || "#d32f2f",
-                    }}
-                  >
-                    {set?.teamBPoints ?? 0}
-                  </div>
-                );
-              })}
+                {/* Row 3: Team B Points */}
+                <div
+                  style={{
+                    display: "table-row",
+                  }}
+                >
+                  {[1, 2, 3, 4, 5].map((setNum) => {
+                    const set = setHistory.find((s) => s.setNum === setNum);
+                    return (
+                      <div
+                        key={`teamB-${setNum}`}
+                        style={{
+                          display: "table-cell",
+                          fontSize: "4vw",
+                          fontWeight: "normal",
+                          lineHeight: 0.8,
+                          padding: "1.5vh 1.5vw",
+                          textAlign: "center",
+                          verticalAlign: "middle",
+                          backgroundColor: teamB?.color || "#d32f2f",
+                        }}
+                      >
+                        {set?.teamBPoints ?? 0}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
 
       {/* Team B Section */}
@@ -600,122 +772,163 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           flexDirection: "column",
         }}
       >
-        {/* Team B Logo - Top Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "2vh",
-          }}
-        >
+        {isWarmupRunning ? (
+          /* Warmup View - Player List */
           <div
             style={{
-              maxWidth: "90%",
-              maxHeight: "90%",
               display: "flex",
-              alignItems: "center",
+              flexDirection: "column",
               justifyContent: "center",
-              filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+              alignItems: "center",
+              gap: "1vh",
+              padding: "0 2vh",
+              height: "100%",
             }}
           >
-            {teamBLogoBase64 ? (
-              <img
-                src={teamBLogoBase64}
-                alt={teamB?.name || "Team B"}
+            {(teamB?.players || []).slice(0, 14).map((player, index) => (
+              <div
+                key={index}
                 style={{
-                  maxWidth: "100%",
-                  maxHeight: "100%",
-                  objectFit: "contain",
+                  fontSize: "3vw",
+                  fontWeight: "normal",
+                  backgroundColor: "#0f0f0f",
+                  padding: "1vh 1.5vw",
+                  borderRadius: 0,
+                  letterSpacing: "0.08em",
+                  width: "85%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  lineHeight: 0.6,
                 }}
-              />
-            ) : (
-              <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
-            )}
+              >
+                <span style={{ textAlign: "left" }}>{player.name}</span>
+                <span style={{ textAlign: "right" }}>{player.number}</span>
+              </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          /* Match View - Logo, Points, Sets, Timeouts */
+          <>
+            {/* Team B Logo - Top Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "2vh",
+              }}
+            >
+              <div
+                style={{
+                  maxWidth: "90%",
+                  maxHeight: "90%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+                }}
+              >
+                {teamBLogoBase64 ? (
+                  <img
+                    src={teamBLogoBase64}
+                    alt={teamB?.name || "Team B"}
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
+                )}
+              </div>
+            </div>
 
-        {/* Team B Points - Middle Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "15vw",
-              fontWeight: "normal",
-              lineHeight: 0.6,
-              textAlign: "center",
-              letterSpacing: "0.1em",
-              backgroundColor: "#0f0f0f",
-              border: "0.75vh solid #fff",
-              borderRadius: 0,
-              width: "85%",
-              padding: "1vh 0",
-              boxSizing: "border-box",
-            }}
-          >
-            {teamBScore.points}
-          </div>
-        </div>
+            {/* Team B Points - Middle Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "15vw",
+                  fontWeight: "normal",
+                  lineHeight: 0.6,
+                  textAlign: "center",
+                  letterSpacing: "0.1em",
+                  backgroundColor: "#0f0f0f",
+                  border: "0.75vh solid #fff",
+                  borderRadius: 0,
+                  width: "85%",
+                  padding: "1vh 0",
+                  boxSizing: "border-box",
+                }}
+              >
+                {teamBScore.points}
+              </div>
+            </div>
 
-        {/* Team B Sets and Timeouts - Bottom Third */}
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            paddingBottom: "3vh",
-            gap: "2vh",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "4vw",
-              fontWeight: "normal",
-              backgroundColor: "#0f0f0f",
-              padding: "1.5vh 1.5vw",
-              borderRadius: 0,
-              letterSpacing: "0.08em",
-              width: "85%",
-              boxSizing: "border-box",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              lineHeight: 0.8,
-            }}
-          >
-            <span>{teamBScore.sets || 0}</span>
-            <span>SETS</span>
-          </div>
+            {/* Team B Sets and Timeouts - Bottom Third */}
+            <div
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                paddingBottom: "3vh",
+                gap: "2vh",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "4vw",
+                  fontWeight: "normal",
+                  backgroundColor: "#0f0f0f",
+                  padding: "1.5vh 1.5vw",
+                  borderRadius: 0,
+                  letterSpacing: "0.08em",
+                  width: "85%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  lineHeight: 0.8,
+                }}
+              >
+                <span>{teamBScore.sets || 0}</span>
+                <span>SETS</span>
+              </div>
 
-          <div
-            style={{
-              fontSize: "4vw",
-              fontWeight: "normal",
-              backgroundColor: "#0f0f0f",
-              padding: "1.5vh 1.5vw",
-              borderRadius: 0,
-              letterSpacing: "0.08em",
-              width: "85%",
-              boxSizing: "border-box",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              lineHeight: 0.8,
-            }}
-          >
-            <span>{teamBScore.timeouts || 0}</span>
-            <span>TIMEOUTS</span>
-          </div>
-        </div>
+              <div
+                style={{
+                  fontSize: "4vw",
+                  fontWeight: "normal",
+                  backgroundColor: "#0f0f0f",
+                  padding: "1.5vh 1.5vw",
+                  borderRadius: 0,
+                  letterSpacing: "0.08em",
+                  width: "85%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  lineHeight: 0.8,
+                }}
+              >
+                <span>{teamBScore.timeouts || 0}</span>
+                <span>TIMEOUTS</span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
