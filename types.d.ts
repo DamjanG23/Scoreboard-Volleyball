@@ -6,6 +6,14 @@ type Match = {
   teamAScore?: Score;
   teamBScore?: Score;
   timeSec?: number;
+  setHistory?: Set[];
+};
+
+type Set = {
+  setNum: number;
+  teamAPoints: number;
+  teamBPoints: number;
+  timeSec: number;
 };
 
 type Score = {

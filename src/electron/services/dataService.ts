@@ -456,11 +456,51 @@ export function incrementTeamASets(
   }
 
   const currentSets = currentMatch.teamAScore?.sets || 0;
+  const opponentSets = currentMatch.teamBScore?.sets || 0;
 
-  // Can't go above 3
-  if (currentSets >= 3) {
-    console.log("Team A sets already at maximum (3)");
+  // Can't increment if either team has already won (reached 3 sets)
+  if (currentSets >= 3 || opponentSets >= 3) {
+    console.log("Match is over - a team has already won 3 sets");
     return;
+  }
+
+  // Calculate which set just finished (total sets played so far + 1)
+  const totalSetsPlayed =
+    currentMatch.teamAScore.sets + (currentMatch.teamBScore?.sets || 0);
+  const completedSetNum = totalSetsPlayed + 1;
+
+  // Calculate time duration for this set
+  const currentTimeSec = currentMatch.timeSec || 0;
+  let setStartTime = 0;
+
+  // Initialize setHistory if not present
+  if (!currentMatch.setHistory) {
+    currentMatch.setHistory = [];
+  }
+
+  // Calculate start time of current set (sum of all previous set times)
+  if (currentMatch.setHistory.length > 0) {
+    setStartTime = currentMatch.setHistory.reduce(
+      (sum, set) => sum + set.timeSec,
+      0
+    );
+  }
+
+  const setDuration = currentTimeSec - setStartTime;
+
+  // Record the set history before resetting points (max 5 sets)
+  if (currentMatch.setHistory.length < 5) {
+    const setRecord = {
+      setNum: completedSetNum,
+      teamAPoints: currentMatch.teamAScore.points,
+      teamBPoints: currentMatch.teamBScore?.points || 0,
+      timeSec: setDuration,
+    };
+
+    currentMatch.setHistory.push(setRecord);
+    console.log("Set recorded in history:", setRecord);
+  } else {
+    console.log("Set history already has 5 sets - not recording more");
   }
 
   // Increment sets
@@ -510,6 +550,13 @@ export function decrementTeamASets(
 
   if (currentMatch.teamAScore) {
     currentMatch.teamAScore.sets = currentSets - 1;
+
+    // Remove the last set from history if it exists
+    if (currentMatch.setHistory && currentMatch.setHistory.length > 0) {
+      const removedSet = currentMatch.setHistory.pop();
+      console.log("Removed set from history:", removedSet);
+    }
+
     saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
     console.log("Team A sets decremented to:", currentMatch.teamAScore.sets);
   }
@@ -535,11 +582,51 @@ export function incrementTeamBSets(
   }
 
   const currentSets = currentMatch.teamBScore?.sets || 0;
+  const opponentSets = currentMatch.teamAScore?.sets || 0;
 
-  // Can't go above 3
-  if (currentSets >= 3) {
-    console.log("Team B sets already at maximum (3)");
+  // Can't increment if either team has already won (reached 3 sets)
+  if (currentSets >= 3 || opponentSets >= 3) {
+    console.log("Match is over - a team has already won 3 sets");
     return;
+  }
+
+  // Calculate which set just finished (total sets played so far + 1)
+  const totalSetsPlayed =
+    (currentMatch.teamAScore?.sets || 0) + currentMatch.teamBScore.sets;
+  const completedSetNum = totalSetsPlayed + 1;
+
+  // Calculate time duration for this set
+  const currentTimeSec = currentMatch.timeSec || 0;
+  let setStartTime = 0;
+
+  // Initialize setHistory if not present
+  if (!currentMatch.setHistory) {
+    currentMatch.setHistory = [];
+  }
+
+  // Calculate start time of current set (sum of all previous set times)
+  if (currentMatch.setHistory.length > 0) {
+    setStartTime = currentMatch.setHistory.reduce(
+      (sum, set) => sum + set.timeSec,
+      0
+    );
+  }
+
+  const setDuration = currentTimeSec - setStartTime;
+
+  // Record the set history before resetting points (max 5 sets)
+  if (currentMatch.setHistory.length < 5) {
+    const setRecord = {
+      setNum: completedSetNum,
+      teamAPoints: currentMatch.teamAScore?.points || 0,
+      teamBPoints: currentMatch.teamBScore.points,
+      timeSec: setDuration,
+    };
+
+    currentMatch.setHistory.push(setRecord);
+    console.log("Set recorded in history:", setRecord);
+  } else {
+    console.log("Set history already has 5 sets - not recording more");
   }
 
   // Increment sets
@@ -589,6 +676,13 @@ export function decrementTeamBSets(
 
   if (currentMatch.teamBScore) {
     currentMatch.teamBScore.sets = currentSets - 1;
+
+    // Remove the last set from history if it exists
+    if (currentMatch.setHistory && currentMatch.setHistory.length > 0) {
+      const removedSet = currentMatch.setHistory.pop();
+      console.log("Removed set from history:", removedSet);
+    }
+
     saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
     console.log("Team B sets decremented to:", currentMatch.teamBScore.sets);
   }
