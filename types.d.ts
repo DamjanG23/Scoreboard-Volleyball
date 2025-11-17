@@ -93,6 +93,8 @@ type EventPayloadMaping = {
   stopWarmupTime: void;
   isWarmupTimeRunning: boolean;
   updateMatchTime: number;
+  updateTeamAScore: Score;
+  updateTeamBScore: Score;
 };
 
 type UnsubscribeFunction = () => void;
@@ -195,5 +197,11 @@ interface Window {
     isWarmupTimeRunning: () => Promise<boolean>;
 
     updateMatchTime: (newTimeSec: number) => void;
+
+    // ---------- ---------- SCORE ---------- ---------- //
+
+    updateTeamAScore: (score: Score) => void;
+
+    updateTeamBScore: (score: Score) => void;
   };
 }

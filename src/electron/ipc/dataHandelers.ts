@@ -17,6 +17,8 @@ import {
   updateMatch,
   getCurrentMatch,
   saveConfigToCurrentMatch,
+  updateTeamAScore,
+  updateTeamBScore,
 } from "../services/dataService.js";
 import {
   startMatchTime,
@@ -141,5 +143,14 @@ export function setupDataHandelers(
 
   ipcMainOn("updateMatchTime", (newTimeSec) => {
     updateMatchTime(newTimeSec, mainWindow, scoreboardWindow);
+  });
+
+  // ---------- ---------- SCORE ---------- ---------- //
+  ipcMainOn("updateTeamAScore", (score) => {
+    updateTeamAScore(score, mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("updateTeamBScore", (score) => {
+    updateTeamBScore(score, mainWindow, scoreboardWindow);
   });
 }

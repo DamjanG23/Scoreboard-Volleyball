@@ -399,3 +399,39 @@ export function getImageAsBase64(imagePath: string): string | null {
     return null;
   }
 }
+
+// ---------- ---------- SCORE ---------- ---------- //
+
+export function updateTeamAScore(
+  score: Score,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to update Team A score");
+    return;
+  }
+
+  currentMatch.teamAScore = score;
+  saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+  console.log("Team A score updated:", score);
+}
+
+export function updateTeamBScore(
+  score: Score,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to update Team B score");
+    return;
+  }
+
+  currentMatch.teamBScore = score;
+  saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+  console.log("Team B score updated:", score);
+}

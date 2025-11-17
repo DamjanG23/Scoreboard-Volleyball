@@ -118,6 +118,16 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("updateMatchTime", newTimeSec);
   },
 
+  // ---------- ---------- SCORE ---------- ---------- //
+
+  updateTeamAScore: (score) => {
+    ipcSend("updateTeamAScore", score);
+  },
+
+  updateTeamBScore: (score) => {
+    ipcSend("updateTeamBScore", score);
+  },
+
   // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {
