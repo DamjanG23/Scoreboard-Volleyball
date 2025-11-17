@@ -6,6 +6,8 @@ interface ScoreboardViewProps {
 
 export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
   const [isFilled, setIsFilled] = useState(false);
+  const [teamALogoBase64, setTeamALogoBase64] = useState<string>("");
+  const [teamBLogoBase64, setTeamBLogoBase64] = useState<string>("");
 
   useEffect(() => {
     window.electron.getScoreboardFillState().then(setIsFilled);
@@ -23,6 +25,52 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
 
   const teamA = currentMatch?.teams?.teamA;
   const teamB = currentMatch?.teams?.teamB;
+
+  // Load Team A logo as base64
+  useEffect(() => {
+    const loadTeamALogo = async () => {
+      if (teamA?.logoPath) {
+        try {
+          const base64 = await window.electron.getImageAsBase64(teamA.logoPath);
+          if (base64) {
+            setTeamALogoBase64(base64);
+          } else {
+            setTeamALogoBase64("");
+          }
+        } catch (error) {
+          console.error("Error loading Team A logo:", error);
+          setTeamALogoBase64("");
+        }
+      } else {
+        setTeamALogoBase64("");
+      }
+    };
+
+    loadTeamALogo();
+  }, [teamA?.logoPath]);
+
+  // Load Team B logo as base64
+  useEffect(() => {
+    const loadTeamBLogo = async () => {
+      if (teamB?.logoPath) {
+        try {
+          const base64 = await window.electron.getImageAsBase64(teamB.logoPath);
+          if (base64) {
+            setTeamBLogoBase64(base64);
+          } else {
+            setTeamBLogoBase64("");
+          }
+        } catch (error) {
+          console.error("Error loading Team B logo:", error);
+          setTeamBLogoBase64("");
+        }
+      } else {
+        setTeamBLogoBase64("");
+      }
+    };
+
+    loadTeamBLogo();
+  }, [teamB?.logoPath]);
   const teamAScore = currentMatch?.teamAScore || {
     points: 0,
     sets: 0,
@@ -94,7 +142,8 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         display: "flex",
         backgroundColor: "#000",
         color: "#fff",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "'Jersey 10', sans-serif",
+        fontWeight: "normal",
         overflow: "hidden",
       }}
     >
@@ -118,19 +167,16 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             height: "20vw",
             maxWidth: "300px",
             maxHeight: "300px",
-            backgroundColor: "#fff",
-            borderRadius: "50%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            overflow: "hidden",
-            border: "0.5vw solid #fff",
+            filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
           }}
         >
-          {teamA?.logoPath ? (
+          {teamALogoBase64 ? (
             <img
-              src={teamA.logoPath}
-              alt={teamA.name}
+              src={teamALogoBase64}
+              alt={teamA?.name || "Team A"}
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           ) : (
@@ -142,10 +188,11 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         <div
           style={{
             fontSize: "15vw",
-            fontWeight: "bold",
+            fontWeight: "normal",
             lineHeight: 1,
             textAlign: "center",
             textShadow: "0 0.5vh 1vh rgba(0,0,0,0.5)",
+            letterSpacing: "0.1em",
           }}
         >
           {teamAScore.points}
@@ -155,11 +202,12 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         <div
           style={{
             fontSize: "3vw",
-            fontWeight: "bold",
+            fontWeight: "normal",
             backgroundColor: "rgba(0,0,0,0.3)",
             padding: "1vh 3vw",
             borderRadius: "1vh",
             textAlign: "center",
+            letterSpacing: "0.08em",
           }}
         >
           SETS: {teamAScore.sets || 0}
@@ -169,11 +217,12 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         <div
           style={{
             fontSize: "2.5vw",
-            fontWeight: "bold",
+            fontWeight: "normal",
             backgroundColor: "rgba(0,0,0,0.3)",
             padding: "1vh 3vw",
             borderRadius: "1vh",
             textAlign: "center",
+            letterSpacing: "0.08em",
           }}
         >
           TIMEOUTS: {teamAScore.timeouts || 0}
@@ -203,9 +252,11 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           <div
             style={{
               fontSize: "4vw",
-              fontWeight: "bold",
+              fontWeight: "normal",
               marginBottom: "1vh",
               color: teamA?.color || "#1976d2",
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
             }}
           >
             {teamA?.name || "Team A"}
@@ -213,9 +264,10 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           <div
             style={{
               fontSize: "3vw",
-              fontWeight: "bold",
+              fontWeight: "normal",
               margin: "1vh 0",
               color: "#888",
+              letterSpacing: "0.1em",
             }}
           >
             VS
@@ -223,9 +275,11 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           <div
             style={{
               fontSize: "4vw",
-              fontWeight: "bold",
+              fontWeight: "normal",
               marginTop: "1vh",
               color: teamB?.color || "#d32f2f",
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
             }}
           >
             {teamB?.name || "Team B"}
@@ -243,11 +297,18 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           }}
         >
           <div
-            style={{ fontSize: "6vw", fontWeight: "bold", marginBottom: "1vh" }}
+            style={{
+              fontSize: "6vw",
+              fontWeight: "normal",
+              marginBottom: "1vh",
+              letterSpacing: "0.15em",
+            }}
           >
             {formatTime(timeSec)}
           </div>
-          <div style={{ fontSize: "2.5vw", color: "#aaa" }}>
+          <div
+            style={{ fontSize: "2.5vw", fontWeight: "normal", color: "#aaa" }}
+          >
             SET {currentSetNum}
           </div>
         </div>
@@ -266,7 +327,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           <div
             style={{
               fontSize: "2vw",
-              fontWeight: "bold",
+              fontWeight: "normal",
               marginBottom: "2vh",
               textAlign: "center",
               color: "#aaa",
@@ -352,19 +413,16 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
             height: "20vw",
             maxWidth: "300px",
             maxHeight: "300px",
-            backgroundColor: "#fff",
-            borderRadius: "50%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            overflow: "hidden",
-            border: "0.5vw solid #fff",
+            filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
           }}
         >
-          {teamB?.logoPath ? (
+          {teamBLogoBase64 ? (
             <img
-              src={teamB.logoPath}
-              alt={teamB.name}
+              src={teamBLogoBase64}
+              alt={teamB?.name || "Team B"}
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
           ) : (
@@ -376,10 +434,11 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         <div
           style={{
             fontSize: "15vw",
-            fontWeight: "bold",
+            fontWeight: "normal",
             lineHeight: 1,
             textAlign: "center",
             textShadow: "0 0.5vh 1vh rgba(0,0,0,0.5)",
+            letterSpacing: "0.1em",
           }}
         >
           {teamBScore.points}
@@ -389,11 +448,12 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         <div
           style={{
             fontSize: "3vw",
-            fontWeight: "bold",
+            fontWeight: "normal",
             backgroundColor: "rgba(0,0,0,0.3)",
             padding: "1vh 3vw",
             borderRadius: "1vh",
             textAlign: "center",
+            letterSpacing: "0.08em",
           }}
         >
           SETS: {teamBScore.sets || 0}
@@ -403,11 +463,12 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         <div
           style={{
             fontSize: "2.5vw",
-            fontWeight: "bold",
+            fontWeight: "normal",
             backgroundColor: "rgba(0,0,0,0.3)",
             padding: "1vh 3vw",
             borderRadius: "1vh",
             textAlign: "center",
+            letterSpacing: "0.08em",
           }}
         >
           TIMEOUTS: {teamBScore.timeouts || 0}
