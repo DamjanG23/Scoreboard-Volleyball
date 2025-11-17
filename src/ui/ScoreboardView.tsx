@@ -10,6 +10,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
   const [teamBLogoBase64, setTeamBLogoBase64] = useState<string>("");
   const [colonVisible, setColonVisible] = useState(true);
   const [isTimeRunning, setIsTimeRunning] = useState(false);
+  const [isWarmupRunning, setIsWarmupRunning] = useState(false);
 
   useEffect(() => {
     window.electron.getScoreboardFillState().then(setIsFilled);
@@ -101,9 +102,21 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Pulse colon every 2 seconds when time is running (blink for 50ms)
+  // Check if warmup is running
   useEffect(() => {
-    if (!isTimeRunning) {
+    const checkWarmupRunning = async () => {
+      const running = await window.electron.isWarmupTimeRunning();
+      setIsWarmupRunning(running);
+    };
+
+    checkWarmupRunning();
+    const interval = setInterval(checkWarmupRunning, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Pulse colon every 2 seconds when time is running (blink for 100ms)
+  useEffect(() => {
+    if (!isTimeRunning && !isWarmupRunning) {
       setColonVisible(true);
       return;
     }
@@ -116,7 +129,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [isTimeRunning]);
+  }, [isTimeRunning, isWarmupRunning]);
 
   // Format time as HH:MM
   const formatTimeHHMM = (
@@ -199,6 +212,44 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           flexDirection: "column",
         }}
       >
+        {isWarmupRunning ? (
+          /* Warmup View - Player List */
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "1vh",
+              padding: "3vh 2vh",
+            }}
+          >
+            {(teamA?.players || []).slice(0, 14).map((player, index) => (
+              <div
+                key={index}
+                style={{
+                  fontSize: "3vw",
+                  fontWeight: "normal",
+                  backgroundColor: "#0f0f0f",
+                  padding: "1vh 1.5vw",
+                  borderRadius: 0,
+                  letterSpacing: "0.08em",
+                  width: "85%",
+                  boxSizing: "border-box",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  lineHeight: 0.6,
+                }}
+              >
+                <span style={{ textAlign: "left" }}>{player.number}</span>
+                <span style={{ textAlign: "right" }}>{player.name}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Match View - Logo, Points, Sets, Timeouts */
+          <>
         {/* Team A Logo - Top Third */}
         <div
           style={{
@@ -416,7 +467,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                 marginTop: "1vh",
               }}
             >
-              SET {currentSetNum}
+              {isWarmupRunning ? `MINUTES UNTIL START` : `SET ${currentSetNum}`}
             </div>
           </div>
         </div>
