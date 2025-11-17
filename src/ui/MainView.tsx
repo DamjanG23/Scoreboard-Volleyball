@@ -21,7 +21,8 @@ export default function MainView({ currentMatch }: MainViewProps) {
       return <Config matchConfig={currentMatch?.config} />;
     if (selectedDataView === "TEAMS")
       return <Teams matchTeams={currentMatch?.teams} />;
-    if (selectedDataView === "SCORE") return <Score text="Score" />;
+    if (selectedDataView === "SCORE")
+      return <Score currentMatch={currentMatch} />;
     return null;
   }
 

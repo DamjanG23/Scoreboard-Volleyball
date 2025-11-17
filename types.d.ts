@@ -3,6 +3,15 @@ type Match = {
   matchName: string;
   config?: MatchConfig;
   teams?: MatchTeams;
+  teamAScore?: Score;
+  teamBScore?: Score;
+  timeSec?: number;
+};
+
+type Score = {
+  points: number;
+  sets: number;
+  timeouts: number;
 };
 
 type ScoreboardState = {
@@ -77,6 +86,10 @@ type EventPayloadMaping = {
   removeTeamB: void;
   deleteTeam: string;
   getImageAsBase64: string | null;
+  startMatchTime: void;
+  stopMatchTime: void;
+  isMatchTimeRunning: boolean;
+  updateMatchTime: number;
 };
 
 type UnsubscribeFunction = () => void;
@@ -163,5 +176,15 @@ interface Window {
     deleteTeam: (teamName: string) => void;
 
     getImageAsBase64: (imagePath: string) => Promise<string | null>;
+
+    // ---------- ---------- TIME ---------- ---------- //
+
+    startMatchTime: () => void;
+
+    stopMatchTime: () => void;
+
+    isMatchTimeRunning: () => Promise<boolean>;
+
+    updateMatchTime: (newTimeSec: number) => void;
   };
 }

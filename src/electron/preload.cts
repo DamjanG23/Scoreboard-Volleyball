@@ -88,6 +88,24 @@ electron.contextBridge.exposeInMainWorld("electron", {
     return ipcInvoke("getImageAsBase64", imagePath);
   },
 
+  // ---------- ---------- TIME ---------- ---------- //
+
+  startMatchTime: () => {
+    ipcSend("startMatchTime", undefined);
+  },
+
+  stopMatchTime: () => {
+    ipcSend("stopMatchTime", undefined);
+  },
+
+  isMatchTimeRunning: () => {
+    return ipcInvoke("isMatchTimeRunning");
+  },
+
+  updateMatchTime: (newTimeSec) => {
+    ipcSend("updateMatchTime", newTimeSec);
+  },
+
   // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {

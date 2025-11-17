@@ -18,6 +18,12 @@ import {
   getCurrentMatch,
   saveConfigToCurrentMatch,
 } from "../services/dataService.js";
+import {
+  startMatchTime,
+  stopMatchTime,
+  isMatchTimeRunning,
+  updateMatchTime,
+} from "../services/timeService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
 export function setupDataHandelers(
@@ -103,5 +109,22 @@ export function setupDataHandelers(
 
   ipcMainHandle("getImageAsBase64", (imagePath) => {
     return getImageAsBase64(imagePath);
+  });
+
+  // ---------- ---------- TIME ---------- ---------- //
+  ipcMainOn("startMatchTime", () => {
+    startMatchTime(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("stopMatchTime", () => {
+    stopMatchTime();
+  });
+
+  ipcMainHandle("isMatchTimeRunning", () => {
+    return isMatchTimeRunning();
+  });
+
+  ipcMainOn("updateMatchTime", (newTimeSec) => {
+    updateMatchTime(newTimeSec, mainWindow, scoreboardWindow);
   });
 }
