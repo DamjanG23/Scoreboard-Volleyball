@@ -6,8 +6,10 @@ import {
   toggleMainFullscreen,
   toggleScoreboardFullscreen,
   openLogoFileDialog,
+  getScoreboardFillState,
+  toggleScoreboardFill,
 } from "../services/windowService.js";
-import { ipcMainHandle } from "../utils/util.js";
+import { ipcMainHandle, ipcWebContentsSend } from "../utils/util.js";
 
 export function setupWindowHandlers(
   mainWindow: BrowserWindow,
@@ -35,5 +37,25 @@ export function setupWindowHandlers(
 
   ipcMainHandle("selectLogoFile", async () => {
     return await openLogoFileDialog(mainWindow);
+  });
+
+  ipcMainHandle("getScoreboardFillState", () => {
+    return getScoreboardFillState();
+  });
+
+  ipcMainHandle("toggleScoreboardFill", () => {
+    const newState = toggleScoreboardFill();
+    // Notify both windows of the state change
+    ipcWebContentsSend(
+      "onScoreboardFillStateChange",
+      mainWindow.webContents,
+      newState
+    );
+    ipcWebContentsSend(
+      "onScoreboardFillStateChange",
+      scoreboardWindow.webContents,
+      newState
+    );
+    return newState;
   });
 }

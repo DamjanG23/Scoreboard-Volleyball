@@ -201,6 +201,19 @@ electron.contextBridge.exposeInMainWorld("electron", {
       callback(isFullscreen);
     }),
 
+  getScoreboardFillState: () => {
+    return ipcInvoke("getScoreboardFillState");
+  },
+
+  toggleScoreboardFill: () => {
+    return ipcInvoke("toggleScoreboardFill");
+  },
+
+  onScoreboardFillStateChange: (callback) =>
+    ipcOn("onScoreboardFillStateChange", (isFilled) => {
+      callback(isFilled);
+    }),
+
   // ---------- ---------- MAIN WINDOW MANAGEMENT ---------- ---------- //
 
   toggleMainFullscreen: () => {

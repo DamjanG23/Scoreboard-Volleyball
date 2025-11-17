@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ТoggleScoreboardVisibilityButton } from "./sideDrawerComponents/ТoggleScoreboardVisibilityButton";
 import { ToggleScoreboardFullscreenButton } from "./sideDrawerComponents/ToggleScoreboardFullscreenButton";
 import { ToggleMainFullscreenButton } from "./sideDrawerComponents/ToggleMainFullscreenButton";
+import { ToggleScoreboardFillButton } from "./sideDrawerComponents/ToggleScoreboardFillButton";
 import { NewMatchButton } from "./sideDrawerComponents/NewMatchButton";
 import { ExitMatchButton } from "./sideDrawerComponents/ExitMatchButton";
 import { LoadMatchButton } from "./sideDrawerComponents/LoadMatchButton";
@@ -62,6 +63,8 @@ export function SideDrawer({
       <ToggleScoreboardFullscreenButton
         scoreboardVisibility={scoreboardVisibility}
       />
+
+      <ToggleScoreboardFillButton scoreboardVisibility={scoreboardVisibility} />
 
       <ToggleMainFullscreenButton />
 

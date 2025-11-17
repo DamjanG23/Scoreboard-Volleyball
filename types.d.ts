@@ -75,6 +75,9 @@ type EventPayloadMaping = {
   closeScoreboardWindow: boolean;
   toggleScoreboardFullscreen: boolean;
   onScoreboardFullscreenChange: boolean;
+  getScoreboardFillState: boolean;
+  toggleScoreboardFill: boolean;
+  onScoreboardFillStateChange: boolean;
   toggleMainFullscreen: boolean;
   onMainFullscreenChange: boolean;
   selectLogoFile: string | null;
@@ -156,6 +159,14 @@ interface Window {
 
     onScoreboardFullscreenChange: (
       callback: (isFullscreen: boolean) => void
+    ) => UnsubscribeFunction;
+
+    getScoreboardFillState: () => Promise<boolean>;
+
+    toggleScoreboardFill: () => Promise<boolean>;
+
+    onScoreboardFillStateChange: (
+      callback: (isFilled: boolean) => void
     ) => UnsubscribeFunction;
 
     onMainFullscreenChange: (

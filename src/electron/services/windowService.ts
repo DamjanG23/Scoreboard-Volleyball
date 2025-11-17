@@ -85,3 +85,15 @@ export async function openLogoFileDialog(
 
   return result.filePaths[0];
 }
+
+// Scoreboard fill state
+let scoreboardFilled = false;
+
+export function getScoreboardFillState(): boolean {
+  return scoreboardFilled;
+}
+
+export function toggleScoreboardFill(): boolean {
+  scoreboardFilled = !scoreboardFilled;
+  return scoreboardFilled;
+}

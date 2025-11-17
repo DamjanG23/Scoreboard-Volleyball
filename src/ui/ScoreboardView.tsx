@@ -1,8 +1,26 @@
+import { useState, useEffect } from "react";
+
 interface ScoreboardViewProps {
   currentMatch: Match | null;
 }
 
 export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
+  const [isFilled, setIsFilled] = useState(false);
+
+  useEffect(() => {
+    window.electron.getScoreboardFillState().then(setIsFilled);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = window.electron.onScoreboardFillStateChange(
+      (fillState) => {
+        setIsFilled(fillState);
+      }
+    );
+
+    return unsubscribe;
+  }, []);
+
   const teamA = currentMatch?.teams?.teamA;
   const teamB = currentMatch?.teams?.teamB;
   const teamAScore = currentMatch?.teamAScore || {
@@ -41,6 +59,32 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
       "0"
     )}`;
   };
+
+  // If not filled, show only the desktop icon
+  if (!isFilled) {
+    return (
+      <div
+        style={{
+          width: "100vw",
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#000",
+        }}
+      >
+        <img
+          src="/desktopIcon.png"
+          alt="Logo"
+          style={{
+            maxWidth: "50vw",
+            maxHeight: "50vh",
+            objectFit: "contain",
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div
