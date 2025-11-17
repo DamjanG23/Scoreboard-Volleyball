@@ -378,7 +378,10 @@ export function Score({ currentMatch }: ScoreProps) {
         </Paper>
 
         {/* Sets Controls */}
-        <Paper elevation={3} sx={{ p: 3, maxWidth: 1100, mx: "auto", width: "100%" }}>
+        <Paper
+          elevation={3}
+          sx={{ p: 3, maxWidth: 1100, mx: "auto", width: "100%" }}
+        >
           <Stack direction="row" spacing={4} justifyContent="space-around">
             {/* Team A Sets */}
             <Box sx={{ flex: 1, textAlign: "center" }}>
@@ -400,7 +403,11 @@ export function Score({ currentMatch }: ScoreProps) {
                   type="number"
                   value={teamASets}
                   disabled
-                  inputProps={{ min: 0, max: 3, style: { textAlign: "center" } }}
+                  inputProps={{
+                    min: 0,
+                    max: 3,
+                    style: { textAlign: "center" },
+                  }}
                   sx={{ width: 100 }}
                   size="medium"
                 />
@@ -440,7 +447,11 @@ export function Score({ currentMatch }: ScoreProps) {
                   type="number"
                   value={teamBSets}
                   disabled
-                  inputProps={{ min: 0, max: 3, style: { textAlign: "center" } }}
+                  inputProps={{
+                    min: 0,
+                    max: 3,
+                    style: { textAlign: "center" },
+                  }}
                   sx={{ width: 100 }}
                   size="medium"
                 />
