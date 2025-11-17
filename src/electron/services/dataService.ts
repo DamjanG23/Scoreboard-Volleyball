@@ -489,14 +489,24 @@ export function incrementTeamASets(
   const setDuration = currentTimeSec - setStartTime;
 
   // Record the set history before resetting points (max 5 sets)
-  if (currentMatch.setHistory.length < 5) {
-    const setRecord = {
-      setNum: completedSetNum,
-      teamAPoints: currentMatch.teamAScore.points,
-      teamBPoints: currentMatch.teamBScore?.points || 0,
-      timeSec: setDuration,
-    };
+  const setRecord = {
+    setNum: completedSetNum,
+    teamAPoints: currentMatch.teamAScore.points,
+    teamBPoints: currentMatch.teamBScore?.points || 0,
+    timeSec: setDuration,
+  };
 
+  // Check if a set with this number already exists
+  const existingSetIndex = currentMatch.setHistory.findIndex(
+    (s) => s.setNum === completedSetNum
+  );
+
+  if (existingSetIndex !== -1) {
+    // Overwrite existing set
+    currentMatch.setHistory[existingSetIndex] = setRecord;
+    console.log("Set overwritten in history:", setRecord);
+  } else if (currentMatch.setHistory.length < 5) {
+    // Add new set if there's room
     currentMatch.setHistory.push(setRecord);
     console.log("Set recorded in history:", setRecord);
   } else {
@@ -550,13 +560,6 @@ export function decrementTeamASets(
 
   if (currentMatch.teamAScore) {
     currentMatch.teamAScore.sets = currentSets - 1;
-
-    // Remove the last set from history if it exists
-    if (currentMatch.setHistory && currentMatch.setHistory.length > 0) {
-      const removedSet = currentMatch.setHistory.pop();
-      console.log("Removed set from history:", removedSet);
-    }
-
     saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
     console.log("Team A sets decremented to:", currentMatch.teamAScore.sets);
   }
@@ -615,14 +618,24 @@ export function incrementTeamBSets(
   const setDuration = currentTimeSec - setStartTime;
 
   // Record the set history before resetting points (max 5 sets)
-  if (currentMatch.setHistory.length < 5) {
-    const setRecord = {
-      setNum: completedSetNum,
-      teamAPoints: currentMatch.teamAScore?.points || 0,
-      teamBPoints: currentMatch.teamBScore.points,
-      timeSec: setDuration,
-    };
+  const setRecord = {
+    setNum: completedSetNum,
+    teamAPoints: currentMatch.teamAScore?.points || 0,
+    teamBPoints: currentMatch.teamBScore.points,
+    timeSec: setDuration,
+  };
 
+  // Check if a set with this number already exists
+  const existingSetIndex = currentMatch.setHistory.findIndex(
+    (s) => s.setNum === completedSetNum
+  );
+
+  if (existingSetIndex !== -1) {
+    // Overwrite existing set
+    currentMatch.setHistory[existingSetIndex] = setRecord;
+    console.log("Set overwritten in history:", setRecord);
+  } else if (currentMatch.setHistory.length < 5) {
+    // Add new set if there's room
     currentMatch.setHistory.push(setRecord);
     console.log("Set recorded in history:", setRecord);
   } else {
@@ -676,13 +689,6 @@ export function decrementTeamBSets(
 
   if (currentMatch.teamBScore) {
     currentMatch.teamBScore.sets = currentSets - 1;
-
-    // Remove the last set from history if it exists
-    if (currentMatch.setHistory && currentMatch.setHistory.length > 0) {
-      const removedSet = currentMatch.setHistory.pop();
-      console.log("Removed set from history:", removedSet);
-    }
-
     saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
     console.log("Team B sets decremented to:", currentMatch.teamBScore.sets);
   }
@@ -820,4 +826,49 @@ export function decrementTeamBTimeouts(
       currentMatch.teamBScore.timeouts
     );
   }
+}
+
+// ---------- ---------- SET HISTORY ---------- ---------- //
+
+export function updateSetHistory(
+  setHistory: Array<{
+    setNum: number;
+    teamAPoints: number;
+    teamBPoints: number;
+    timeSec: number;
+  }>,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to update set history");
+    return;
+  }
+
+  // Limit to 5 sets maximum
+  if (setHistory.length > 5) {
+    console.log("Truncating set history to 5 sets");
+    setHistory = setHistory.slice(0, 5);
+  }
+
+  // Validate that set numbers are unique and in range 1-5
+  const setNums = setHistory.map((s) => s.setNum);
+  const uniqueSetNums = new Set(setNums);
+
+  if (setNums.length !== uniqueSetNums.size) {
+    console.error("Duplicate set numbers detected in set history");
+    return;
+  }
+
+  const invalidSetNums = setNums.filter((num) => num < 1 || num > 5);
+  if (invalidSetNums.length > 0) {
+    console.error("Invalid set numbers (must be 1-5):", invalidSetNums);
+    return;
+  }
+
+  currentMatch.setHistory = setHistory;
+  saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+  console.log("Set history updated:", setHistory);
 }

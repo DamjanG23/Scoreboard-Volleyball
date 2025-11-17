@@ -9,7 +9,14 @@ import {
   IconButton,
   Divider,
 } from "@mui/material";
-import { PlayArrow, Stop, Save, Add, Remove } from "@mui/icons-material";
+import {
+  PlayArrow,
+  Stop,
+  Save,
+  Add,
+  Remove,
+  Delete,
+} from "@mui/icons-material";
 
 interface ScoreProps {
   currentMatch: Match | null;
@@ -25,6 +32,14 @@ export function Score({ currentMatch }: ScoreProps) {
   const [teamBSets, setTeamBSets] = useState(0);
   const [teamATimeouts, setTeamATimeouts] = useState(0);
   const [teamBTimeouts, setTeamBTimeouts] = useState(0);
+  const [setHistory, setSetHistory] = useState<
+    Array<{
+      setNum: number;
+      teamAPoints: number;
+      teamBPoints: number;
+      timeSec: number;
+    }>
+  >([]);
 
   useEffect(() => {
     // Check if time is running when component mounts
@@ -52,6 +67,8 @@ export function Score({ currentMatch }: ScoreProps) {
       setTeamBSets(0);
       setTeamBTimeouts(0);
     }
+    // Update set history
+    setSetHistory(currentMatch?.setHistory || []);
   }, [currentMatch]);
 
   const formatTime = (seconds: number): string => {
@@ -199,6 +216,59 @@ export function Score({ currentMatch }: ScoreProps) {
 
   const handleTeamBDecrementTimeouts = () => {
     window.electron.decrementTeamBTimeouts();
+  };
+
+  // Set history handlers
+  const handleAddSet = () => {
+    if (setHistory.length >= 5) return;
+
+    // Find the next available set number (1-5)
+    const existingSetNums = new Set(setHistory.map((s) => s.setNum));
+    let nextSetNum = 1;
+    for (let i = 1; i <= 5; i++) {
+      if (!existingSetNums.has(i)) {
+        nextSetNum = i;
+        break;
+      }
+    }
+
+    const newSet = {
+      setNum: nextSetNum,
+      teamAPoints: 0,
+      teamBPoints: 0,
+      timeSec: 0,
+    };
+
+    // Insert in order by setNum
+    const updatedHistory = [...setHistory, newSet].sort(
+      (a, b) => a.setNum - b.setNum
+    );
+    setSetHistory(updatedHistory);
+    window.electron.updateSetHistory(updatedHistory);
+  };
+
+  const handleRemoveSet = (index: number) => {
+    // Remove the set without renumbering (keep original set numbers)
+    const updatedHistory = setHistory.filter((_, i) => i !== index);
+    setSetHistory(updatedHistory);
+    window.electron.updateSetHistory(updatedHistory);
+  };
+
+  const handleSetFieldChange = (
+    index: number,
+    field: "teamAPoints" | "teamBPoints" | "timeSec",
+    value: number
+  ) => {
+    const updatedHistory = [...setHistory];
+    updatedHistory[index] = {
+      ...updatedHistory[index],
+      [field]: value,
+    };
+    setSetHistory(updatedHistory);
+  };
+
+  const handleSetFieldBlur = () => {
+    window.electron.updateSetHistory(setHistory);
   };
 
   const currentTimeSec = currentMatch?.timeSec || 0;
@@ -585,6 +655,114 @@ export function Score({ currentMatch }: ScoreProps) {
                 Timeouts
               </Typography>
             </Box>
+          </Stack>
+        </Paper>
+
+        {/* Set History Controls */}
+        <Paper
+          elevation={3}
+          sx={{ p: 3, maxWidth: 1100, mx: "auto", width: "100%" }}
+        >
+          <Stack spacing={2}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">Set History</Typography>
+              <Button
+                variant="contained"
+                startIcon={<Add />}
+                onClick={handleAddSet}
+                disabled={setHistory.length >= 5}
+                size="small"
+              >
+                Add Set
+              </Button>
+            </Box>
+
+            {setHistory.length === 0 ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+              >
+                No sets recorded yet
+              </Typography>
+            ) : (
+              <Stack spacing={2}>
+                {setHistory.map((set, index) => (
+                  <Paper key={index} variant="outlined" sx={{ p: 2 }}>
+                    <Stack direction="row" spacing={2} alignItems="center">
+                      <Typography variant="body1" sx={{ minWidth: 60 }}>
+                        Set {set.setNum}
+                      </Typography>
+
+                      <TextField
+                        label="Team A Points"
+                        type="number"
+                        value={set.teamAPoints}
+                        onChange={(e) =>
+                          handleSetFieldChange(
+                            index,
+                            "teamAPoints",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
+                        onBlur={handleSetFieldBlur}
+                        size="small"
+                        sx={{ width: 140 }}
+                        inputProps={{ min: 0 }}
+                      />
+
+                      <TextField
+                        label="Team B Points"
+                        type="number"
+                        value={set.teamBPoints}
+                        onChange={(e) =>
+                          handleSetFieldChange(
+                            index,
+                            "teamBPoints",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
+                        onBlur={handleSetFieldBlur}
+                        size="small"
+                        sx={{ width: 140 }}
+                        inputProps={{ min: 0 }}
+                      />
+
+                      <TextField
+                        label="Duration (sec)"
+                        type="number"
+                        value={set.timeSec}
+                        onChange={(e) =>
+                          handleSetFieldChange(
+                            index,
+                            "timeSec",
+                            parseInt(e.target.value) || 0
+                          )
+                        }
+                        onBlur={handleSetFieldBlur}
+                        size="small"
+                        sx={{ width: 140 }}
+                        inputProps={{ min: 0 }}
+                      />
+
+                      <IconButton
+                        color="error"
+                        onClick={() => handleRemoveSet(index)}
+                        size="small"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Stack>
+                  </Paper>
+                ))}
+              </Stack>
+            )}
           </Stack>
         </Paper>
       </Stack>

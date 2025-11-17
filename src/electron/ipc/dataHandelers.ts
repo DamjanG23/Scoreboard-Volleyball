@@ -27,6 +27,7 @@ import {
   decrementTeamATimeouts,
   incrementTeamBTimeouts,
   decrementTeamBTimeouts,
+  updateSetHistory,
 } from "../services/dataService.js";
 import {
   startMatchTime,
@@ -193,5 +194,10 @@ export function setupDataHandelers(
 
   ipcMainOn("decrementTeamBTimeouts", () => {
     decrementTeamBTimeouts(mainWindow, scoreboardWindow);
+  });
+
+  // ---------- ---------- SET HISTORY ---------- ---------- //
+  ipcMainOn("updateSetHistory", (setHistory) => {
+    updateSetHistory(setHistory, mainWindow, scoreboardWindow);
   });
 }

@@ -162,6 +162,12 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("decrementTeamBTimeouts", undefined);
   },
 
+  // ---------- ---------- SET HISTORY ---------- ---------- //
+
+  updateSetHistory: (setHistory) => {
+    ipcSend("updateSetHistory", setHistory);
+  },
+
   // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {

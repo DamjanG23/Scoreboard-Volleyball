@@ -111,6 +111,12 @@ type EventPayloadMaping = {
   decrementTeamATimeouts: void;
   incrementTeamBTimeouts: void;
   decrementTeamBTimeouts: void;
+  updateSetHistory: Array<{
+    setNum: number;
+    teamAPoints: number;
+    teamBPoints: number;
+    timeSec: number;
+  }>;
 };
 
 type UnsubscribeFunction = () => void;
@@ -237,5 +243,16 @@ interface Window {
     incrementTeamBTimeouts: () => void;
 
     decrementTeamBTimeouts: () => void;
+
+    // ---------- ---------- SET HISTORY ---------- ---------- //
+
+    updateSetHistory: (
+      setHistory: Array<{
+        setNum: number;
+        teamAPoints: number;
+        teamBPoints: number;
+        timeSec: number;
+      }>
+    ) => void;
   };
 }
