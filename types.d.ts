@@ -89,6 +89,9 @@ type EventPayloadMaping = {
   startMatchTime: void;
   stopMatchTime: void;
   isMatchTimeRunning: boolean;
+  startWarmupTime: void;
+  stopWarmupTime: void;
+  isWarmupTimeRunning: boolean;
   updateMatchTime: number;
 };
 
@@ -184,6 +187,12 @@ interface Window {
     stopMatchTime: () => void;
 
     isMatchTimeRunning: () => Promise<boolean>;
+
+    startWarmupTime: () => void;
+
+    stopWarmupTime: () => void;
+
+    isWarmupTimeRunning: () => Promise<boolean>;
 
     updateMatchTime: (newTimeSec: number) => void;
   };

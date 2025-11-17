@@ -102,6 +102,18 @@ electron.contextBridge.exposeInMainWorld("electron", {
     return ipcInvoke("isMatchTimeRunning");
   },
 
+  startWarmupTime: () => {
+    ipcSend("startWarmupTime", undefined);
+  },
+
+  stopWarmupTime: () => {
+    ipcSend("stopWarmupTime", undefined);
+  },
+
+  isWarmupTimeRunning: () => {
+    return ipcInvoke("isWarmupTimeRunning");
+  },
+
   updateMatchTime: (newTimeSec) => {
     ipcSend("updateMatchTime", newTimeSec);
   },

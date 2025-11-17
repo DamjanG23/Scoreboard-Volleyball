@@ -15,11 +15,13 @@ interface ScoreProps {
 
 export function Score({ currentMatch }: ScoreProps) {
   const [isRunning, setIsRunning] = useState(false);
+  const [isWarmupRunning, setIsWarmupRunning] = useState(false);
   const [manualTime, setManualTime] = useState("");
 
   useEffect(() => {
     // Check if time is running when component mounts
     window.electron.isMatchTimeRunning().then(setIsRunning);
+    window.electron.isWarmupTimeRunning().then(setIsWarmupRunning);
   }, []);
 
   const formatTime = (seconds: number): string => {
@@ -51,6 +53,16 @@ export function Score({ currentMatch }: ScoreProps) {
     }
   };
 
+  const handleWarmupStartStop = async () => {
+    if (isWarmupRunning) {
+      window.electron.stopWarmupTime();
+      setIsWarmupRunning(false);
+    } else {
+      window.electron.startWarmupTime();
+      setIsWarmupRunning(true);
+    }
+  };
+
   const handleSaveManualTime = () => {
     const newTimeSec = parseTime(manualTime);
     window.electron.updateMatchTime(newTimeSec);
@@ -78,10 +90,10 @@ export function Score({ currentMatch }: ScoreProps) {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, maxWidth: 900, mx: "auto" }}>
+      <Paper elevation={3} sx={{ p: 3, maxWidth: 1100, mx: "auto" }}>
         <Stack
           direction="row"
-          spacing={3}
+          spacing={2}
           alignItems="center"
           justifyContent="space-between"
         >
@@ -92,9 +104,23 @@ export function Score({ currentMatch }: ScoreProps) {
             color={isRunning ? "warning" : "error"}
             startIcon={isRunning ? <Stop /> : <PlayArrow />}
             onClick={handleStartStop}
+            disabled={isWarmupRunning}
             sx={{ minWidth: 160 }}
           >
             {isRunning ? "Stop Time" : "Start Time"}
+          </Button>
+
+          {/* Start/Stop Warmup Button */}
+          <Button
+            variant="contained"
+            size="large"
+            color={isWarmupRunning ? "warning" : "info"}
+            startIcon={isWarmupRunning ? <Stop /> : <PlayArrow />}
+            onClick={handleWarmupStartStop}
+            disabled={isRunning}
+            sx={{ minWidth: 180 }}
+          >
+            {isWarmupRunning ? "Stop Warmup" : "Start Warmup"}
           </Button>
 
           {/* Display Current Time */}
@@ -103,7 +129,11 @@ export function Score({ currentMatch }: ScoreProps) {
             sx={{
               fontFamily: "monospace",
               fontWeight: "bold",
-              color: isRunning ? "success.main" : "text.primary",
+              color: isRunning
+                ? "success.main"
+                : isWarmupRunning
+                ? "info.main"
+                : "text.primary",
               minWidth: 180,
             }}
           >
@@ -111,7 +141,7 @@ export function Score({ currentMatch }: ScoreProps) {
           </Typography>
 
           {/* Manual Time Input (only when stopped) */}
-          {!isRunning ? (
+          {!isRunning && !isWarmupRunning ? (
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
                 label="HH:MM:SS"

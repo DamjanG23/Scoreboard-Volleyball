@@ -23,6 +23,9 @@ import {
   stopMatchTime,
   isMatchTimeRunning,
   updateMatchTime,
+  startWarmupTime,
+  stopWarmupTime,
+  isWarmupTimeRunning,
 } from "../services/timeService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -122,6 +125,18 @@ export function setupDataHandelers(
 
   ipcMainHandle("isMatchTimeRunning", () => {
     return isMatchTimeRunning();
+  });
+
+  ipcMainOn("startWarmupTime", () => {
+    startWarmupTime(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("stopWarmupTime", () => {
+    stopWarmupTime();
+  });
+
+  ipcMainHandle("isWarmupTimeRunning", () => {
+    return isWarmupTimeRunning();
   });
 
   ipcMainOn("updateMatchTime", (newTimeSec) => {
