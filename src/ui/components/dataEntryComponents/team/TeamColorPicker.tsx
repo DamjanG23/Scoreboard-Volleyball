@@ -1,4 +1,5 @@
 import { Box, Typography, Paper } from "@mui/material";
+import { useId } from "react";
 
 interface TeamColorPickerProps {
   color: string;
@@ -11,6 +12,9 @@ export function TeamColorPicker({
   isEditing,
   onColorChange,
 }: TeamColorPickerProps) {
+  const uniqueId = useId();
+  const inputId = `color-picker-input-${uniqueId}`;
+
   return (
     <Box sx={{ textAlign: "center" }}>
       <Typography variant="body2" sx={{ mb: 1 }}>
@@ -20,7 +24,7 @@ export function TeamColorPicker({
         elevation={2}
         onClick={() => {
           if (isEditing) {
-            document.getElementById("color-picker-input")?.click();
+            document.getElementById(inputId)?.click();
           }
         }}
         sx={{
@@ -39,7 +43,7 @@ export function TeamColorPicker({
         }}
       />
       <input
-        id="color-picker-input"
+        id={inputId}
         type="color"
         disabled={!isEditing}
         value={color}
@@ -49,4 +53,3 @@ export function TeamColorPicker({
     </Box>
   );
 }
-
