@@ -154,78 +154,123 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           backgroundColor: teamA?.color || "#1976d2",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          padding: "3vh",
-          gap: "2vh",
         }}
       >
-        {/* Team A Logo */}
+        {/* Team A Logo - Top Third */}
         <div
           style={{
-            width: "20vw",
-            height: "20vw",
-            maxWidth: "300px",
-            maxHeight: "300px",
+            flex: 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+            padding: "2vh",
           }}
         >
-          {teamALogoBase64 ? (
-            <img
-              src={teamALogoBase64}
-              alt={teamA?.name || "Team A"}
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
-          ) : (
-            <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
-          )}
+          <div
+            style={{
+              maxWidth: "90%",
+              maxHeight: "90%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+            }}
+          >
+            {teamALogoBase64 ? (
+              <img
+                src={teamALogoBase64}
+                alt={teamA?.name || "Team A"}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
+            )}
+          </div>
         </div>
 
-        {/* Team A Points */}
+        {/* Team A Points - Middle Third */}
         <div
           style={{
-            fontSize: "15vw",
-            fontWeight: "normal",
-            lineHeight: 1,
-            textAlign: "center",
-            textShadow: "0 0.5vh 1vh rgba(0,0,0,0.5)",
-            letterSpacing: "0.1em",
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {teamAScore.points}
+          <div
+            style={{
+              fontSize: "15vw",
+              fontWeight: "normal",
+              lineHeight: 0.6,
+              textAlign: "center",
+              letterSpacing: "0.1em",
+              backgroundColor: "#000",
+              border: "0.75vh solid #fff",
+              borderRadius: 0,
+              width: "85%",
+              padding: "1vh 0",
+              boxSizing: "border-box",
+            }}
+          >
+            {teamAScore.points}
+          </div>
         </div>
 
-        {/* Team A Sets */}
+        {/* Team A Sets and Timeouts - Bottom Third */}
         <div
           style={{
-            fontSize: "3vw",
-            fontWeight: "normal",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            padding: "1vh 3vw",
-            borderRadius: "1vh",
-            textAlign: "center",
-            letterSpacing: "0.08em",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            paddingBottom: "3vh",
+            gap: "2vh",
           }}
         >
-          SETS: {teamAScore.sets || 0}
-        </div>
+          <div
+            style={{
+              fontSize: "4vw",
+              fontWeight: "normal",
+              backgroundColor: "#000",
+              padding: "1.5vh 1.5vw",
+              borderRadius: 0,
+              letterSpacing: "0.08em",
+              width: "85%",
+              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              lineHeight: 0.8,
+            }}
+          >
+            <span>SETS</span>
+            <span>{teamAScore.sets || 0}</span>
+          </div>
 
-        {/* Team A Timeouts */}
-        <div
-          style={{
-            fontSize: "2.5vw",
-            fontWeight: "normal",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            padding: "1vh 3vw",
-            borderRadius: "1vh",
-            textAlign: "center",
-            letterSpacing: "0.08em",
-          }}
-        >
-          TIMEOUTS: {teamAScore.timeouts || 0}
+          <div
+            style={{
+              fontSize: "4vw",
+              fontWeight: "normal",
+              backgroundColor: "#000",
+              padding: "1.5vh 1.5vw",
+              borderRadius: 0,
+              letterSpacing: "0.08em",
+              width: "85%",
+              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              lineHeight: 0.8,
+            }}
+          >
+            <span>TIMEOUTS</span>
+            <span>{teamAScore.timeouts || 0}</span>
+          </div>
         </div>
       </div>
 
@@ -400,78 +445,123 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           backgroundColor: teamB?.color || "#d32f2f",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          padding: "3vh",
-          gap: "2vh",
         }}
       >
-        {/* Team B Logo */}
+        {/* Team B Logo - Top Third */}
         <div
           style={{
-            width: "20vw",
-            height: "20vw",
-            maxWidth: "300px",
-            maxHeight: "300px",
+            flex: 1,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+            padding: "2vh",
           }}
         >
-          {teamBLogoBase64 ? (
-            <img
-              src={teamBLogoBase64}
-              alt={teamB?.name || "Team B"}
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            />
-          ) : (
-            <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
-          )}
+          <div
+            style={{
+              maxWidth: "90%",
+              maxHeight: "90%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              filter: "drop-shadow(0 0.3vh 0.6vh rgba(0,0,0,0.4))",
+            }}
+          >
+            {teamBLogoBase64 ? (
+              <img
+                src={teamBLogoBase64}
+                alt={teamB?.name || "Team B"}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: "4vw", color: "#999" }}>Logo</span>
+            )}
+          </div>
         </div>
 
-        {/* Team B Points */}
+        {/* Team B Points - Middle Third */}
         <div
           style={{
-            fontSize: "15vw",
-            fontWeight: "normal",
-            lineHeight: 1,
-            textAlign: "center",
-            textShadow: "0 0.5vh 1vh rgba(0,0,0,0.5)",
-            letterSpacing: "0.1em",
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {teamBScore.points}
+          <div
+            style={{
+              fontSize: "15vw",
+              fontWeight: "normal",
+              lineHeight: 0.6,
+              textAlign: "center",
+              letterSpacing: "0.1em",
+              backgroundColor: "#000",
+              border: "0.75vh solid #fff",
+              borderRadius: 0,
+              width: "85%",
+              padding: "1vh 0",
+              boxSizing: "border-box",
+            }}
+          >
+            {teamBScore.points}
+          </div>
         </div>
 
-        {/* Team B Sets */}
+        {/* Team B Sets and Timeouts - Bottom Third */}
         <div
           style={{
-            fontSize: "3vw",
-            fontWeight: "normal",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            padding: "1vh 3vw",
-            borderRadius: "1vh",
-            textAlign: "center",
-            letterSpacing: "0.08em",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            paddingBottom: "3vh",
+            gap: "2vh",
           }}
         >
-          SETS: {teamBScore.sets || 0}
-        </div>
+          <div
+            style={{
+              fontSize: "4vw",
+              fontWeight: "normal",
+              backgroundColor: "#000",
+              padding: "1.5vh 1.5vw",
+              borderRadius: 0,
+              letterSpacing: "0.08em",
+              width: "85%",
+              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              lineHeight: 0.8,
+            }}
+          >
+            <span>{teamBScore.sets || 0}</span>
+            <span>SETS</span>
+          </div>
 
-        {/* Team B Timeouts */}
-        <div
-          style={{
-            fontSize: "2.5vw",
-            fontWeight: "normal",
-            backgroundColor: "rgba(0,0,0,0.3)",
-            padding: "1vh 3vw",
-            borderRadius: "1vh",
-            textAlign: "center",
-            letterSpacing: "0.08em",
-          }}
-        >
-          TIMEOUTS: {teamBScore.timeouts || 0}
+          <div
+            style={{
+              fontSize: "4vw",
+              fontWeight: "normal",
+              backgroundColor: "#000",
+              padding: "1.5vh 1.5vw",
+              borderRadius: 0,
+              letterSpacing: "0.08em",
+              width: "85%",
+              boxSizing: "border-box",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              lineHeight: 0.8,
+            }}
+          >
+            <span>{teamBScore.timeouts || 0}</span>
+            <span>TIMEOUTS</span>
+          </div>
         </div>
       </div>
     </div>
