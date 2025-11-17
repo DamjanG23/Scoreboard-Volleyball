@@ -102,6 +102,7 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
     // TODO: Integrate with backend if needed
     setFormTeam(selectedTeam);
     setIsTeamActive(true);
+    setIsEditing(true);
     setIsLoadTeamDialogOpen(false);
   };
 
