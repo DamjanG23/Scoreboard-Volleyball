@@ -23,6 +23,8 @@ export function Score({ currentMatch }: ScoreProps) {
   const [teamBPoints, setTeamBPoints] = useState("");
   const [teamASets, setTeamASets] = useState(0);
   const [teamBSets, setTeamBSets] = useState(0);
+  const [teamATimeouts, setTeamATimeouts] = useState(0);
+  const [teamBTimeouts, setTeamBTimeouts] = useState(0);
 
   useEffect(() => {
     // Check if time is running when component mounts
@@ -35,16 +37,20 @@ export function Score({ currentMatch }: ScoreProps) {
     if (currentMatch?.teamAScore) {
       setTeamAPoints(String(currentMatch.teamAScore.points));
       setTeamASets(currentMatch.teamAScore.sets || 0);
+      setTeamATimeouts(currentMatch.teamAScore.timeouts || 0);
     } else {
       setTeamAPoints("0");
       setTeamASets(0);
+      setTeamATimeouts(0);
     }
     if (currentMatch?.teamBScore) {
       setTeamBPoints(String(currentMatch.teamBScore.points));
       setTeamBSets(currentMatch.teamBScore.sets || 0);
+      setTeamBTimeouts(currentMatch.teamBScore.timeouts || 0);
     } else {
       setTeamBPoints("0");
       setTeamBSets(0);
+      setTeamBTimeouts(0);
     }
   }, [currentMatch]);
 
@@ -176,6 +182,23 @@ export function Score({ currentMatch }: ScoreProps) {
 
   const handleTeamBDecrementSets = () => {
     window.electron.decrementTeamBSets();
+  };
+
+  // Timeouts handlers
+  const handleTeamAIncrementTimeouts = () => {
+    window.electron.incrementTeamATimeouts();
+  };
+
+  const handleTeamADecrementTimeouts = () => {
+    window.electron.decrementTeamATimeouts();
+  };
+
+  const handleTeamBIncrementTimeouts = () => {
+    window.electron.incrementTeamBTimeouts();
+  };
+
+  const handleTeamBDecrementTimeouts = () => {
+    window.electron.decrementTeamBTimeouts();
   };
 
   const currentTimeSec = currentMatch?.timeSec || 0;
@@ -466,6 +489,100 @@ export function Score({ currentMatch }: ScoreProps) {
               </Stack>
               <Typography variant="caption" color="text.secondary">
                 Sets
+              </Typography>
+            </Box>
+          </Stack>
+        </Paper>
+
+        {/* Timeouts Controls */}
+        <Paper
+          elevation={3}
+          sx={{ p: 3, maxWidth: 1100, mx: "auto", width: "100%" }}
+        >
+          <Stack direction="row" spacing={4} justifyContent="space-around">
+            {/* Team A Timeouts */}
+            <Box sx={{ flex: 1, textAlign: "center" }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <IconButton
+                  color="error"
+                  onClick={handleTeamADecrementTimeouts}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Remove />
+                </IconButton>
+                <TextField
+                  type="number"
+                  value={teamATimeouts}
+                  disabled
+                  inputProps={{
+                    min: 0,
+                    max: 2,
+                    style: { textAlign: "center" },
+                  }}
+                  sx={{ width: 100 }}
+                  size="medium"
+                />
+                <IconButton
+                  color="success"
+                  onClick={handleTeamAIncrementTimeouts}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Add />
+                </IconButton>
+              </Stack>
+              <Typography variant="caption" color="text.secondary">
+                Timeouts
+              </Typography>
+            </Box>
+
+            <Divider orientation="vertical" flexItem />
+
+            {/* Team B Timeouts */}
+            <Box sx={{ flex: 1, textAlign: "center" }}>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <IconButton
+                  color="error"
+                  onClick={handleTeamBDecrementTimeouts}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Remove />
+                </IconButton>
+                <TextField
+                  type="number"
+                  value={teamBTimeouts}
+                  disabled
+                  inputProps={{
+                    min: 0,
+                    max: 2,
+                    style: { textAlign: "center" },
+                  }}
+                  sx={{ width: 100 }}
+                  size="medium"
+                />
+                <IconButton
+                  color="success"
+                  onClick={handleTeamBIncrementTimeouts}
+                  size="large"
+                  disabled={!isRunning}
+                >
+                  <Add />
+                </IconButton>
+              </Stack>
+              <Typography variant="caption" color="text.secondary">
+                Timeouts
               </Typography>
             </Box>
           </Stack>

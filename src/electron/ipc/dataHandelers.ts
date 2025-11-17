@@ -23,6 +23,10 @@ import {
   decrementTeamASets,
   incrementTeamBSets,
   decrementTeamBSets,
+  incrementTeamATimeouts,
+  decrementTeamATimeouts,
+  incrementTeamBTimeouts,
+  decrementTeamBTimeouts,
 } from "../services/dataService.js";
 import {
   startMatchTime,
@@ -172,5 +176,22 @@ export function setupDataHandelers(
 
   ipcMainOn("decrementTeamBSets", () => {
     decrementTeamBSets(mainWindow, scoreboardWindow);
+  });
+
+  // ---------- ---------- TIMEOUTS ---------- ---------- //
+  ipcMainOn("incrementTeamATimeouts", () => {
+    incrementTeamATimeouts(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("decrementTeamATimeouts", () => {
+    decrementTeamATimeouts(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("incrementTeamBTimeouts", () => {
+    incrementTeamBTimeouts(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainOn("decrementTeamBTimeouts", () => {
+    decrementTeamBTimeouts(mainWindow, scoreboardWindow);
   });
 }

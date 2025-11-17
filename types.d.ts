@@ -99,6 +99,10 @@ type EventPayloadMaping = {
   decrementTeamASets: void;
   incrementTeamBSets: void;
   decrementTeamBSets: void;
+  incrementTeamATimeouts: void;
+  decrementTeamATimeouts: void;
+  incrementTeamBTimeouts: void;
+  decrementTeamBTimeouts: void;
 };
 
 type UnsubscribeFunction = () => void;
@@ -215,5 +219,15 @@ interface Window {
     incrementTeamBSets: () => void;
 
     decrementTeamBSets: () => void;
+
+    // ---------- ---------- TIMEOUTS ---------- ---------- //
+
+    incrementTeamATimeouts: () => void;
+
+    decrementTeamATimeouts: () => void;
+
+    incrementTeamBTimeouts: () => void;
+
+    decrementTeamBTimeouts: () => void;
   };
 }

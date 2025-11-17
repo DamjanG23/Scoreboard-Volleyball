@@ -144,6 +144,24 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("decrementTeamBSets", undefined);
   },
 
+  // ---------- ---------- TIMEOUTS ---------- ---------- //
+
+  incrementTeamATimeouts: () => {
+    ipcSend("incrementTeamATimeouts", undefined);
+  },
+
+  decrementTeamATimeouts: () => {
+    ipcSend("decrementTeamATimeouts", undefined);
+  },
+
+  incrementTeamBTimeouts: () => {
+    ipcSend("incrementTeamBTimeouts", undefined);
+  },
+
+  decrementTeamBTimeouts: () => {
+    ipcSend("decrementTeamBTimeouts", undefined);
+  },
+
   // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {
