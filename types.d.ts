@@ -59,6 +59,7 @@ type EventPayloadMaping = {
   onScoreboardFullscreenChange: boolean;
   toggleMainFullscreen: boolean;
   onMainFullscreenChange: boolean;
+  selectLogoFile: string | null;
   createNewMatch: string;
   onCurrentMatchSaved: Match;
   removeCurrentMatch: void;
@@ -73,6 +74,7 @@ type EventPayloadMaping = {
   removeTeamA: void;
   removeTeamB: void;
   deleteTeam: string;
+  getImageAsBase64: string | null;
 };
 
 type UnsubscribeFunction = () => void;
@@ -116,6 +118,8 @@ interface Window {
       callback: (isFullscreen: boolean) => void
     ) => UnsubscribeFunction;
 
+    selectLogoFile: () => Promise<string | null>;
+
     // ---------- ---------- MATCH ---------- ---------- //
 
     createNewMatch: (matchName: string) => void;
@@ -151,5 +155,7 @@ interface Window {
     removeTeamB: () => void;
 
     deleteTeam: (teamName: string) => void;
+
+    getImageAsBase64: (imagePath: string) => Promise<string | null>;
   };
 }

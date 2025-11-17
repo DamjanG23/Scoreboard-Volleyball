@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from "electron";
 import { ipcWebContentsSend } from "../utils/util.js";
-import { join } from "path";
+import { join, extname } from "path";
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 
 export function getScoreboardState() {
@@ -319,4 +319,31 @@ export function removeTeamFromCurrentMatch(
 
   // Save the updated match
   saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
+}
+
+export function getImageAsBase64(imagePath: string): string | null {
+  try {
+    if (!existsSync(imagePath)) {
+      console.error(`Image file not found: ${imagePath}`);
+      return null;
+    }
+
+    const imageBuffer = readFileSync(imagePath);
+    const base64Image = imageBuffer.toString("base64");
+    const ext = extname(imagePath).toLowerCase();
+
+    // Determine MIME type based on extension
+    let mimeType = "image/png";
+    if (ext === ".jpg" || ext === ".jpeg") {
+      mimeType = "image/jpeg";
+    } else if (ext === ".png") {
+      mimeType = "image/png";
+    }
+
+    // Return data URL format
+    return `data:${mimeType};base64,${base64Image}`;
+  } catch (error) {
+    console.error("Error converting image to base64:", error);
+    return null;
+  }
 }

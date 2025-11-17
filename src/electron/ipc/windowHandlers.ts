@@ -5,6 +5,7 @@ import {
   showScoreboardWindow,
   toggleMainFullscreen,
   toggleScoreboardFullscreen,
+  openLogoFileDialog,
 } from "../services/windowService.js";
 import { ipcMainHandle } from "../utils/util.js";
 
@@ -30,5 +31,9 @@ export function setupWindowHandlers(
 
   ipcMainHandle("toggleMainFullscreen", () => {
     return toggleMainFullscreen(mainWindow);
+  });
+
+  ipcMainHandle("selectLogoFile", async () => {
+    return await openLogoFileDialog(mainWindow);
   });
 }

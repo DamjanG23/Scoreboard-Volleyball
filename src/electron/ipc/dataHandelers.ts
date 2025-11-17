@@ -13,6 +13,7 @@ import {
   deleteTeamByName,
   loadCurrentTeam,
   removeTeamFromCurrentMatch,
+  getImageAsBase64,
 } from "../services/dataService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -82,5 +83,9 @@ export function setupDataHandelers(
 
   ipcMainOn("deleteTeam", (teamName) => {
     deleteTeamByName(teamName);
+  });
+
+  ipcMainHandle("getImageAsBase64", (imagePath) => {
+    return getImageAsBase64(imagePath);
   });
 }

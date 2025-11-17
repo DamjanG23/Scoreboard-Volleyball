@@ -1,14 +1,16 @@
-import { Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper, TextField } from "@mui/material";
 import { CloudUpload } from "@mui/icons-material";
 
 interface TeamLogoPickerProps {
   logoPath: string;
+  logoBase64: string;
   isEditing: boolean;
   onLogoClick: () => void;
 }
 
 export function TeamLogoPicker({
   logoPath,
+  logoBase64,
   isEditing,
   onLogoClick,
 }: TeamLogoPickerProps) {
@@ -44,10 +46,10 @@ export function TeamLogoPicker({
             : {},
         }}
       >
-        {logoPath ? (
+        {logoBase64 ? (
           <Box
             component="img"
-            src={logoPath}
+            src={logoBase64}
             alt="Team logo"
             sx={{
               maxWidth: "100%",
@@ -66,7 +68,19 @@ export function TeamLogoPicker({
           </>
         )}
       </Paper>
+      <TextField
+        value={logoPath}
+        placeholder="Logo path"
+        disabled
+        size="small"
+        sx={{
+          mt: 2,
+          width: 250,
+          "& .MuiInputBase-input.Mui-disabled": {
+            WebkitTextFillColor: "rgba(0, 0, 0, 0.6)",
+          },
+        }}
+      />
     </Box>
   );
 }
-

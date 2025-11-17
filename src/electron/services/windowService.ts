@@ -66,3 +66,22 @@ export function toggleMainFullscreen(mainWindow: BrowserWindow): boolean {
   mainWindow.setFullScreen(!currentState);
   return !currentState;
 }
+
+export async function openLogoFileDialog(
+  mainWindow: BrowserWindow
+): Promise<string | null> {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: "Select Team Logo",
+    filters: [
+      { name: "Images", extensions: ["jpg", "jpeg", "png"] },
+      { name: "All Files", extensions: ["*"] },
+    ],
+    properties: ["openFile"],
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  return result.filePaths[0];
+}

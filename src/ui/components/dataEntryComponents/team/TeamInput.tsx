@@ -35,6 +35,7 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
   const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
   const [newTeamName, setNewTeamName] = useState("");
   const [isTeamActive, setIsTeamActive] = useState(!!team);
+  const [logoBase64, setLogoBase64] = useState<string>("");
 
   useEffect(() => {
     if (!isEditing) {
@@ -66,6 +67,31 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
       loadSavedTeams();
     }
   }, [isLoadTeamDialogOpen]);
+
+  // Load logo as base64 when logoPath changes
+  useEffect(() => {
+    const loadLogo = async () => {
+      if (formTeam.logoPath) {
+        try {
+          const base64 = await window.electron.getImageAsBase64(
+            formTeam.logoPath
+          );
+          if (base64) {
+            setLogoBase64(base64);
+          } else {
+            setLogoBase64("");
+          }
+        } catch (error) {
+          console.error("Error loading logo:", error);
+          setLogoBase64("");
+        }
+      } else {
+        setLogoBase64("");
+      }
+    };
+
+    loadLogo();
+  }, [formTeam.logoPath]);
 
   const loadSavedTeams = async () => {
     try {
@@ -168,9 +194,18 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
     setTeamToDelete(null);
   };
 
-  const handleLogoClick = () => {
-    // TODO: Implement logo selection logic
-    console.log("Logo clicked - implement file picker logic here");
+  const handleLogoClick = async () => {
+    try {
+      const logoPath = await window.electron.selectLogoFile();
+      if (logoPath) {
+        setFormTeam((prev) => ({ ...prev, logoPath }));
+        console.log("Logo selected:", logoPath);
+      } else {
+        console.log("Logo selection cancelled");
+      }
+    } catch (error) {
+      console.error("Error selecting logo:", error);
+    }
   };
 
   const handlePlayerChange = (index: number, player: Player) => {
@@ -226,6 +261,7 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
 
             <TeamLogoPicker
               logoPath={formTeam.logoPath}
+              logoBase64={logoBase64}
               isEditing={isEditing}
               onLogoClick={handleLogoClick}
             />

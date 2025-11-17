@@ -76,6 +76,10 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcSend("deleteTeam", teamName);
   },
 
+  getImageAsBase64: (imagePath) => {
+    return ipcInvoke("getImageAsBase64", imagePath);
+  },
+
   // ---------- ---------- SCOREBOARD WINDOW MANAGEMENT ---------- ---------- //
 
   getIsScoreboardOpen: () => {
@@ -119,12 +123,17 @@ electron.contextBridge.exposeInMainWorld("electron", {
     ipcOn("onMainFullscreenChange", (isFullscreen) => {
       callback(isFullscreen);
     }),
+
+  selectLogoFile: () => {
+    return ipcInvoke("selectLogoFile");
+  },
 } satisfies Window["electron"]);
 
 function ipcInvoke<Key extends keyof EventPayloadMaping>(
-  key: Key
+  key: Key,
+  payload?: any
 ): Promise<EventPayloadMaping[Key]> {
-  return electron.ipcRenderer.invoke(key);
+  return electron.ipcRenderer.invoke(key, payload);
 }
 
 function ipcOn<Key extends keyof EventPayloadMaping>(
