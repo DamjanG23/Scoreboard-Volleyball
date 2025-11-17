@@ -68,6 +68,8 @@ type EventPayloadMaping = {
   deleteMatch: number;
   getTeams: Team[];
   saveTeam: Team;
+  saveTeamA: Team;
+  saveTeamB: Team;
   deleteTeam: string;
 };
 
@@ -137,6 +139,10 @@ interface Window {
     getTeams: () => Promise<Team[]>;
 
     saveTeam: (team: Team) => void;
+
+    saveTeamA: (team: Team) => void;
+
+    saveTeamB: (team: Team) => void;
 
     deleteTeam: (teamName: string) => void;
   };

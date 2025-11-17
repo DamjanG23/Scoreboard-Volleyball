@@ -63,6 +63,28 @@ export function saveCurrentMatch(
   }
 }
 
+export function getCurrentMatch(): Match | null {
+  const dataPath = join(app.getPath("userData"), "currentMatch.json");
+
+  if (!existsSync(dataPath)) {
+    return null;
+  }
+
+  try {
+    const data = readFileSync(dataPath, "utf8").trim();
+
+    if (!data) {
+      return null;
+    }
+
+    const match: Match = JSON.parse(data);
+    return match;
+  } catch (error) {
+    console.error("Error loading current match:", error);
+    return null;
+  }
+}
+
 export function removeCurrentMatch(
   mainWindow: BrowserWindow,
   scoreboardWindow?: BrowserWindow
@@ -235,4 +257,35 @@ export function deleteTeamByName(teamName: string): void {
   } catch (error) {
     console.error("Error deleting team:", error);
   }
+}
+
+export function loadCurrentTeam(
+  team: Team,
+  isTeamHome: boolean,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): void {
+  const currentMatch = getCurrentMatch();
+
+  if (!currentMatch) {
+    console.error("No current match found to load team into");
+    return;
+  }
+
+  // Initialize teams object if it doesn't exist
+  if (!currentMatch.teams) {
+    currentMatch.teams = {};
+  }
+
+  // Update the appropriate team
+  if (isTeamHome) {
+    currentMatch.teams.teamA = team;
+    console.log(`Team "${team.name}" loaded as Home Team (Team A)`);
+  } else {
+    currentMatch.teams.teamB = team;
+    console.log(`Team "${team.name}" loaded as Away Team (Team B)`);
+  }
+
+  // Save the updated match
+  saveCurrentMatch(currentMatch, mainWindow, scoreboardWindow);
 }

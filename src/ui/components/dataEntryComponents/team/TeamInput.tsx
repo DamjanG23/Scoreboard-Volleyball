@@ -84,7 +84,11 @@ export function TeamsInput({ team, isTeamHome }: TeamsInputProps) {
     } else {
       setIsEditing(false);
       setBackupTeam(null);
-      window.electron.saveTeam(formTeam);
+      if (isTeamHome) {
+        window.electron.saveTeamA(formTeam);
+      } else {
+        window.electron.saveTeamB(formTeam);
+      }
       console.log("Saving team:", formTeam);
     }
   };
