@@ -18,6 +18,8 @@ export function Config({ matchConfig }: ConfigProps) {
     config: matchConfig?.config ?? "",
     timeoutDurationSec: matchConfig?.timeoutDurationSec ?? 30,
     intervalBetweenSetsSec: matchConfig?.intervalBetweenSetsSec ?? 180,
+    loadingLogoPath: matchConfig?.loadingLogoPath ?? "",
+    loadingLogoBase64: matchConfig?.loadingLogoBase64 ?? "",
   }));
 
   const [isEditing, setIsEditing] = useState(false);
@@ -29,6 +31,8 @@ export function Config({ matchConfig }: ConfigProps) {
         config: matchConfig.config,
         timeoutDurationSec: matchConfig.timeoutDurationSec,
         intervalBetweenSetsSec: matchConfig.intervalBetweenSetsSec,
+        loadingLogoPath: matchConfig.loadingLogoPath ?? "",
+        loadingLogoBase64: matchConfig.loadingLogoBase64 ?? "",
       });
     }
   }, [matchConfig, isEditing]);
@@ -51,6 +55,38 @@ export function Config({ matchConfig }: ConfigProps) {
     }
     setIsEditing(false);
     setBackupConfig(null);
+  };
+
+  const handleSelectLoadingLogo = async () => {
+    if (!isEditing) {
+      return;
+    }
+
+    const selectedPath = await window.electron.selectLogoFile();
+
+    if (!selectedPath) {
+      return;
+    }
+
+    const base64 = await window.electron.getImageAsBase64(selectedPath);
+
+    setFormConfig((prev) => ({
+      ...prev,
+      loadingLogoPath: selectedPath,
+      loadingLogoBase64: base64 ?? "",
+    }));
+  };
+
+  const handleRemoveLoadingLogo = () => {
+    if (!isEditing) {
+      return;
+    }
+
+    setFormConfig((prev) => ({
+      ...prev,
+      loadingLogoPath: "",
+      loadingLogoBase64: "",
+    }));
   };
 
   return (
@@ -126,6 +162,57 @@ export function Config({ matchConfig }: ConfigProps) {
             fullWidth
             inputProps={{ min: 0 }}
           />
+
+          <Stack spacing={1}>
+            <Typography variant="subtitle1">Loading Logo</Typography>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: 180,
+                backgroundColor: "#f8f8f8",
+              }}
+            >
+              {formConfig.loadingLogoBase64 ? (
+                <img
+                  src={formConfig.loadingLogoBase64}
+                  alt="Loading Logo Preview"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: 160,
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                <Typography color="text.secondary">No logo selected</Typography>
+              )}
+            </Paper>
+            <Stack direction="row" spacing={1}>
+              <Button
+                variant="outlined"
+                onClick={handleSelectLoadingLogo}
+                disabled={!isEditing}
+              >
+                Select Logo
+              </Button>
+              <Button
+                variant="text"
+                color="error"
+                onClick={handleRemoveLoadingLogo}
+                disabled={!isEditing || !formConfig.loadingLogoPath}
+              >
+                Remove
+              </Button>
+            </Stack>
+            {formConfig.loadingLogoPath && (
+              <Typography variant="caption" color="text.secondary">
+                {formConfig.loadingLogoPath}
+              </Typography>
+            )}
+          </Stack>
         </Stack>
       </Paper>
     </Box>

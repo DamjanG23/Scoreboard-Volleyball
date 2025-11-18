@@ -32,6 +32,8 @@ type MatchConfig = {
   config: string;
   timeoutDurationSec: number;
   intervalBetweenSetsSec: number;
+  loadingLogoPath?: string;
+  loadingLogoBase64?: string;
 };
 
 type MatchTime = {

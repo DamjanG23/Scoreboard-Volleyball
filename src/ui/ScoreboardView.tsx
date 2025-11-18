@@ -32,6 +32,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
 
   const teamA = currentMatch?.teams?.teamA;
   const teamB = currentMatch?.teams?.teamB;
+  const loadingLogoBase64 = currentMatch?.config?.loadingLogoBase64;
 
   // Load Team A logo as base64
   useEffect(() => {
@@ -247,8 +248,8 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
         }}
       >
         <img
-          src="/desktopIcon.png"
-          alt="Logo"
+          src={loadingLogoBase64 || "/desktopIcon.png"}
+          alt="Loading Logo"
           style={{
             maxWidth: "50vw",
             maxHeight: "50vh",

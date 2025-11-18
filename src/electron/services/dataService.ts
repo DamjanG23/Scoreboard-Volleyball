@@ -10,13 +10,48 @@ export function getScoreboardState() {
   return { scoreboardState, teamAName, teamBName };
 }
 
+function sanitizeConfigForStorage(
+  config?: MatchConfig
+): MatchConfig | undefined {
+  if (!config) {
+    return undefined;
+  }
+
+  const { loadingLogoBase64, ...rest } = config;
+  return {
+    ...rest,
+  };
+}
+
+function enrichConfigWithBase64(config?: MatchConfig): MatchConfig | undefined {
+  if (!config) {
+    return undefined;
+  }
+
+  const enrichedConfig: MatchConfig = { ...config };
+
+  if (enrichedConfig.loadingLogoPath) {
+    const base64 = getImageAsBase64(enrichedConfig.loadingLogoPath);
+    if (base64) {
+      enrichedConfig.loadingLogoBase64 = base64;
+    } else {
+      delete enrichedConfig.loadingLogoBase64;
+    }
+  } else {
+    delete enrichedConfig.loadingLogoBase64;
+  }
+
+  return enrichedConfig;
+}
+
 export function getConfig() {
   const matchConfig: MatchConfig = {
     config: "string",
     timeoutDurationSec: 11,
     intervalBetweenSetsSec: 12,
+    loadingLogoPath: "",
   };
-  return matchConfig;
+  return enrichConfigWithBase64(matchConfig) ?? matchConfig;
 }
 
 export function createNewMatch(matchName: string): Match {
@@ -47,18 +82,33 @@ export function saveCurrentMatch(
   scoreboardWindow?: BrowserWindow
 ) {
   const dataPath = join(app.getPath("userData"), "currentMatch.json");
-  writeFileSync(dataPath, JSON.stringify(match, null, 2));
-  console.log("Current match:", match);
+
+  const matchForStorage: Match = {
+    ...match,
+    config: sanitizeConfigForStorage(match.config),
+  };
+
+  writeFileSync(dataPath, JSON.stringify(matchForStorage, null, 2));
+  console.log("Current match:", matchForStorage);
+
+  const matchForRenderer: Match = {
+    ...matchForStorage,
+    config: enrichConfigWithBase64(matchForStorage.config),
+  };
 
   // Send to main window
-  ipcWebContentsSend("onCurrentMatchSaved", mainWindow.webContents, match);
+  ipcWebContentsSend(
+    "onCurrentMatchSaved",
+    mainWindow.webContents,
+    matchForRenderer
+  );
 
   // Send to scoreboard window if it exists
   if (scoreboardWindow && !scoreboardWindow.isDestroyed()) {
     ipcWebContentsSend(
       "onCurrentMatchSaved",
       scoreboardWindow.webContents,
-      match
+      matchForRenderer
     );
   }
 }
@@ -366,7 +416,7 @@ export function saveConfigToCurrentMatch(
   }
 
   // Update the config
-  currentMatch.config = config;
+  currentMatch.config = sanitizeConfigForStorage(config);
   console.log(`Config saved to current match`);
 
   // Save the updated match
