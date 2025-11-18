@@ -247,15 +247,17 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           backgroundColor: "#0f0f0f",
         }}
       >
-        <img
-          src={loadingLogoBase64 || "/desktopIcon.png"}
-          alt="Loading Logo"
-          style={{
-            maxWidth: "50vw",
-            maxHeight: "50vh",
-            objectFit: "contain",
-          }}
-        />
+        {loadingLogoBase64 && (
+          <img
+            src={loadingLogoBase64}
+            alt="Loading Logo"
+            style={{
+              maxWidth: "50vw",
+              maxHeight: "50vh",
+              objectFit: "contain",
+            }}
+          />
+        )}
       </div>
     );
   }

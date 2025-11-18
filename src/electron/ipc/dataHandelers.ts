@@ -174,10 +174,15 @@ export function setupDataHandelers(
   ipcMainOn("incrementTeamASets", () => {
     incrementTeamASets(mainWindow, scoreboardWindow);
 
-    // Start rest period after incrementing set
+    // Start rest period after incrementing set, but not if match is won (3 sets)
     const currentMatch = getCurrentMatch();
-    const restDuration = currentMatch?.config?.intervalBetweenSetsSec || 180;
-    startRest(restDuration, mainWindow, scoreboardWindow);
+    const newSetCount = currentMatch?.teamAScore?.sets || 0;
+
+    // Only start rest period if the new set count is less than 3 (not match-winning)
+    if (newSetCount < 3) {
+      const restDuration = currentMatch?.config?.intervalBetweenSetsSec || 180;
+      startRest(restDuration, mainWindow, scoreboardWindow);
+    }
   });
 
   ipcMainOn("decrementTeamASets", () => {
@@ -187,10 +192,15 @@ export function setupDataHandelers(
   ipcMainOn("incrementTeamBSets", () => {
     incrementTeamBSets(mainWindow, scoreboardWindow);
 
-    // Start rest period after incrementing set
+    // Start rest period after incrementing set, but not if match is won (3 sets)
     const currentMatch = getCurrentMatch();
-    const restDuration = currentMatch?.config?.intervalBetweenSetsSec || 180;
-    startRest(restDuration, mainWindow, scoreboardWindow);
+    const newSetCount = currentMatch?.teamBScore?.sets || 0;
+
+    // Only start rest period if the new set count is less than 3 (not match-winning)
+    if (newSetCount < 3) {
+      const restDuration = currentMatch?.config?.intervalBetweenSetsSec || 180;
+      startRest(restDuration, mainWindow, scoreboardWindow);
+    }
   });
 
   ipcMainOn("decrementTeamBSets", () => {
