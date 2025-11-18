@@ -37,6 +37,14 @@ import {
   startWarmupTime,
   stopWarmupTime,
   isWarmupTimeRunning,
+  startTimeout,
+  stopTimeout,
+  isTimeoutRunning,
+  getTimeoutTimeSec,
+  startRest,
+  stopRest,
+  isRestRunning,
+  getRestTimeSec,
 } from "../services/timeService.js";
 import { ipcMainHandle, ipcMainOn } from "../utils/util.js";
 
@@ -165,6 +173,11 @@ export function setupDataHandelers(
 
   ipcMainOn("incrementTeamASets", () => {
     incrementTeamASets(mainWindow, scoreboardWindow);
+
+    // Start rest period after incrementing set
+    const currentMatch = getCurrentMatch();
+    const restDuration = currentMatch?.config?.intervalBetweenSetsSec || 180;
+    startRest(restDuration, mainWindow, scoreboardWindow);
   });
 
   ipcMainOn("decrementTeamASets", () => {
@@ -173,6 +186,11 @@ export function setupDataHandelers(
 
   ipcMainOn("incrementTeamBSets", () => {
     incrementTeamBSets(mainWindow, scoreboardWindow);
+
+    // Start rest period after incrementing set
+    const currentMatch = getCurrentMatch();
+    const restDuration = currentMatch?.config?.intervalBetweenSetsSec || 180;
+    startRest(restDuration, mainWindow, scoreboardWindow);
   });
 
   ipcMainOn("decrementTeamBSets", () => {
@@ -181,7 +199,17 @@ export function setupDataHandelers(
 
   // ---------- ---------- TIMEOUTS ---------- ---------- //
   ipcMainOn("incrementTeamATimeouts", () => {
-    incrementTeamATimeouts(mainWindow, scoreboardWindow);
+    const currentMatch = getCurrentMatch();
+    const currentTimeouts = currentMatch?.teamAScore?.timeouts || 0;
+
+    // Only start timeout countdown if team has less than 2 timeouts
+    if (currentTimeouts < 2) {
+      incrementTeamATimeouts(mainWindow, scoreboardWindow);
+
+      // Get timeout duration from config or use default 30 seconds
+      const timeoutDuration = currentMatch?.config?.timeoutDurationSec || 30;
+      startTimeout(timeoutDuration, mainWindow, scoreboardWindow);
+    }
   });
 
   ipcMainOn("decrementTeamATimeouts", () => {
@@ -189,11 +217,55 @@ export function setupDataHandelers(
   });
 
   ipcMainOn("incrementTeamBTimeouts", () => {
-    incrementTeamBTimeouts(mainWindow, scoreboardWindow);
+    const currentMatch = getCurrentMatch();
+    const currentTimeouts = currentMatch?.teamBScore?.timeouts || 0;
+
+    // Only start timeout countdown if team has less than 2 timeouts
+    if (currentTimeouts < 2) {
+      incrementTeamBTimeouts(mainWindow, scoreboardWindow);
+
+      // Get timeout duration from config or use default 30 seconds
+      const timeoutDuration = currentMatch?.config?.timeoutDurationSec || 30;
+      startTimeout(timeoutDuration, mainWindow, scoreboardWindow);
+    }
   });
 
   ipcMainOn("decrementTeamBTimeouts", () => {
     decrementTeamBTimeouts(mainWindow, scoreboardWindow);
+  });
+
+  // ---------- ---------- TIMEOUT TIMER ---------- ---------- //
+  ipcMainHandle("startTimeout", (durationSec: number) => {
+    return startTimeout(durationSec, mainWindow, scoreboardWindow);
+  });
+
+  ipcMainHandle("stopTimeout", () => {
+    return stopTimeout(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainHandle("isTimeoutRunning", () => {
+    return isTimeoutRunning();
+  });
+
+  ipcMainHandle("getTimeoutTimeSec", () => {
+    return getTimeoutTimeSec();
+  });
+
+  // ---------- ---------- REST TIMER ---------- ---------- //
+  ipcMainHandle("startRest", (durationSec: number) => {
+    return startRest(durationSec, mainWindow, scoreboardWindow);
+  });
+
+  ipcMainHandle("stopRest", () => {
+    return stopRest(mainWindow, scoreboardWindow);
+  });
+
+  ipcMainHandle("isRestRunning", () => {
+    return isRestRunning();
+  });
+
+  ipcMainHandle("getRestTimeSec", () => {
+    return getRestTimeSec();
   });
 
   // ---------- ---------- SET HISTORY ---------- ---------- //

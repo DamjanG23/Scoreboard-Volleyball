@@ -114,6 +114,54 @@ electron.contextBridge.exposeInMainWorld("electron", {
     return ipcInvoke("isWarmupTimeRunning");
   },
 
+  startTimeout: (durationSec) => {
+    return ipcInvoke("startTimeout", durationSec);
+  },
+
+  stopTimeout: () => {
+    return ipcInvoke("stopTimeout");
+  },
+
+  isTimeoutRunning: () => {
+    return ipcInvoke("isTimeoutRunning");
+  },
+
+  getTimeoutTimeSec: () => {
+    return ipcInvoke("getTimeoutTimeSec");
+  },
+
+  onTimeoutUpdate: (callback) => {
+    return ipcOn("onTimeoutUpdate", callback);
+  },
+
+  onTimeoutEnded: (callback) => {
+    return ipcOn("onTimeoutEnded", callback);
+  },
+
+  startRest: (durationSec) => {
+    return ipcInvoke("startRest", durationSec);
+  },
+
+  stopRest: () => {
+    return ipcInvoke("stopRest");
+  },
+
+  isRestRunning: () => {
+    return ipcInvoke("isRestRunning");
+  },
+
+  getRestTimeSec: () => {
+    return ipcInvoke("getRestTimeSec");
+  },
+
+  onRestUpdate: (callback) => {
+    return ipcOn("onRestUpdate", callback);
+  },
+
+  onRestEnded: (callback) => {
+    return ipcOn("onRestEnded", callback);
+  },
+
   updateMatchTime: (newTimeSec) => {
     ipcSend("updateMatchTime", newTimeSec);
   },

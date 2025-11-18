@@ -103,6 +103,18 @@ type EventPayloadMaping = {
   startWarmupTime: void;
   stopWarmupTime: void;
   isWarmupTimeRunning: boolean;
+  startTimeout: boolean;
+  stopTimeout: boolean;
+  isTimeoutRunning: boolean;
+  getTimeoutTimeSec: number;
+  onTimeoutUpdate: number;
+  onTimeoutEnded: void;
+  startRest: boolean;
+  stopRest: boolean;
+  isRestRunning: boolean;
+  getRestTimeSec: number;
+  onRestUpdate: number;
+  onRestEnded: void;
   updateMatchTime: number;
   updateTeamAScore: Score;
   updateTeamBScore: Score;
@@ -228,6 +240,34 @@ interface Window {
     stopWarmupTime: () => void;
 
     isWarmupTimeRunning: () => Promise<boolean>;
+
+    startTimeout: (durationSec: number) => Promise<boolean>;
+
+    stopTimeout: () => Promise<boolean>;
+
+    isTimeoutRunning: () => Promise<boolean>;
+
+    getTimeoutTimeSec: () => Promise<number>;
+
+    onTimeoutUpdate: (
+      callback: (timeoutTimeSec: number) => void
+    ) => UnsubscribeFunction;
+
+    onTimeoutEnded: (callback: () => void) => UnsubscribeFunction;
+
+    startRest: (durationSec: number) => Promise<boolean>;
+
+    stopRest: () => Promise<boolean>;
+
+    isRestRunning: () => Promise<boolean>;
+
+    getRestTimeSec: () => Promise<number>;
+
+    onRestUpdate: (
+      callback: (restTimeSec: number) => void
+    ) => UnsubscribeFunction;
+
+    onRestEnded: (callback: () => void) => UnsubscribeFunction;
 
     updateMatchTime: (newTimeSec: number) => void;
 

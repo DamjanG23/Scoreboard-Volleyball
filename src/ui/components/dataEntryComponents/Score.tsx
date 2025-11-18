@@ -25,6 +25,8 @@ interface ScoreProps {
 export function Score({ currentMatch }: ScoreProps) {
   const [isRunning, setIsRunning] = useState(false);
   const [isWarmupRunning, setIsWarmupRunning] = useState(false);
+  const [isTimeoutRunning, setIsTimeoutRunning] = useState(false);
+  const [isRestRunning, setIsRestRunning] = useState(false);
   const [manualTime, setManualTime] = useState("");
   const [teamAPoints, setTeamAPoints] = useState("");
   const [teamBPoints, setTeamBPoints] = useState("");
@@ -45,6 +47,42 @@ export function Score({ currentMatch }: ScoreProps) {
     // Check if time is running when component mounts
     window.electron.isMatchTimeRunning().then(setIsRunning);
     window.electron.isWarmupTimeRunning().then(setIsWarmupRunning);
+    window.electron.isTimeoutRunning().then(setIsTimeoutRunning);
+    window.electron.isRestRunning().then(setIsRestRunning);
+  }, []);
+
+  // Subscribe to timeout events
+  useEffect(() => {
+    const unsubscribeUpdate = window.electron.onTimeoutUpdate(() => {
+      // Update timeout running state
+      window.electron.isTimeoutRunning().then(setIsTimeoutRunning);
+    });
+
+    const unsubscribeEnded = window.electron.onTimeoutEnded(() => {
+      setIsTimeoutRunning(false);
+    });
+
+    return () => {
+      unsubscribeUpdate();
+      unsubscribeEnded();
+    };
+  }, []);
+
+  // Subscribe to rest events
+  useEffect(() => {
+    const unsubscribeUpdate = window.electron.onRestUpdate(() => {
+      // Update rest running state
+      window.electron.isRestRunning().then(setIsRestRunning);
+    });
+
+    const unsubscribeEnded = window.electron.onRestEnded(() => {
+      setIsRestRunning(false);
+    });
+
+    return () => {
+      unsubscribeUpdate();
+      unsubscribeEnded();
+    };
   }, []);
 
   // Update local state when currentMatch changes
@@ -218,6 +256,16 @@ export function Score({ currentMatch }: ScoreProps) {
     window.electron.decrementTeamBTimeouts();
   };
 
+  // Cancel timeout handler
+  const handleCancelTimeout = () => {
+    window.electron.stopTimeout();
+  };
+
+  // Cancel rest handler
+  const handleCancelRest = () => {
+    window.electron.stopRest();
+  };
+
   // Set history handlers
   const handleAddSet = () => {
     if (setHistory.length >= 5) return;
@@ -371,6 +419,36 @@ export function Score({ currentMatch }: ScoreProps) {
             )}
           </Stack>
         </Paper>
+
+        {/* Cancel Timeout Button */}
+        {isTimeoutRunning && (
+          <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              onClick={handleCancelTimeout}
+              sx={{ minWidth: 200 }}
+            >
+              Cancel Timeout
+            </Button>
+          </Box>
+        )}
+
+        {/* Cancel Rest Button */}
+        {isRestRunning && (
+          <Box sx={{ display: "flex", justifyContent: "center", my: 2 }}>
+            <Button
+              variant="contained"
+              color="error"
+              size="large"
+              onClick={handleCancelRest}
+              sx={{ minWidth: 200 }}
+            >
+              Cancel Rest Period
+            </Button>
+          </Box>
+        )}
 
         {/* Score Controls */}
         <Paper

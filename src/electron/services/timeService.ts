@@ -3,6 +3,10 @@ import { getCurrentMatch, saveCurrentMatch } from "./dataService.js";
 
 let timeInterval: NodeJS.Timeout | null = null;
 let warmupInterval: NodeJS.Timeout | null = null;
+let timeoutInterval: NodeJS.Timeout | null = null;
+let timeoutTimeSec: number = 0;
+let restInterval: NodeJS.Timeout | null = null;
+let restTimeSec: number = 0;
 
 export function startMatchTime(
   mainWindow: BrowserWindow,
@@ -129,6 +133,140 @@ export function updateMatchTime(
   return true;
 }
 
+export function startTimeout(
+  durationSec: number,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): boolean {
+  if (timeoutInterval) {
+    console.log("Timeout is already running");
+    return false;
+  }
+
+  timeoutTimeSec = durationSec;
+  console.log("Starting timeout countdown from:", timeoutTimeSec);
+
+  // Send initial timeout state
+  mainWindow.webContents.send("onTimeoutUpdate", timeoutTimeSec);
+  if (scoreboardWindow) {
+    scoreboardWindow.webContents.send("onTimeoutUpdate", timeoutTimeSec);
+  }
+
+  // Decrement timeout time every second
+  timeoutInterval = setInterval(() => {
+    if (timeoutTimeSec > 0) {
+      timeoutTimeSec--;
+      mainWindow.webContents.send("onTimeoutUpdate", timeoutTimeSec);
+      if (scoreboardWindow) {
+        scoreboardWindow.webContents.send("onTimeoutUpdate", timeoutTimeSec);
+      }
+    } else {
+      // Stop timeout when reaching 0
+      stopTimeout(mainWindow, scoreboardWindow);
+    }
+  }, 1000);
+
+  return true;
+}
+
+export function stopTimeout(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): boolean {
+  if (!timeoutInterval) {
+    console.log("Timeout is not running");
+    return false;
+  }
+
+  clearInterval(timeoutInterval);
+  timeoutInterval = null;
+  timeoutTimeSec = 0;
+  console.log("Timeout stopped");
+
+  // Send timeout ended event
+  mainWindow.webContents.send("onTimeoutEnded");
+  if (scoreboardWindow) {
+    scoreboardWindow.webContents.send("onTimeoutEnded");
+  }
+
+  return true;
+}
+
+export function isTimeoutRunning(): boolean {
+  return timeoutInterval !== null;
+}
+
+export function getTimeoutTimeSec(): number {
+  return timeoutTimeSec;
+}
+
+export function startRest(
+  durationSec: number,
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): boolean {
+  if (restInterval) {
+    console.log("Rest period is already running");
+    return false;
+  }
+
+  restTimeSec = durationSec;
+  console.log("Starting rest period countdown from:", restTimeSec);
+
+  // Send initial rest state
+  mainWindow.webContents.send("onRestUpdate", restTimeSec);
+  if (scoreboardWindow) {
+    scoreboardWindow.webContents.send("onRestUpdate", restTimeSec);
+  }
+
+  // Decrement rest time every second
+  restInterval = setInterval(() => {
+    if (restTimeSec > 0) {
+      restTimeSec--;
+      mainWindow.webContents.send("onRestUpdate", restTimeSec);
+      if (scoreboardWindow) {
+        scoreboardWindow.webContents.send("onRestUpdate", restTimeSec);
+      }
+    } else {
+      // Stop rest when reaching 0
+      stopRest(mainWindow, scoreboardWindow);
+    }
+  }, 1000);
+
+  return true;
+}
+
+export function stopRest(
+  mainWindow: BrowserWindow,
+  scoreboardWindow?: BrowserWindow
+): boolean {
+  if (!restInterval) {
+    console.log("Rest period is not running");
+    return false;
+  }
+
+  clearInterval(restInterval);
+  restInterval = null;
+  restTimeSec = 0;
+  console.log("Rest period stopped");
+
+  // Send rest ended event
+  mainWindow.webContents.send("onRestEnded");
+  if (scoreboardWindow) {
+    scoreboardWindow.webContents.send("onRestEnded");
+  }
+
+  return true;
+}
+
+export function isRestRunning(): boolean {
+  return restInterval !== null;
+}
+
+export function getRestTimeSec(): number {
+  return restTimeSec;
+}
+
 // Clean up interval when app closes
 export function cleanupTimeService(): void {
   if (timeInterval) {
@@ -138,5 +276,13 @@ export function cleanupTimeService(): void {
   if (warmupInterval) {
     clearInterval(warmupInterval);
     warmupInterval = null;
+  }
+  if (timeoutInterval) {
+    clearInterval(timeoutInterval);
+    timeoutInterval = null;
+  }
+  if (restInterval) {
+    clearInterval(restInterval);
+    restInterval = null;
   }
 }

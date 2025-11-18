@@ -11,6 +11,10 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
   const [colonVisible, setColonVisible] = useState(true);
   const [isTimeRunning, setIsTimeRunning] = useState(false);
   const [isWarmupRunning, setIsWarmupRunning] = useState(false);
+  const [isTimeoutRunning, setIsTimeoutRunning] = useState(false);
+  const [timeoutTimeSec, setTimeoutTimeSec] = useState(0);
+  const [isRestRunning, setIsRestRunning] = useState(false);
+  const [restTimeSec, setRestTimeSec] = useState(0);
 
   useEffect(() => {
     window.electron.getScoreboardFillState().then(setIsFilled);
@@ -114,9 +118,83 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Pulse colon every 2 seconds when time is running (blink for 100ms)
+  // Check if timeout is running
   useEffect(() => {
-    if (!isTimeRunning && !isWarmupRunning) {
+    const checkTimeoutRunning = async () => {
+      const running = await window.electron.isTimeoutRunning();
+      setIsTimeoutRunning(running);
+      if (running) {
+        const timeSec = await window.electron.getTimeoutTimeSec();
+        setTimeoutTimeSec(timeSec);
+      }
+    };
+
+    checkTimeoutRunning();
+    const interval = setInterval(checkTimeoutRunning, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Subscribe to timeout events
+  useEffect(() => {
+    const unsubscribeUpdate = window.electron.onTimeoutUpdate((timeSec) => {
+      setTimeoutTimeSec(timeSec);
+      setIsTimeoutRunning(true);
+    });
+
+    const unsubscribeEnded = window.electron.onTimeoutEnded(() => {
+      setIsTimeoutRunning(false);
+      setTimeoutTimeSec(0);
+    });
+
+    return () => {
+      unsubscribeUpdate();
+      unsubscribeEnded();
+    };
+  }, []);
+
+  // Check if rest is running
+  useEffect(() => {
+    const checkRestRunning = async () => {
+      const running = await window.electron.isRestRunning();
+      setIsRestRunning(running);
+      if (running) {
+        const timeSec = await window.electron.getRestTimeSec();
+        setRestTimeSec(timeSec);
+      }
+    };
+
+    checkRestRunning();
+    const interval = setInterval(checkRestRunning, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Subscribe to rest events
+  useEffect(() => {
+    const unsubscribeUpdate = window.electron.onRestUpdate((timeSec) => {
+      setRestTimeSec(timeSec);
+      setIsRestRunning(true);
+    });
+
+    const unsubscribeEnded = window.electron.onRestEnded(() => {
+      setIsRestRunning(false);
+      setRestTimeSec(0);
+    });
+
+    return () => {
+      unsubscribeUpdate();
+      unsubscribeEnded();
+    };
+  }, []);
+
+  // Pulse colon every 2 seconds when match time is running (blink for 500ms)
+  // Don't blink during warmup, timeout, or rest
+  useEffect(() => {
+    if (
+      !isTimeRunning ||
+      isWarmupRunning ||
+      isTimeoutRunning ||
+      isRestRunning
+    ) {
       setColonVisible(true);
       return;
     }
@@ -125,11 +203,11 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
       setColonVisible(false);
       setTimeout(() => {
         setColonVisible(true);
-      }, 100);
+      }, 500);
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [isTimeRunning, isWarmupRunning]);
+  }, [isTimeRunning, isWarmupRunning, isTimeoutRunning, isRestRunning]);
 
   // Format time as HH:MM
   const formatTimeHHMM = (
@@ -143,25 +221,16 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
     };
   };
 
-  // Format time as HH:MM:SS
-  const formatTime = (seconds: number): string => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-      2,
-      "0"
-    )}:${String(secs).padStart(2, "0")}`;
-  };
-
-  // Format time as MM:SS for set history
-  const formatSetTime = (seconds: number): string => {
+  // Format time as MM:SS
+  const formatTimeMMSS = (
+    seconds: number
+  ): { minutes: string; secs: string } => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(
-      2,
-      "0"
-    )}`;
+    return {
+      minutes: String(minutes).padStart(2, "0"),
+      secs: String(secs).padStart(2, "0"),
+    };
   };
 
   // If not filled, show only the desktop icon
@@ -212,8 +281,8 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           flexDirection: "column",
         }}
       >
-        {isWarmupRunning ? (
-          /* Warmup View - Player List */
+        {isTimeoutRunning || isWarmupRunning || isRestRunning ? (
+          /* Warmup/Timeout View - Player List */
           <div
             style={{
               display: "flex",
@@ -525,9 +594,9 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                     letterSpacing: "0.1em",
                   }}
                 >
-                  {formatTimeHHMM(timeSec).hours}
-                  <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
-                  {formatTimeHHMM(timeSec).minutes}
+                  {formatTimeMMSS(timeSec).minutes}
+                  <span>:</span>
+                  {formatTimeMMSS(timeSec).secs}
                 </div>
                 <div
                   style={{
@@ -539,7 +608,7 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                     marginTop: "1vh",
                   }}
                 >
-                  MINUTES UNTIL START
+                  TIME UNTIL START
                 </div>
               </div>
             </div>
@@ -623,9 +692,35 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                     letterSpacing: "0.1em",
                   }}
                 >
-                  {formatTimeHHMM(timeSec).hours}
-                  <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
-                  {formatTimeHHMM(timeSec).minutes}
+                  {isTimeoutRunning || isWarmupRunning || isRestRunning ? (
+                    <>
+                      {
+                        formatTimeMMSS(
+                          isTimeoutRunning
+                            ? timeoutTimeSec
+                            : isRestRunning
+                            ? restTimeSec
+                            : timeSec
+                        ).minutes
+                      }
+                      <span>:</span>
+                      {
+                        formatTimeMMSS(
+                          isTimeoutRunning
+                            ? timeoutTimeSec
+                            : isRestRunning
+                            ? restTimeSec
+                            : timeSec
+                        ).secs
+                      }
+                    </>
+                  ) : (
+                    <>
+                      {formatTimeHHMM(timeSec).hours}
+                      <span style={{ opacity: colonVisible ? 1 : 0 }}>:</span>
+                      {formatTimeHHMM(timeSec).minutes}
+                    </>
+                  )}
                 </div>
                 <div
                   style={{
@@ -637,8 +732,12 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
                     marginTop: "1vh",
                   }}
                 >
-                  {isWarmupRunning
-                    ? `MINUTES UNTIL START`
+                  {isTimeoutRunning
+                    ? "TIMEOUT"
+                    : isRestRunning
+                    ? "REST"
+                    : isWarmupRunning
+                    ? "TIME UNTIL START"
                     : `SET ${currentSetNum}`}
                 </div>
               </div>
@@ -774,8 +873,8 @@ export default function ScoreboardView({ currentMatch }: ScoreboardViewProps) {
           flexDirection: "column",
         }}
       >
-        {isWarmupRunning ? (
-          /* Warmup View - Player List */
+        {isTimeoutRunning || isWarmupRunning || isRestRunning ? (
+          /* Warmup/Timeout View - Player List */
           <div
             style={{
               display: "flex",
